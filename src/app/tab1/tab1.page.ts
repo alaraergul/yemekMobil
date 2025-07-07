@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserService } from '../services/user/user.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-tab1',
@@ -8,10 +8,9 @@ import { UserService } from '../services/user/user.service';
 })
 export class Tab1Page {
 
-  constructor(private userService: UserService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
-    this.userService.getUsers().subscribe(res => console.log(res))
+    this.authService.getUsers().then((response) => console.log(response));
   }
-
 }
