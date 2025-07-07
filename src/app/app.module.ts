@@ -10,7 +10,6 @@ import { ChartComponent } from './components/chart/chart.component';
 
 @NgModule({
   declarations: [AppComponent, ChartComponent],
-  entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }],
   bootstrap: [AppComponent]

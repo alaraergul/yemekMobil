@@ -15,4 +15,4 @@ import { Tab1Page } from './tab1.page';
   declarations: [Tab1Page],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class Tab1PageModule { }
+export class Tab1PageModule {}
