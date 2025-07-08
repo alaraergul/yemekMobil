@@ -97,24 +97,43 @@ export class ChartComponent implements OnChanges {
     const sundayAt = sunday.getTime();
 
     const filtered = this.data.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
+    const values: (number[])[] = Array(7).fill(0).map((_) => [0, 0, 0]);
 
-    const labels: string[] = [];
-    const values: number[] = [];
+    for (const entry of filtered) {
+      const day = (new Date(entry.timestamp)).getDay();
+      values[day][0] += (entry.meal.purine * entry.count);
+      values[day][1] += (entry.meal.sugar * entry.count);
+      values[day][2] += (entry.meal.kcal * entry.count);
+    }
 
-    filtered.forEach((entry) => {
-      const t = new Date(entry.timestamp);
-      labels.push(`${this.zero(t.getHours())}:${this.zero(t.getMinutes())}`);
-      values.push(entry.meal.purine * entry.count);
-    });
+    // Replace sunday and monday position
+    const data = values.slice(1);
+    data.push(values[0]);
 
     this.chartData = {
-      labels,
+      labels: ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"],
       datasets: [
         {
-          data: values,
-          label: "Pürin Alımı (mg)",
+          data: data.map((value) => value[0]),
+          label: "Pürin",
           borderColor: "rgba(75,192,192,1)",
           backgroundColor: "rgba(75,192,192,0.2)",
+          fill: true,
+          tension: 0.3,
+        },
+        {
+          data: data.map((value) => value[1]),
+          label: "Şeker",
+          borderColor: "rgb(79, 192, 75)",
+          backgroundColor: "rgba(79, 192, 75, 0.2)",
+          fill: true,
+          tension: 0.3,
+        },
+        {
+          data: data.map((value) => value[2]),
+          label: "kcal",
+          borderColor: "rgb(192, 75, 75)",
+          backgroundColor: "rgba(192, 75, 75, 0.2)",
           fill: true,
           tension: 0.3,
         },
