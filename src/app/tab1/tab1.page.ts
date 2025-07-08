@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common'; 
+import { IonicModule, ToastController } from '@ionic/angular';
+import { RouterModule, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 enum Tabs {
@@ -16,7 +16,7 @@ enum Tabs {
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   imports: [
-    CommonModule,     
+    CommonModule,
     FormsModule,
     IonicModule,
     RouterModule
@@ -32,15 +32,49 @@ export class Tab1Page {
   regPassword = '';
   regWeight: number | null = null;
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private toastController: ToastController,
+    private router: Router
+  ) {}
 
-  login() {
-    this.authService.login(this.username, this.password);
+  async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500,
+      position: 'top',
+      color
+    });
+    await toast.present();
   }
 
-  register() {
-    if (this.regWeight !== null) {
-      this.authService.register(this.regUsername, this.regPassword, this.regWeight);
+  async login() {
+    const success = await this.authService.login(this.username, this.password);
+    if (success) {
+      this.showToast('Giriş başarılı!', 'success');
+      this.router.navigateByUrl('/tab2');  
+    } else {
+      this.showToast('Kullanıcı adı veya şifre hatalı!', 'danger');
+    }
+  }
+
+  async register() {
+    if (!this.regUsername || !this.regPassword || this.regWeight === null) {
+      this.showToast('Lütfen tüm alanları doldurunuz.', 'warning');
+      return;
+    }
+
+    if (this.regWeight <= 0) {
+      this.showToast('Geçerli bir kilo giriniz!', 'warning');
+      return;
+    }
+
+    const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight);
+    if (success) {
+      this.showToast('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');
+      this.activeTab = Tabs.LOGIN;
+    } else {
+      this.showToast('Bu kullanıcı adı zaten alınmış!', 'danger');
     }
   }
 
