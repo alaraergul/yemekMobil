@@ -4,8 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { meals } from 'src/app/data';
-import { Meal, MealEntry } from 'src/app/utils';
+import { MealEntry } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { MealService } from 'src/app/services/meal/meal.service';
 import { ChartComponent } from 'src/app/components/chart.component';
 
 @Component({
@@ -17,6 +18,7 @@ import { ChartComponent } from 'src/app/components/chart.component';
 })
 export class Tab2Page {
   authService = inject(AuthService);
+  mealService = inject(MealService);
 
   today = new Date();
   date = { day: this.today.getDate(), month: this.today.getMonth(), year: this.today.getFullYear() };
@@ -49,12 +51,12 @@ export class Tab2Page {
   }
 
   addMeal() {
-    this.authService.addEntry(this.currentMealEntry);
+    this.mealService.addMealEntry(this.currentMealEntry.meal.id, this.currentMealEntry.count, this.currentMealEntry.timestamp);
     this.currentMealEntry = { meal: meals[0], count: 1, timestamp: this.today.getTime() };
   }
 
   deleteMeal(mealId: number, timestamp: number) {
-    this.authService.deleteEntry(mealId, timestamp);
+    this.mealService.deleteMealEntry(mealId, timestamp);
   }
 
   getEntriesOfDate(entries: MealEntry[]): MealEntry[] {
@@ -93,10 +95,6 @@ export class Tab2Page {
     if (total < 2000) return 'Haftalık alım oldukça iyi.';
     if (total < 3500) return 'Dengeli ama sınırda.';
     return 'Haftalık alım fazla!';
-  }
-
-  getAllMeals(): Meal[] {
-    return meals;
   }
 
   logout() {

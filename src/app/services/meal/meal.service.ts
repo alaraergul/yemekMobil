@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { meals } from 'src/app/data';
 
 @Injectable({ providedIn: "root" })
-export class UserService {
+export class MealService {
   public authService = inject(AuthService);
   public data$?: Promise<MealEntry[]>;
 

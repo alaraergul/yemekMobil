@@ -2,7 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MealEntry } from '../utils';
 import { ChartConfiguration, ChartType, registerables } from 'chart.js';
-import { NgChartsModule } from 'ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 import { IonicModule } from '@ionic/angular';;
 
 import { Chart } from 'chart.js';
@@ -11,7 +11,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-chart',
   standalone: true,
-  imports: [CommonModule, NgChartsModule, IonicModule],
+  imports: [CommonModule, BaseChartDirective, IonicModule],
   template: `
     <ion-card *ngIf="chartData?.datasets[0]?.data?.length">
       <ion-card-header>

@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SplashScreen } from '@capacitor/splash-screen'
+import { AuthService } from './services/auth/auth.service';
+import { MealService } from './services/meal/meal.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -7,17 +10,19 @@ import { SplashScreen } from '@capacitor/splash-screen'
   standalone: false
 })
 export class AppComponent {
+  authService = inject(AuthService);
+  mealService = inject(MealService);
+
   constructor() {
     this.initializeApp();
   }
 
-  initializeApp() {
-    /* To make sure we provide the fastest app loading experience
-       for our users, hide the splash screen automatically
-       when the app is ready to be used:
-
-        https://capacitor.ionicframework.com/docs/apis/splash-screen#hiding-the-splash-screen
-    */
+  async initializeApp() {
     SplashScreen.hide();
+    const isLogged = await this.authService.initialize();
+
+    if (isLogged) {
+      await this.mealService.getAllMealEntries();
+    }
   }
 }

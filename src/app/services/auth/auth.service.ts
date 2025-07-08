@@ -49,7 +49,6 @@ export class AuthService {
     this.error$ = undefined;
 
     return new Promise((resolve) => {
-
       if (!username || !password || !weight) return resolve(false);
 
       this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight }).subscribe(response => {
