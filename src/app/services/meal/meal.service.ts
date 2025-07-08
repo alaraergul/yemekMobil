@@ -15,6 +15,10 @@ export class MealService {
     return meals;
   }
 
+  getSortedMeals(): Meal[] {
+    return meals.sort((a, b) => a.name.charCodeAt(0) - b.name.charCodeAt(0));
+  }
+
   async deleteMealEntry(id: number, timestamp: number): Promise<boolean> {
     if (!this.authService.isLogged) return false;
     const user = await this.authService.getUser();

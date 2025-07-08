@@ -1,5 +1,5 @@
 
-<ion-content class="meal-form">
+<ion-content>
   <div *ngIf="authService.isLogged">
     <div *ngIf="(mealService.data$ | async) as data">
       @let dataByDate = getEntriesOfDate(data);
@@ -44,7 +44,7 @@
               <ion-col>{{ entry.count }}</ion-col>
               <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
               <ion-col>{{ entry.meal.purine * entry.count }} mg</ion-col>
-              <ion-col>{{ entry.meal.sugar * entry.count }} g</ion-col>
+              <ion-col>~{{ (entry.meal.sugar * entry.count).toFixed(3) }} g</ion-col>
               <ion-col>{{ entry.meal.kcal * entry.count }}</ion-col>
               <ion-col><ion-icon name="trash" (click)="deleteMeal(entry.meal.id, entry.timestamp)"></ion-icon></ion-col>
             </ion-row>
@@ -63,21 +63,22 @@
 
       <h3>🍽️ Saat ve Yemek Seç!</h3>
 
-      <ion-item>
-        <ion-label>Saat</ion-label>
+      <ion-item class="date" detail="false">
         <ion-datetime presentation="date-time"
-          [value]="today.toISOString()"
           (ionChange)="onTimestampInput($event)">
+          <span slot="title">Tarih Seç</span>
         </ion-datetime>
       </ion-item>
 
-      <ion-item>
+      <ion-item detail="false">
         <ion-input label="Porsiyon Seç" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min=1 required></ion-input>
       </ion-item>
 
-      <ion-item>
+      <ion-item detail="false">
         <ion-select label="Yemek Seç" placeholder="Yemek seçin" (ionChange)="onSelectMeal($event)">
-          <ion-select-option *ngFor="let meal of mealService.getMeals()" [value]="meal.id">
+          @let sortedMeals = mealService.getSortedMeals();
+
+          <ion-select-option *ngFor="let meal of sortedMeals" [value]="meal.id">
             {{ meal.name }}
           </ion-select-option>
         </ion-select>
