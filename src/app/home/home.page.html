@@ -1,0 +1,92 @@
+
+<ion-content class="meal-form">
+  <div *ngIf="authService.isLogged">
+    <div *ngIf="(mealService.data$ | async) as data">
+      @let dataByDate = getEntriesOfDate(data);
+
+      <div style="text-align: right; margin-bottom: 16px;">
+        <ion-button class="logout-button" (click)="logout()">Çıkış Yap</ion-button>
+      </div>
+
+      <app-chart [data]="data" [date]="date"></app-chart>
+
+      <ion-item>
+        <ion-input label="Tarih Seç" type="date"
+          [value]="`${date.year}-${addZero(date.month + 1)}-${addZero(date.day)}`"
+          [max]="`${today.getFullYear()}-${addZero(today.getMonth() + 1)}-${addZero(today.getDate())}`"
+          (ionInput)="onDateInput($event)">
+        </ion-input>
+      </ion-item>
+
+      <h3>{{ addZero(date.day) }} {{ ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][date.month] }} {{ date.year }} için alınmış pürin bilgisi</h3>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Tüketilen Yiyecekler</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col><strong>Yiyecek</strong></ion-col>
+              <ion-col><strong>Porsiyon</strong></ion-col>
+              <ion-col><strong>Saat</strong></ion-col>
+              <ion-col><strong>Pürin</strong></ion-col>
+              <ion-col><strong>Şeker</strong></ion-col>
+              <ion-col><strong>Kcal</strong></ion-col>
+              <ion-col><strong>Sil</strong></ion-col>
+            </ion-row>
+
+            <ion-row *ngFor="let entry of dataByDate">
+              @let consumedAt = createDateFrom(entry.timestamp);
+
+              <ion-col>{{ entry.meal.name }}</ion-col>
+              <ion-col>{{ entry.count }}</ion-col>
+              <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
+              <ion-col>{{ entry.meal.purine * entry.count }} mg</ion-col>
+              <ion-col>{{ entry.meal.sugar * entry.count }} g</ion-col>
+              <ion-col>{{ entry.meal.kcal * entry.count }}</ion-col>
+              <ion-col><ion-icon name="trash" (click)="deleteMeal(entry.meal.id, entry.timestamp)"></ion-icon></ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-text>
+        <p><strong>Günlük Toplam Pürin:</strong> {{ getTotalPurine(dataByDate) }} mg</p>
+        <p><strong>Yorum:</strong> {{ getComment(getTotalPurine(dataByDate)) }}</p>
+        <p><strong>Haftalık Pürin:</strong> {{ getWeeklyPurine(data) }} mg</p>
+        <p><strong>Yorum:</strong> {{ getWeeklyComment(data) }}</p>
+      </ion-text>
+
+      <hr />
+
+      <h3>🍽️ Saat ve Yemek Seç!</h3>
+
+      <ion-item>
+        <ion-label>Saat</ion-label>
+        <ion-datetime presentation="date-time"
+          [value]="today.toISOString()"
+          (ionChange)="onTimestampInput($event)">
+        </ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-input label="Porsiyon Seç" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min=1 required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select label="Yemek Seç" placeholder="Yemek seçin" (ionChange)="onSelectMeal($event)">
+          <ion-select-option *ngFor="let meal of mealService.getMeals()" [value]="meal.id">
+            {{ meal.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-button expand="block" (click)="addMeal()"
+        [disabled]="!currentMealEntry.meal || currentMealEntry.count === null || !currentMealEntry.timestamp">
+        <ion-icon name="add-circle-outline"></ion-icon> Ekle
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

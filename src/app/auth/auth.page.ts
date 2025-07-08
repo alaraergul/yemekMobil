@@ -8,13 +8,13 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 enum Tabs {
   LOGIN,
   REGISTER
-}
+};
 
 @Component({
   selector: 'app-tab1',
   standalone: true,
-  templateUrl: './tab1.page.html',
-  styleUrls: ['./tab1.page.scss'],
+  templateUrl: './auth.page.html',
+  styleUrls: ['./auth.page.scss'],
   imports: [
     CommonModule,
     FormsModule,
@@ -22,7 +22,7 @@ enum Tabs {
     RouterModule
   ]
 })
-export class Tab1Page {
+export class AuthPage {
   Tabs = Tabs;
   activeTab = Tabs.LOGIN;
 
@@ -52,7 +52,7 @@ export class Tab1Page {
     const success = await this.authService.login(this.username, this.password);
     if (success) {
       this.showToast('Giriş başarılı!', 'success');
-      this.router.navigateByUrl('/tab2');  
+      this.router.navigateByUrl('/home');  
     } else {
       this.showToast('Kullanıcı adı veya şifre hatalı!', 'danger');
     }

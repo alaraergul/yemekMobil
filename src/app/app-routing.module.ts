@@ -4,21 +4,17 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'tab1',
+    redirectTo: 'auth',
     pathMatch: 'full'
   },
   {
-    path: 'tab1',
-    loadChildren: () => import('./tab1/tab1.module').then(m => m.Tab1PageModule)
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule)
   },
-
   {
-path: 'tab2',
-loadChildren:() => import('./tab2/tab2.module').then(m => m.Tab2PageModule)
-
-
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   }
-
 ];
 
 @NgModule({
