@@ -11,8 +11,7 @@
       <app-chart [data]="data" [date]="date"></app-chart>
 
       <ion-item>
-        <ion-label>Tarih Seç</ion-label>
-        <ion-input type="date"
+        <ion-input label="Tarih Seç" type="date"
           [value]="`${date.year}-${addZero(date.month + 1)}-${addZero(date.day)}`"
           [max]="`${today.getFullYear()}-${addZero(today.getMonth() + 1)}-${addZero(today.getDate())}`"
           (ionInput)="onDateInput($event)">
@@ -25,6 +24,7 @@
         <ion-card-header>
           <ion-card-title>Tüketilen Yiyecekler</ion-card-title>
         </ion-card-header>
+
         <ion-card-content>
           <ion-grid>
             <ion-row>
@@ -36,8 +36,10 @@
               <ion-col><strong>Kcal</strong></ion-col>
               <ion-col><strong>Sil</strong></ion-col>
             </ion-row>
+
             <ion-row *ngFor="let entry of dataByDate">
               @let consumedAt = createDateFrom(entry.timestamp);
+
               <ion-col>{{ entry.meal.name }}</ion-col>
               <ion-col>{{ entry.count }}</ion-col>
               <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
@@ -70,13 +72,11 @@
       </ion-item>
 
       <ion-item>
-        <ion-label>Porsiyon Sayısı</ion-label>
-        <ion-input type="number" [(ngModel)]="currentMealEntry.count"></ion-input>
+        <ion-input label="Porsiyon Seç" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min=1 required></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label>Yemek Seç</ion-label>
-        <ion-select placeholder="Yemek seçin" (ionChange)="onSelectMeal($event)">
+        <ion-select label="Yemek Seç" placeholder="Yemek seçin" (ionChange)="onSelectMeal($event)">
           <ion-select-option *ngFor="let meal of mealService.getMeals()" [value]="meal.id">
             {{ meal.name }}
           </ion-select-option>
