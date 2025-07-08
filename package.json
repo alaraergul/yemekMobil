@@ -44,7 +44,6 @@
     "@types/jasmine": "^5.1.8",
     "@types/jasminewd2": "^2.0.13",
     "@types/node": "^24.0.10",
-    "codelyzer": "^6.0.2",
     "jasmine-core": "~5.8.0",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.4.4",
@@ -52,10 +51,18 @@
     "karma-coverage-istanbul-reporter": "~3.0.3",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "protractor": "~7.0.0",
     "ts-node": "^10.9.2",
     "tslint": "~6.1.3",
     "typescript": "^5.8.3"
   },
-  "description": "Build a photo gallery app that runs on iOS, Android, and the web - with just one codebase"
+  "description": "Build a photo gallery app that runs on iOS, Android, and the web - with just one codebase",
+  "browserslist": [
+    "Chrome >=61",
+    "ChromeAndroid >=61",
+    "Firefox >=63",
+    "Firefox ESR",
+    "Edge >=79",
+    "Safari >=13",
+    "iOS >=13"
+  ]
 }

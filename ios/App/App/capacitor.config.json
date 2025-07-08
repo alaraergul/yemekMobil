@@ -3,5 +3,11 @@
 	"appName": "Photo Gallery Cap Ng",
 	"bundledWebRuntime": false,
 	"npmClient": "npm",
-	"webDir": "www"
+	"webDir": "www",
+	"packageClassList": [
+		"CAPCameraPlugin",
+		"FilesystemPlugin",
+		"PreferencesPlugin",
+		"SplashScreenPlugin"
+	]
 }
