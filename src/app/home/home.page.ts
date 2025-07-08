@@ -33,7 +33,7 @@ export class HomePage {
   constructor(private router: Router) {}
 
   addZero(n: number): string {
-    return n < 10 ? '0' + n : '' + n;
+    return n.toString().padStart(2, "0");
   }
 
   onDateInput(event: Event) {
@@ -53,13 +53,13 @@ export class HomePage {
     if (meal) this.currentMealEntry.meal = meal;
   }
 
-  addMeal() {
-    this.mealService.addMealEntry(this.currentMealEntry.meal.id, this.currentMealEntry.count, this.currentMealEntry.timestamp);
+  async addMeal() {
+    await this.mealService.addMealEntry(this.currentMealEntry.meal.id, this.currentMealEntry.count, this.currentMealEntry.timestamp);
     this.currentMealEntry = { meal: meals[0], count: 1, timestamp: this.today.getTime() };
   }
 
-  deleteMeal(mealId: number, timestamp: number) {
-    this.mealService.deleteMealEntry(mealId, timestamp);
+  async deleteMeal(mealId: number, timestamp: number) {
+    await this.mealService.deleteMealEntry(mealId, timestamp);
   }
 
   getEntriesOfDate(entries: MealEntry[]): MealEntry[] {

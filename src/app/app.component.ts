@@ -18,7 +18,7 @@ export class AppComponent {
   }
 
   async initializeApp() {
-    SplashScreen.hide();
+    await SplashScreen.hide();
     const isLogged = await this.authService.initialize();
 
     if (isLogged) {
