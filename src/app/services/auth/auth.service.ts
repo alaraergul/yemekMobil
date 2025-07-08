@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { API_URL, Error, User } from 'src/app/utils';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
@@ -9,6 +10,7 @@ export class AuthService {
   private user$: Promise<User | null> = Promise.resolve(null);
   public username?: string;
   public error$?: Promise<Error>;
+  private cookieService = inject(CookieService);
 
   constructor(private http: HttpClient) {}
 
@@ -35,7 +37,6 @@ export class AuthService {
           }
 
           this.user$ = Promise.resolve(response as User);
-          this.username = username;
           this.isLogged$.next(true);
           resolve(true);
         });
@@ -57,11 +58,11 @@ export class AuthService {
           return resolve(false);
         }
 
-        this.username = username;
         this.user$ = Promise.resolve(response as User);
         this.isLogged$.next(true);
-        document.cookie = `username=${username};expires=Thu, 01 Jan 2099 12:00:00 UTC`;
-        document.cookie = `password=${password};expires=Thu, 01 Jan 2099 12:00:00 UTC`;
+        this.cookieService.set("username", username);
+        this.cookieService.set("password", password);
+
         return resolve(true);
       });
     });
@@ -77,11 +78,11 @@ export class AuthService {
           return resolve(false);
         }
 
-        this.username = username;
         this.user$ = Promise.resolve(response as User);
         this.isLogged$.next(true);
-        document.cookie = `username=${username};expires=Thu, 01 Jan 2099 12:00:00 UTC`;
-        document.cookie = `password=${password};expires=Thu, 01 Jan 2099 12:00:00 UTC`;
+        this.cookieService.set("username", username);
+        this.cookieService.set("password", password);
+
         return resolve(true);
       });
     });
@@ -91,8 +92,8 @@ export class AuthService {
     this.error$ = undefined;
     this.user$ = Promise.resolve(null);
     this.isLogged$.next(false);
-    document.cookie = `username=;`;
-    document.cookie = `password=;`;
+    this.cookieService.delete("username");
+    this.cookieService.delete("password");
   }
 }
 

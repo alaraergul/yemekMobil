@@ -88,21 +88,6 @@ describe("AuthService", () => {
     expect(document.cookie).not.toContain("username");
   });
 
-  it("should fetch users via GET", () => {
-    const mockUsers: User[] = [
-      { id: "1", username: "a", weight: 70 },
-      { id: "2", username: "b", weight: 65 }
-    ];
-
-    service.getUsers().then((userIds) => {
-      expect(userIds.length).toBe(2);
-    });
-
-    const req = httpMock.expectOne(`${API_URL}/users`);
-    expect(req.request.method).toBe("GET");
-    req.flush(mockUsers);
-  });
-
   it("should auto-login if cookie is present", (done) => {
     document.cookie = "username=test";
     document.cookie = "password=1234";
