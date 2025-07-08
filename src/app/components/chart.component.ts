@@ -17,6 +17,7 @@ Chart.register(...registerables);
       <ion-card-header>
         <ion-card-title>📈 Pürin Alım Grafiği</ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
         <canvas baseChart
           [data]="chartData"
@@ -25,6 +26,7 @@ Chart.register(...registerables);
         </canvas>
       </ion-card-content>
     </ion-card>
+
     <ion-card *ngIf="!chartData?.datasets[0]?.data?.length">
       <ion-card-content>
         Bugün için gösterilecek pürin verisi yok.
@@ -41,26 +43,26 @@ export class ChartComponent implements OnChanges {
     datasets: [
       {
         data: [],
-        label: 'Pürin Alımı (mg)',
-        borderColor: 'rgba(75,192,192,1)',
-        backgroundColor: 'rgba(75,192,192,0.2)',
+        label: "Pürin Alımı (mg)",
+        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.2)",
         fill: true,
         tension: 0.3,
       },
     ],
   };
 
-  chartType: ChartType = 'line';
+  chartType: ChartType = "line";
 
-  chartOptions: ChartConfiguration<'line'>['options'] = {
+  chartOptions: ChartConfiguration<"line">["options"] = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
         labels: {
           font: { size: 13 },
-          color: '#333',
+          color: "#333",
         },
       },
       tooltip: {
@@ -85,14 +87,16 @@ export class ChartComponent implements OnChanges {
   ngOnChanges(): void {
     if (!this.data || !this.date) return;
 
-    const filtered = this.data.filter((entry) => {
-      const d = new Date(entry.timestamp);
-      return (
-        d.getDate() === this.date!.day &&
-        d.getMonth() === this.date!.month &&
-        d.getFullYear() === this.date!.year
-      );
-    });
+    const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
+    const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
+    monday.setDate(monday.getDate() - dayDiff);
+
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
+
+    const mondayAt = monday.getTime();
+    const sundayAt = sunday.getTime();
+
+    const filtered = this.data.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
 
     const labels: string[] = [];
     const values: number[] = [];
@@ -108,9 +112,9 @@ export class ChartComponent implements OnChanges {
       datasets: [
         {
           data: values,
-          label: 'Pürin Alımı (mg)',
-          borderColor: 'rgba(75,192,192,1)',
-          backgroundColor: 'rgba(75,192,192,0.2)',
+          label: "Pürin Alımı (mg)",
+          borderColor: "rgba(75,192,192,1)",
+          backgroundColor: "rgba(75,192,192,0.2)",
           fill: true,
           tension: 0.3,
         },
@@ -119,7 +123,7 @@ export class ChartComponent implements OnChanges {
   }
 
   zero(n: number): string {
-    return n < 10 ? '0' + n : '' + n;
+    return n.toString().padStart(2, "0");
   }
 }
 
