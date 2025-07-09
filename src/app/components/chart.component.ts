@@ -12,6 +12,22 @@ Chart.register(...registerables);
   selector: 'app-chart',
   standalone: true,
   imports: [CommonModule, BaseChartDirective, IonicModule],
+  styles: [`
+    ion-card-content {
+      height: 280px; 
+    }
+
+    canvas {
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    @media (min-width: 768px) {
+      ion-card-content {
+        height: 320px;
+      }
+    }
+  `],
   template: `
     <ion-card *ngIf="chartData?.datasets[0]?.data?.length">
       <ion-card-header>
@@ -106,7 +122,6 @@ export class ChartComponent implements OnChanges {
       values[day][2] += (entry.meal.kcal * entry.count);
     }
 
-    // Replace sunday and monday position
     const data = values.slice(1);
     data.push(values[0]);
 

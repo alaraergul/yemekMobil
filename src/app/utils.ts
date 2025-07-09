@@ -16,9 +16,9 @@ export interface Error {
 };
 
 export interface MealEntry {
-  meal: Meal;
-  count: number;
-  timestamp: number;
+  meal: Meal | null;
+  count: number | null; // number of servings
+  timestamp: number | null; // timestamp in milliseconds
 };
 
 export interface Meal {

@@ -16,7 +16,7 @@ export class MealService {
   }
 
   getSortedMeals(): Meal[] {
-    return meals.sort((a, b) => a.name.charCodeAt(0) - b.name.charCodeAt(0));
+    return meals.sort((a, b) => a.name.localeCompare(b.name, 'tr', {sensitivity: 'base'}));
   }
 
   async deleteMealEntry(id: number, timestamp: number): Promise<boolean> {

@@ -1,4 +1,3 @@
-
 <ion-content>
   <div *ngIf="authService.isLogged">
     <div *ngIf="(mealService.data$ | async) as data">
@@ -26,35 +25,38 @@
         </ion-card-header>
 
         <ion-card-content>
-          <ion-grid>
-            <ion-row>
-              <ion-col><strong>Yiyecek</strong></ion-col>
-              <ion-col><strong>Porsiyon</strong></ion-col>
-              <ion-col><strong>Saat</strong></ion-col>
-              <ion-col><strong>Pürin</strong></ion-col>
-              <ion-col><strong>Şeker</strong></ion-col>
-              <ion-col><strong>Kcal</strong></ion-col>
-              <ion-col><strong>Sil</strong></ion-col>
-            </ion-row>
+  <div class="table-scroll-wrapper">
+    <ion-grid>
+      <ion-row>
+        <ion-col><strong>Yiyecek</strong></ion-col>
+        <ion-col><strong>Porsiyon</strong></ion-col>
+        <ion-col><strong>Saat</strong></ion-col>
+        <ion-col><strong>Pürin</strong></ion-col>
+        <ion-col><strong>Şeker</strong></ion-col>
+        <ion-col><strong>Kcal</strong></ion-col>
+        <ion-col><strong>Sil</strong></ion-col>
+      </ion-row>
 
-            <ion-row *ngFor="let entry of dataByDate">
-              @let consumedAt = createDateFrom(entry.timestamp);
+      <ion-row *ngFor="let entry of dataByDate">
+        @let consumedAt = createDateFrom(entry.timestamp);
+        <ion-col>{{ entry.meal.name }}</ion-col>
+        <ion-col>{{ entry.count }}</ion-col>
+        <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
+        <ion-col>{{ entry.meal.purine * entry.count }} mg</ion-col>
+        <ion-col>~{{ (entry.meal.sugar * entry.count).toFixed(3) }} g</ion-col>
+        <ion-col>{{ entry.meal.kcal * entry.count }}</ion-col>
+        <ion-col><ion-icon name="trash" (click)="deleteMeal(entry.meal.id, entry.timestamp)"></ion-icon></ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-card-content>
 
-              <ion-col>{{ entry.meal.name }}</ion-col>
-              <ion-col>{{ entry.count }}</ion-col>
-              <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
-              <ion-col>{{ entry.meal.purine * entry.count }} mg</ion-col>
-              <ion-col>~{{ (entry.meal.sugar * entry.count).toFixed(3) }} g</ion-col>
-              <ion-col>{{ entry.meal.kcal * entry.count }}</ion-col>
-              <ion-col><ion-icon name="trash" (click)="deleteMeal(entry.meal.id, entry.timestamp)"></ion-icon></ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
       </ion-card>
 
       <ion-text>
         <p><strong>Günlük Toplam Pürin:</strong> {{ getTotalPurine(dataByDate) }} mg</p>
         <p><strong>Yorum:</strong> {{ getComment(getTotalPurine(dataByDate)) }}</p>
+        <br>
         <p><strong>Haftalık Pürin:</strong> {{ getWeeklyPurine(data) }} mg</p>
         <p><strong>Yorum:</strong> {{ getWeeklyComment(data) }}</p>
       </ion-text>
