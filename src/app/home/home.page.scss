@@ -171,3 +171,7 @@ ion-icon {
 ion-datetime {
   margin: 0 auto;
 }
+
+ion-item.date {
+  --ripple-color: transparent;
+}
