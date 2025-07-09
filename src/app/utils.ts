@@ -1,4 +1,4 @@
-export const API_URL = "https://demo.bussion.com/purin";
+export const API_URL = "http://192.168.42.164:8087";
 
 export type Nullable<T> = {
   [P in keyof T]: T[P] | null;

@@ -1,7 +1,7 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MealEntry } from '../utils';
-import { ChartConfiguration, ChartType, registerables } from 'chart.js';
+import { ChartConfiguration, ChartType, registerables, scales } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { IonicModule } from '@ionic/angular';;
 
@@ -77,28 +77,93 @@ export class ChartComponent implements OnChanges {
       legend: {
         position: "top",
         labels: {
-          font: { size: 13 },
-          color: "#333",
+          font: { size: 13 }
         },
       },
       tooltip: {
         callbacks: {
-          label: (context) =>
-            `${context.dataset.label}: ${context.formattedValue} mg`,
-        },
-      },
+          label: ((context) => {
+            switch (context.dataset.label) {
+              case "Şeker":
+                return `Şeker: ${(context.raw as number).toLocaleString()} g`;
+
+              case "Pürin":
+                return `Pürin: ${(context.raw as number).toLocaleString()} mg`;
+
+              case "kcal":
+                return `${(context.raw as number).toLocaleString()} kcal`;
+              
+              default:
+                return "no known data";
+            }
+          })
+        }
+      }
     },
     scales: {
       x: {
         ticks: { font: { size: 12 } },
-        grid: { display: false },
+        grid: { display: false }
       },
       y: {
         beginAtZero: true,
-        ticks: { font: { size: 12 } },
-      },
+        ticks: { font: { size: 12 } }
+      }
     },
   };
+
+  getOptionsForColor(color: string, gridColor: string) {
+    return {
+      ...this.chartOptions,
+      plugins: {
+        ...this.chartOptions.plugins,
+        legend: {
+          ...this.chartOptions.plugins.legend,
+          labels: {
+            ...this.chartOptions.plugins.legend.labels,
+            color
+          }
+        }
+      },
+      scales: {
+        ...this.chartOptions.scales,
+        x: {
+          ...this.chartOptions.scales.x,
+          ticks: {
+            ...this.chartOptions.scales.x.ticks,
+            color
+          }
+        },
+        y: {
+          ...this.chartOptions.scales.y,
+          ticks: {
+            ...this.chartOptions.scales.y.ticks,
+            color
+          },
+          grid: {
+            ...this.chartOptions.scales.y.grid,
+            color: gridColor
+          }
+        }
+      }
+    };
+  }
+
+  ngOnInit() {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      this.chartOptions = this.getOptionsForColor("#fff", "rgba(255, 255, 255, 0.6)");
+    } else {
+      this.chartOptions = this.getOptionsForColor("#333", "rgba(51, 51, 51, 0.6)");
+    }
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+      if (matches) {
+        this.chartOptions = this.getOptionsForColor("#fff", "rgba(255, 255, 255, 0.6)")
+      } else {
+        this.chartOptions = this.getOptionsForColor("#333", "rgba(51, 51, 51, 0.6)")
+      }
+    });
+  }
 
   ngOnChanges(): void {
     if (!this.data || !this.date) return;
