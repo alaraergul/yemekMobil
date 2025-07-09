@@ -30,6 +30,8 @@ export class HomePage {
     timestamp: this.today.getTime(),
   };
 
+  isGraphMode = true;
+
   constructor(private router: Router) {}
 
   addZero(n: number): string {
@@ -55,20 +57,18 @@ export class HomePage {
 
   
   async addMeal() {
+    await this.mealService.addMealEntry(
+      this.currentMealEntry.meal.id,
+      this.currentMealEntry.count,
+      this.currentMealEntry.timestamp
+    );
 
-
-await this.mealService.addMealEntry(
-    this.currentMealEntry.meal.id,
-    this.currentMealEntry.count,
-    this.currentMealEntry.timestamp
-  );
-
-  this.currentMealEntry = {
-    meal: null,
-    count: null,
-    timestamp: null,
-  };
-}
+    this.currentMealEntry = {
+      meal: null,
+      count: null,
+      timestamp: null
+    };
+  }
 
   async deleteMeal(mealId: number, timestamp: number) {
     await this.mealService.deleteMealEntry(mealId, timestamp);
@@ -97,19 +97,45 @@ await this.mealService.addMealEntry(
     return 'Çok fazla pürin alındı!';
   }
 
-  getWeeklyPurine(entries: MealEntry[]): number {
-    const now = new Date();
-    const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
-    return entries
-      .filter(e => new Date(e.timestamp) >= oneWeekAgo)
-      .reduce((sum, e) => sum + e.meal.purine * e.count, 0);
+  getWeeklyNumberData(entries: MealEntry[]) {
+    const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
+    const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
+    monday.setDate(monday.getDate() - dayDiff);
+
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
+
+    const mondayAt = monday.getTime();
+    const sundayAt = sunday.getTime();
+
+    const filtered = entries.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
+    const values: (number[])[] = Array(7).fill(0).map((_) => Array(3).fill(0));
+
+    for (const entry of filtered) {
+      const day = (new Date(entry.timestamp)).getDay();
+      values[day][0] += (entry.meal.purine * entry.count);
+      values[day][1] += (entry.meal.sugar * entry.count);
+      values[day][2] += (entry.meal.kcal * entry.count);
+    }
+
+    const data = values.slice(1);
+    data.push(values[0]);
+
+    return data;
   }
 
-  getWeeklyComment(entries: MealEntry[]): string {
-    const total = this.getWeeklyPurine(entries);
-    if (total < 2000) return 'Haftalık alım oldukça iyi.';
-    if (total < 3500) return 'Dengeli ama sınırda.';
-    return 'Haftalık alım fazla!';
+  getWeeklyPurine(entries: MealEntry[]): number {
+    const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
+    const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
+    monday.setDate(monday.getDate() - dayDiff);
+
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
+
+    const mondayAt = monday.getTime();
+    const sundayAt = sunday.getTime();
+
+    return entries
+      .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
+      .reduce((sum, e) => sum + e.meal.purine * e.count, 0);
   }
 
   async logout() {

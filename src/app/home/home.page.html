@@ -7,7 +7,21 @@
         <ion-button class="logout-button" (click)="logout()">Çıkış Yap</ion-button>
       </div>
 
-      <app-chart [data]="data" [date]="date"></app-chart>
+      <ion-item>
+        <ion-toggle [(ngModel)]="isGraphMode">Grafiği göster</ion-toggle>
+      </ion-item>
+
+      <app-chart *ngIf="isGraphMode" [data]="data" [date]="date"></app-chart>
+
+      <ion-item-group *ngIf="!isGraphMode">
+        @let weeklyData = getWeeklyNumberData(data);
+        @let names = ["Pazartesi", "Salu", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+
+        <ion-item *ngFor="let values of weeklyData; index as i">
+          <ion-label>{{ names[i] }}</ion-label>
+          <ion-label>{{ values[0] }} mg pürin</ion-label>
+        </ion-item>
+      </ion-item-group>
 
       <ion-item>
         <ion-input label="Tarih Seç" type="date"
@@ -25,32 +39,31 @@
         </ion-card-header>
 
         <ion-card-content>
-  <div class="table-scroll-wrapper">
-    <ion-grid>
-      <ion-row>
-        <ion-col><strong>Yiyecek</strong></ion-col>
-        <ion-col><strong>Porsiyon</strong></ion-col>
-        <ion-col><strong>Saat</strong></ion-col>
-        <ion-col><strong>Pürin</strong></ion-col>
-        <ion-col><strong>Şeker</strong></ion-col>
-        <ion-col><strong>Kcal</strong></ion-col>
-        <ion-col><strong>Sil</strong></ion-col>
-      </ion-row>
+          <div class="table-scroll-wrapper">
+            <ion-grid>
+              <ion-row>
+                <ion-col><strong>Yiyecek</strong></ion-col>
+                <ion-col><strong>Porsiyon</strong></ion-col>
+                <ion-col><strong>Saat</strong></ion-col>
+                <ion-col><strong>Pürin</strong></ion-col>
+                <ion-col><strong>Şeker</strong></ion-col>
+                <ion-col><strong>Kcal</strong></ion-col>
+                <ion-col><strong>Sil</strong></ion-col>
+              </ion-row>
 
-      <ion-row *ngFor="let entry of dataByDate">
-        @let consumedAt = createDateFrom(entry.timestamp);
-        <ion-col>{{ entry.meal.name }}</ion-col>
-        <ion-col>{{ entry.count }}</ion-col>
-        <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
-        <ion-col>{{ entry.meal.purine * entry.count }} mg</ion-col>
-        <ion-col>~{{ (entry.meal.sugar * entry.count).toFixed(3) }} g</ion-col>
-        <ion-col>{{ entry.meal.kcal * entry.count }}</ion-col>
-        <ion-col><ion-icon name="trash" (click)="deleteMeal(entry.meal.id, entry.timestamp)"></ion-icon></ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-</ion-card-content>
-
+              <ion-row *ngFor="let entry of dataByDate">
+                @let consumedAt = createDateFrom(entry.timestamp);
+                <ion-col>{{ entry.meal.name }}</ion-col>
+                <ion-col>{{ entry.count }}</ion-col>
+                <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
+                <ion-col>{{ entry.meal.purine * entry.count }} mg</ion-col>
+                <ion-col>~{{ (entry.meal.sugar * entry.count).toFixed(3) }} g</ion-col>
+                <ion-col>{{ entry.meal.kcal * entry.count }}</ion-col>
+                <ion-col><ion-icon name="trash" (click)="deleteMeal(entry.meal.id, entry.timestamp)"></ion-icon></ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-card-content>
       </ion-card>
 
       <ion-text>
@@ -58,7 +71,7 @@
         <p><strong>Yorum:</strong> {{ getComment(getTotalPurine(dataByDate)) }}</p>
         <br>
         <p><strong>Haftalık Pürin:</strong> {{ getWeeklyPurine(data) }} mg</p>
-        <p><strong>Yorum:</strong> {{ getWeeklyComment(data) }}</p>
+        <p><strong>Yorum:</strong> {{ getComment(getWeeklyPurine(data)) }}</p>
       </ion-text>
 
       <hr />
@@ -69,7 +82,6 @@
         <ion-datetime presentation="date-time"
           (ionChange)="onTimestampInput($event)">
           <span slot="title">Tarih Seç</span>
-          <span slot="time-label">Saat</span>
         </ion-datetime>
       </ion-item>
 
