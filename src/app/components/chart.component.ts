@@ -31,7 +31,7 @@ Chart.register(...registerables);
   template: `
     <ion-card *ngIf="chartData?.datasets[0]?.data?.length">
       <ion-card-header>
-        <ion-card-title>📈 Pürin Alım Grafiği</ion-card-title>
+        <ion-card-title>Günlük Grafik</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>

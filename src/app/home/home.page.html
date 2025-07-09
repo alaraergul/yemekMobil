@@ -1,108 +1,153 @@
 <ion-content>
   <div *ngIf="authService.isLogged">
-    <div *ngIf="(mealService.data$ | async) as data">
+    <div *ngIf="(mealService.data$ | async) as data" class="page-container">
       @let dataByDate = getEntriesOfDate(data);
 
-      <div style="text-align: right; margin-bottom: 16px;">
-        <ion-button class="logout-button" (click)="logout()">Çıkış Yap</ion-button>
+      <div class="top-bar">
+        <h1 class="page-title">Pürin Takibi</h1>
+        <ion-button fill="clear" (click)="logout()" class="logout-button">
+          <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+        </ion-button>
       </div>
 
-      <ion-item>
-        <ion-toggle [(ngModel)]="isGraphMode">Grafiği göster</ion-toggle>
-      </ion-item>
-
-      <app-chart *ngIf="isGraphMode" [data]="data" [date]="date"></app-chart>
-
-      <ion-item-group *ngIf="!isGraphMode">
-        @let weeklyData = getWeeklyNumberData(data);
-        @let names = ["Pazartesi", "Salu", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
-
-        <ion-item *ngFor="let values of weeklyData; index as i">
-          <ion-label>{{ names[i] }}</ion-label>
-          <ion-label>{{ values[0] }} mg pürin</ion-label>
+      <ion-card class="control-panel">
+        <ion-item lines="none">
+          <ion-input label="Tarih" label-placement="floating" type="date"
+            [value]="`${date.year}-${addZero(date.month + 1)}-${addZero(date.day)}`"
+            [max]="`${today.getFullYear()}-${addZero(today.getMonth() + 1)}-${addZero(today.getDate())}`"
+            (ionInput)="onDateInput($event)">
+          </ion-input>
         </ion-item>
-      </ion-item-group>
-
-      <ion-item>
-        <ion-input label="Tarih Seç" type="date"
-          [value]="`${date.year}-${addZero(date.month + 1)}-${addZero(date.day)}`"
-          [max]="`${today.getFullYear()}-${addZero(today.getMonth() + 1)}-${addZero(today.getDate())}`"
-          (ionInput)="onDateInput($event)">
-        </ion-input>
-      </ion-item>
-
-      <h3>{{ addZero(date.day) }} {{ ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][date.month] }} {{ date.year }} için alınmış pürin bilgisi</h3>
-
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Tüketilen Yiyecekler</ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content>
-          <div class="table-scroll-wrapper">
-            <ion-grid>
-              <ion-row>
-                <ion-col><strong>Yiyecek</strong></ion-col>
-                <ion-col><strong>Porsiyon</strong></ion-col>
-                <ion-col><strong>Saat</strong></ion-col>
-                <ion-col><strong>Pürin</strong></ion-col>
-                <ion-col><strong>Şeker</strong></ion-col>
-                <ion-col><strong>Kcal</strong></ion-col>
-                <ion-col><strong>Sil</strong></ion-col>
-              </ion-row>
-
-              <ion-row *ngFor="let entry of dataByDate">
-                @let consumedAt = createDateFrom(entry.timestamp);
-                <ion-col>{{ entry.meal.name }}</ion-col>
-                <ion-col>{{ entry.count }}</ion-col>
-                <ion-col>{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</ion-col>
-                <ion-col>{{ entry.meal.purine * entry.count }} mg</ion-col>
-                <ion-col>~{{ (entry.meal.sugar * entry.count).toFixed(3) }} g</ion-col>
-                <ion-col>{{ entry.meal.kcal * entry.count }}</ion-col>
-                <ion-col><ion-icon name="trash" (click)="deleteMeal(entry.meal.id, entry.timestamp)"></ion-icon></ion-col>
-              </ion-row>
-            </ion-grid>
-          </div>
-        </ion-card-content>
+        <ion-item lines="none">
+          <ion-toggle [(ngModel)]="isGraphMode" label-placement="start">Haftalık Grafik</ion-toggle>
+        </ion-item>
       </ion-card>
 
-      <ion-text>
-        <p><strong>Günlük Toplam Pürin:</strong> {{ getTotalPurine(dataByDate) }} mg</p>
-        <p><strong>Yorum:</strong> {{ getComment(getTotalPurine(dataByDate)) }}</p>
-        <br>
-        <p><strong>Haftalık Pürin:</strong> {{ getWeeklyPurine(data) }} mg</p>
-        <p><strong>Yorum:</strong> {{ getComment(getWeeklyPurine(data)) }}</p>
-      </ion-text>
+      <div class="summary-grid">
+        <ion-card class="summary-card">
+          <ion-card-header>
+            <ion-card-subtitle>Günlük Toplam Pürin</ion-card-subtitle>
+            <ion-card-title>{{ getTotalPurine(dataByDate).toFixed(0) }} mg</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>{{ getComment(getTotalPurine(dataByDate)) }}</p>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="summary-card">
+  <ion-card-header>
+    <ion-card-subtitle>Bu Haftanın Toplamı</ion-card-subtitle>
+    <ion-card-title>{{ getWeeklyPurine(data).toFixed(0) }} mg</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <p>{{ getWeeklyComment(getWeeklyPurine(data)) }}</p>
+  </ion-card-content>
+</ion-card>
 
-      <hr />
+      </div>
 
-      <h3>🍽️ Saat ve Yemek Seç!</h3>
+      <div class="conditional-content">
+        @if (isGraphMode) {
+          <app-chart [data]="data" [date]="date"></app-chart>
+        } @else {
+          @let weeklyData = getWeeklyNumberData(data);
+          @let names = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
+          <ion-card class="summary-card weekly-summary">
+            <ion-card-header>
+              <ion-card-subtitle>Haftalık Pürin Dağılımı</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="weekly-grid">
+                <div *ngFor="let values of weeklyData; index as i" class="day-item">
+                  <div class="day-name">{{ names[i] }}</div>
+                  <div class="day-value">{{ values[0].toFixed(0) }} mg</div>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+      
+      <h2 class="section-title">
+        {{ addZero(date.day) }} {{ ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][date.month] }} Raporu
+      </h2>
 
-      <ion-item class="date" detail="false">
-        <ion-datetime presentation="date-time"
-          (ionChange)="onTimestampInput($event)">
-          <span slot="title">Tarih Seç</span>
-        </ion-datetime>
-      </ion-item>
-
-      <ion-item detail="false">
-        <ion-input label="Porsiyon Seç" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min=1 required></ion-input>
-      </ion-item>
-
-      <ion-item detail="false">
-        <ion-select label="Yemek Seç" placeholder="Yemek seçin" (ionChange)="onSelectMeal($event)">
-          @let sortedMeals = mealService.getSortedMeals();
-
-          <ion-select-option *ngFor="let meal of sortedMeals" [value]="meal.id">
-            {{ meal.name }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-button expand="block" (click)="addMeal()"
-        [disabled]="!currentMealEntry.meal || currentMealEntry.count === null || !currentMealEntry.timestamp">
-        <ion-icon name="add-circle-outline"></ion-icon> Ekle
+      <ion-list lines="none" *ngIf="dataByDate.length > 0; else noData">
+  <ion-item *ngFor="let entry of dataByDate" class="meal-item">
+    @let consumedAt = createDateFrom(entry.timestamp);
+    <ion-label>
+      <h2>{{ entry.meal.name }}</h2>
+      <p>
+        {{ entry.count }} porsiyon ·
+        Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg ·
+        Kalori: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal ·
+        Şeker: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g
+      </p>
+    </ion-label>
+    <div class="item-actions">
+      <span class="meal-time">{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</span>
+      <ion-button fill="clear" size="small" class="delete-button" (click)="deleteMeal(entry.meal.id, entry.timestamp)">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
       </ion-button>
     </div>
+  </ion-item>
+</ion-list>
+
+
+      <ng-template #noData>
+        <div class="empty-state">
+          <ion-icon name="restaurant-outline"></ion-icon>
+          <p>Bu tarihte kayıtlı yemek bulunmuyor.</p>
+        </div>
+      </ng-template>
+
+    </div>
   </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="setOpen(true)">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="setOpen(false)" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Yeni Yemek Ekle</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false)">Kapat</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item class="modal-input-item">
+          <ion-datetime-button datetime="datetime"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="datetime" presentation="date-time" (ionChange)="onTimestampInput($event)"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+        
+        <ion-item class="modal-input-item">
+          <ion-input label="Porsiyon" label-placement="floating" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min="1" required></ion-input>
+        </ion-item>
+        
+        <ion-item class="modal-input-item">
+          <ion-select label="Yemek" label-placement="floating" placeholder="Yemek seçin" (ionChange)="onSelectMeal($event)">
+            @let sortedMeals = mealService.getSortedMeals();
+            <ion-select-option *ngFor="let meal of sortedMeals" [value]="meal.id">
+              {{ meal.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" (click)="addMeal()" class="ion-margin-top"
+          [disabled]="!currentMealEntry.meal || currentMealEntry.count === null || !currentMealEntry.timestamp">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Ekle
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

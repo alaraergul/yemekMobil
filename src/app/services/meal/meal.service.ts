@@ -16,7 +16,7 @@ export class MealService {
   }
 
   getSortedMeals(): Meal[] {
-    return meals.sort((a, b) => a.name.localeCompare(b.name, 'tr', {sensitivity: 'base'}));
+    return meals.sort((a, b) => a.name.localeCompare(b.name, 'tr', { sensitivity: 'base' }));
   }
 
   async deleteMealEntry(id: number, timestamp: number): Promise<boolean> {
@@ -24,17 +24,17 @@ export class MealService {
     const user = await this.authService.getUser();
 
     const data = await this.data$ as MealEntry[];
-    if (!data.some((entry) => entry.meal.id == id && entry.timestamp == timestamp)) return false;
+    if (!data.some((entry) => entry.meal.id === id && entry.timestamp === timestamp)) return false;
 
     await fetch(`${API_URL}/users/${user.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({id, timestamp})
+      body: JSON.stringify({ id, timestamp })
     });
 
-    this.data$ = Promise.resolve(data.filter((entry) => entry.meal.id != id || entry.timestamp != entry.timestamp));
+    this.data$ = Promise.resolve(data.filter((entry) => entry.meal.id !== id || entry.timestamp !== timestamp));
     return true;
   }
 
@@ -43,15 +43,16 @@ export class MealService {
     const user = await this.authService.getUser();
 
     const meals = this.getMeals();
-    if (!meals.some((meal) => meal.id == id)) return false;
+    const selectedMeal = meals.find((meal) => meal.id === id);
+    if (!selectedMeal) return false;
 
     const mealEntry: MealEntry = {
-      meal: this.getMeals().find((meal) => meal.id == id),
+      meal: selectedMeal,
       count,
       timestamp
     };
 
-    await fetch(`${API_URL}/users/${user.id}`, {
+    await fetch(`${API_URL}/users/${user.id}/meals`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +64,7 @@ export class MealService {
       })
     });
 
-    const data = await this.data$ as MealEntry[];
+    const data = await this.data$ || [];
     data.push(mealEntry);
 
     this.data$ = Promise.resolve(data);
@@ -74,16 +75,18 @@ export class MealService {
     if (!this.authService.isLogged) return false;
     const user = await this.authService.getUser();
 
-    this.http.get<({ id: number, count: number, timestamp: number })[]>(`${API_URL}/users/${user.id}`).subscribe((response) => {
+    this.http.get<({ id: number, count: number, timestamp: number })[]>(`${API_URL}/users/${user.id}/meals`).subscribe((response) => {
       const entries: MealEntry[] = [];
-      const meals = this.getMeals();
 
       for (const value of response) {
-        entries.push({
-          meal: meals.find((meal) => meal.id == value.id) as Meal,
-          count: value.count,
-          timestamp: value.timestamp
-        })
+        const matchedMeal = meals.find((meal) => meal.id === value.id);
+        if (matchedMeal) {
+          entries.push({
+            meal: matchedMeal,
+            count: value.count,
+            timestamp: value.timestamp
+          });
+        }
       }
 
       this.data$ = Promise.resolve(entries);

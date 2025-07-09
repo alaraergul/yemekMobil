@@ -1,8 +1,7 @@
-
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular'; 
 import { meals } from 'src/app/data';
 import { MealEntry } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -20,6 +19,7 @@ import { Router } from '@angular/router';
 export class HomePage {
   authService = inject(AuthService);
   mealService = inject(MealService);
+  toastController = inject(ToastController); 
 
   today = new Date();
   date = { day: this.today.getDate(), month: this.today.getMonth(), year: this.today.getFullYear() };
@@ -30,9 +30,54 @@ export class HomePage {
     timestamp: this.today.getTime(),
   };
 
-  isGraphMode = true;
+  isGraphMode = true; 
+  isModalOpen = false; 
 
   constructor(private router: Router) {}
+
+  setOpen(isOpen: boolean) {
+    this.isModalOpen = isOpen;
+    if (!isOpen) {
+      this.resetCurrentMealEntry();
+    }
+  }
+  
+  async presentToast(message: string, color: 'success' | 'danger') {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+      color: color,
+    });
+    toast.present();
+  }
+  
+  resetCurrentMealEntry() {
+    this.currentMealEntry = {
+      meal: null,
+      count: 1,
+      timestamp: new Date().getTime(),
+    };
+  }
+
+  async addMeal() {
+    if (!this.currentMealEntry.meal || !this.currentMealEntry.count || !this.currentMealEntry.timestamp) {
+        return;
+    }
+    await this.mealService.addMealEntry(
+      this.currentMealEntry.meal.id,
+      this.currentMealEntry.count,
+      this.currentMealEntry.timestamp
+    );
+
+    this.presentToast('Yemek başarıyla eklendi!', 'success'); 
+    this.setOpen(false); 
+  }
+
+  async deleteMeal(mealId: number, timestamp: number) {
+    await this.mealService.deleteMealEntry(mealId, timestamp);
+    this.presentToast('Yemek silindi.', 'danger'); 
+  }
 
   addZero(n: number): string {
     return n.toString().padStart(2, "0");
@@ -45,7 +90,7 @@ export class HomePage {
   }
 
   onTimestampInput(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
+    const input = (event.target as any).value;
     this.currentMealEntry.timestamp = new Date(input).getTime();
   }
 
@@ -55,40 +100,32 @@ export class HomePage {
     if (meal) this.currentMealEntry.meal = meal;
   }
 
-  
-  async addMeal() {
-    await this.mealService.addMealEntry(
-      this.currentMealEntry.meal.id,
-      this.currentMealEntry.count,
-      this.currentMealEntry.timestamp
-    );
-
-    this.currentMealEntry = {
-      meal: null,
-      count: null,
-      timestamp: null
-    };
-  }
-
-  async deleteMeal(mealId: number, timestamp: number) {
-    await this.mealService.deleteMealEntry(mealId, timestamp);
-  }
-
   getEntriesOfDate(entries: MealEntry[]): MealEntry[] {
-    return entries.filter((entry) => {
+  return entries
+    .filter((entry) => {
       const d = new Date(entry.timestamp);
       return d.getDate() === this.date.day &&
         d.getMonth() === this.date.month &&
         d.getFullYear() === this.date.year;
-    });
-  }
+    })
+    .map((entry) => {
+      const meal = meals.find((m) => m.id === entry.meal?.id);
+      return {
+        ...entry,
+        meal: meal || entry.meal 
+      };
+    })
+    .filter((entry) => entry.meal)
+    .sort((a, b) => b.timestamp - a.timestamp);
+}
+
 
   createDateFrom(timestamp: number): Date {
     return new Date(timestamp);
   }
 
   getTotalPurine(entries: MealEntry[]): number {
-    return entries.reduce((sum, e) => sum + (e.meal.purine * e.count), 0);
+    return entries.reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
   }
 
   getComment(purine: number): string {
@@ -97,45 +134,45 @@ export class HomePage {
     return 'Çok fazla pürin alındı!';
   }
 
+  getWeeklyComment(weeklyPurine: number): string {
+  if (weeklyPurine < 1500) return 'Harika gidiyorsun! Haftalık pürin oldukça düşük.';
+  if (weeklyPurine < 2100) return 'İyi gidiyorsun ama dikkatli olmaya devam et.';
+  return 'Bu hafta çok fazla pürin alındı! Daha dikkatli ol.';
+}
+
+
   getWeeklyNumberData(entries: MealEntry[]) {
     const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
     const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
     monday.setDate(monday.getDate() - dayDiff);
-
     const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
-
     const mondayAt = monday.getTime();
     const sundayAt = sunday.getTime();
-
     const filtered = entries.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
+    
     const values: (number[])[] = Array(7).fill(0).map((_) => Array(3).fill(0));
-
+    
     for (const entry of filtered) {
-      const day = (new Date(entry.timestamp)).getDay();
-      values[day][0] += (entry.meal.purine * entry.count);
-      values[day][1] += (entry.meal.sugar * entry.count);
-      values[day][2] += (entry.meal.kcal * entry.count);
+
+      if (entry.meal) { 
+        const day = (new Date(entry.timestamp)).getDay();
+        const index = day === 0 ? 6 : day - 1; 
+        values[index][0] += (entry.meal.purine * entry.count);
+        values[index][1] += (entry.meal.sugar * entry.count);
+        values[index][2] += (entry.meal.kcal * entry.count);
+      }
     }
-
-    const data = values.slice(1);
-    data.push(values[0]);
-
-    return data;
+    return values;
   }
 
   getWeeklyPurine(entries: MealEntry[]): number {
     const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
     const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
     monday.setDate(monday.getDate() - dayDiff);
-
     const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
-
-    const mondayAt = monday.getTime();
-    const sundayAt = sunday.getTime();
-
     return entries
       .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
-      .reduce((sum, e) => sum + e.meal.purine * e.count, 0);
+      .reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
   }
 
   async logout() {
