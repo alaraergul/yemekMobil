@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { API_URL, Error, User } from 'src/app/utils';
+import { API_URL, Error, Gender, User } from 'src/app/utils';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({ providedIn: "root" })
@@ -43,6 +43,34 @@ export class AuthService {
       } else {
         resolve(false);
       }
+    });
+  }
+
+  async getLimits() {
+    const user = await this.getUser();
+    const purineFactor = (user.gender == Gender.MALE) ? 4 : 3;
+    const kcalFactor = (user.gender == Gender.MALE) ? 30 : 25;
+    const kcalLimit = (user.kcalLimit && user.kcalLimit != -1) ? user.kcalLimit : (user.weight * kcalFactor);
+
+    return {
+      purineLimit: (user.purineLimit && user.purineLimit != -1) ? user.purineLimit : (user.weight * purineFactor + 200),
+      sugarLimit: (user.sugarLimit && user.sugarLimit != -1) ? user.sugarLimit : (kcalLimit * 0.5 / 4),
+      kcalLimit
+    };
+  }
+
+  async editUser(purineLimit?: number, sugarLimit?: number, kcalLimit?: number, gender?: Gender) {
+    const user = await this.getUser();
+    const password = this.cookieService.get("password");
+
+    return new Promise((resolve) => {
+      this.http.patch<"" | Error>(`${API_URL}/users`, { purineLimit, sugarLimit, kcalLimit, gender, username: user.username, password }).subscribe((response) => {
+        if ((response as Error).code) {
+          return resolve(false);
+        }
+
+        return resolve(true);
+      });
     });
   }
 

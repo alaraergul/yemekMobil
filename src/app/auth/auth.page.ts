@@ -70,6 +70,7 @@ export class AuthPage {
     }
 
     const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight);
+
     if (success) {
       this.showToast('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');
       this.activeTab = Tabs.LOGIN;

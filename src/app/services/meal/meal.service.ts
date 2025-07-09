@@ -26,7 +26,7 @@ export class MealService {
     const data = await this.data$ as MealEntry[];
     if (!data.some((entry) => entry.meal.id === id && entry.timestamp === timestamp)) return false;
 
-    await fetch(`${API_URL}/users/${user.id}`, {
+    await fetch(`${API_URL}/users/${user.id}/meals`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

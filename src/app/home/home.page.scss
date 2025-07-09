@@ -102,21 +102,25 @@ ion-content {
 .weekly-summary {
   .weekly-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(150px, 1fr));
     gap: 8px;
     text-align: center;
     color: white;
+    overflow-x: auto;
   }
+
   .day-item {
     background: rgba(0,0,0,0.1);
     padding: 8px 4px;
     border-radius: 8px;
   }
+
   .day-name {
     font-size: 12px;
     font-weight: 500;
     opacity: 0.8;
   }
+
   .day-value {
     font-size: 13px;
     font-weight: 600;

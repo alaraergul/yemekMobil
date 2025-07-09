@@ -4,10 +4,19 @@ export type Nullable<T> = {
   [P in keyof T]: T[P] | null;
 };
 
+export enum Gender {
+  MALE,
+  FEMALE
+}
+
 export interface User {
   id: string;
   username?: string;
-  weight: number;
+  weight?: number;
+  sugarLimit?: number;
+  purineLimit?: number;
+  kcalLimit?: number;
+  gender?: Gender;
 };
 
 export interface Error {
