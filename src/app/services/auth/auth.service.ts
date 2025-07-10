@@ -19,7 +19,7 @@ export class AuthService {
 
   public onLogin(fn: (value: boolean) => any) {
     this.isLogged$.subscribe((value) => {
-      fn(value);
+      if (value) fn(value);
     });
   }
 
@@ -65,13 +65,11 @@ export class AuthService {
     const username = this.cookieService.get("username");
     const password = this.cookieService.get("password");
 
-    const genderAsString = gender !== null && gender !== undefined ? Gender[gender] : undefined;
-    
     const updates = { 
       purineLimit, 
       sugarLimit, 
       kcalLimit, 
-      gender: genderAsString,
+      gender,
       weight, 
       username, 
       password 
@@ -95,13 +93,13 @@ export class AuthService {
     });
   }
 
-  register(username: string, password: string, weight: number): Promise<boolean> {
+  register(username: string, password: string, weight: number, gender: Gender): Promise<boolean> {
     this.error$ = undefined;
 
     return new Promise((resolve) => {
       if (!username || !password || !weight) return resolve(false);
 
-      this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight }).subscribe(response => {
+      this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight, gender }).subscribe(response => {
         if (response && (response as Error).code) {
           this.error$ = Promise.resolve(response as Error);
           return resolve(false);

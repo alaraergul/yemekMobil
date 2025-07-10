@@ -4,6 +4,7 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { Gender } from '../utils';
 
 enum Tabs {
   LOGIN,
@@ -24,6 +25,8 @@ enum Tabs {
 })
 export class AuthPage {
   Tabs = Tabs;
+  Gender = Gender;
+
   activeTab = Tabs.LOGIN;
 
   username = '';
@@ -31,6 +34,7 @@ export class AuthPage {
   regUsername = '';
   regPassword = '';
   regWeight: number | null = null;
+  regGender: Gender;
 
   constructor(
     public authService: AuthService,
@@ -54,6 +58,7 @@ export class AuthPage {
 
   async login() {
     const success = await this.authService.login(this.username, this.password);
+
     if (success) {
       this.showToast('Giriş başarılı!', 'success');
     } else {
@@ -62,7 +67,7 @@ export class AuthPage {
   }
 
   async register() {
-    if (!this.regUsername || !this.regPassword || this.regWeight === null) {
+    if (!this.regUsername || !this.regPassword || this.regWeight === null || !this.regGender) {
       this.showToast('Lütfen tüm alanları doldurunuz.', 'warning');
       return;
     }
@@ -72,7 +77,7 @@ export class AuthPage {
       return;
     }
 
-    const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight);
+    const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight, this.regGender);
 
     if (success) {
       this.showToast('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');

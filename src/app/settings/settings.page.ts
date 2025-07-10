@@ -43,7 +43,6 @@ export class SettingsPage implements OnInit {
 
   async saveSettings() {
     try {
-
       await this.authService.editUser(
         this.purineLimit ?? null,
         this.sugarLimit ?? null,
@@ -62,6 +61,7 @@ export class SettingsPage implements OnInit {
 
     } catch (error) {
       console.error("Ayarlar kaydedilirken hata oluştu:", error);
+
       const toast = await this.toastController.create({
         message: "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
         duration: 3000,

@@ -38,6 +38,14 @@
           <ion-input type="number" placeholder="Kilonuz (kg)" [(ngModel)]="regWeight" name="regWeight" required></ion-input>
         </ion-item>
 
+        <ion-item class="input-item">
+          <ion-icon name="woman-outline" slot="start"></ion-icon>
+          <ion-select label="Cinsiyet" [(ngModel)]="regGender" name="regGender">
+            <ion-select-option [value]="Gender.MALE">Erkek</ion-select-option>
+            <ion-select-option [value]="Gender.FEMALE">Kadın</ion-select-option>
+          </ion-select>
+        </ion-item>
+
         <ion-button expand="block" type="submit" class="submit-btn">Kayıt Ol</ion-button>
       </form>
     </div>
