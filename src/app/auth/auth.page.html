@@ -1,20 +1,20 @@
-<ion-content fullscreen>
+<ion-content [fullscreen]="true">
   <div class="auth-wrapper">
     <div class="auth-card">
-      <h1 class="logo"> Hoş Geldiniz!</h1>
+      <h1 class="logo">Hoş Geldiniz!</h1>
 
       <div class="tab-buttons">
         <button [class.active]="activeTab === Tabs.LOGIN" (click)="activeTab = Tabs.LOGIN">Giriş Yap</button>
         <button [class.active]="activeTab === Tabs.REGISTER" (click)="activeTab = Tabs.REGISTER">Kayıt Ol</button>
       </div>
 
-      <form *ngIf="activeTab === Tabs.LOGIN" (submit)="login(); $event.preventDefault()">
-        <ion-item>
+      <form *ngIf="activeTab === Tabs.LOGIN" (submit)="login(); $event.preventDefault()" class="auth-form">
+        <ion-item class="input-item">
           <ion-icon name="person-outline" slot="start"></ion-icon>
           <ion-input placeholder="Kullanıcı Adı" [(ngModel)]="username" name="username" required></ion-input>
         </ion-item>
 
-        <ion-item>
+        <ion-item class="input-item">
           <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
           <ion-input type="password" placeholder="Şifre" [(ngModel)]="password" name="password" required></ion-input>
         </ion-item>
@@ -22,18 +22,18 @@
         <ion-button expand="block" type="submit" class="submit-btn">Giriş Yap</ion-button>
       </form>
 
-      <form *ngIf="activeTab === Tabs.REGISTER" (submit)="register(); $event.preventDefault()">
-        <ion-item>
+      <form *ngIf="activeTab === Tabs.REGISTER" (submit)="register(); $event.preventDefault()" class="auth-form">
+        <ion-item class="input-item">
           <ion-icon name="person-add-outline" slot="start"></ion-icon>
           <ion-input placeholder="Yeni Kullanıcı Adı" [(ngModel)]="regUsername" name="regUsername" required></ion-input>
         </ion-item>
 
-        <ion-item>
+        <ion-item class="input-item">
           <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
           <ion-input type="password" placeholder="Yeni Şifre" [(ngModel)]="regPassword" name="regPassword" required></ion-input>
         </ion-item>
 
-        <ion-item>
+        <ion-item class="input-item">
           <ion-icon name="fitness-outline" slot="start"></ion-icon>
           <ion-input type="number" placeholder="Kilonuz (kg)" [(ngModel)]="regWeight" name="regWeight" required></ion-input>
         </ion-item>

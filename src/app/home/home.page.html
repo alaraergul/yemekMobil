@@ -39,7 +39,6 @@
             <ion-card-subtitle>Bu Haftanın Toplamı</ion-card-subtitle>
             <ion-card-title>{{ getWeeklyPurine(data).toFixed(0) }} mg</ion-card-title>
           </ion-card-header>
-
           <ion-card-content>
             <p>{{ getWeeklyComment(getWeeklyPurine(data)) }}</p>
           </ion-card-content>
@@ -56,7 +55,6 @@
             <ion-card-header>
               <ion-card-subtitle>Haftalık Pürin Dağılımı</ion-card-subtitle>
             </ion-card-header>
-
             <ion-card-content>
               <div class="weekly-grid">
                 <div *ngFor="let values of weeklyData; index as i" class="day-item">
@@ -70,7 +68,7 @@
           </ion-card>
         }
       </div>
-      
+
       <h2 class="section-title">
         {{ addZero(date.day) }} {{ ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][date.month] }} Raporu
       </h2>
@@ -102,7 +100,6 @@
           <p>Bu tarihte kayıtlı yemek bulunmuyor.</p>
         </div>
       </ng-template>
-
     </div>
   </div>
 
@@ -113,44 +110,47 @@
   </ion-fab>
 
   <ion-modal [isOpen]="isModalOpen" (didDismiss)="setOpen(false)" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Yeni Yemek Ekle</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="setOpen(false)">Kapat</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <ion-item class="modal-input-item">
-          <ion-datetime-button datetime="datetime"></ion-datetime-button>
-          <ion-modal [keepContentsMounted]="true">
-            <ng-template>
-              <ion-datetime id="datetime" presentation="date-time" (ionChange)="onTimestampInput($event)"></ion-datetime>
-            </ng-template>
-          </ion-modal>
-        </ion-item>
-        
-        <ion-item class="modal-input-item">
-          <ion-input label="Porsiyon" label-placement="floating" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min="1" required></ion-input>
-        </ion-item>
-        
-        <ion-item class="modal-input-item">
-          <ion-select label="Yemek" label-placement="floating" placeholder="Yemek seçin" (ionChange)="onSelectMeal($event)">
-            @let sortedMeals = mealService.getSortedMeals();
-            <ion-select-option *ngFor="let meal of sortedMeals" [value]="meal.id">
-              {{ meal.name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Yeni Yemek Ekle</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setOpen(false)">Kapat</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      
+      <ion-item class="modal-input-item">
+        <ion-select label="Kategori" placeholder="Kategori Seçin" (ionChange)="onCategoryChange($event)">
+          <ion-select-option *ngFor="let group of categorizedMeals" [value]="group.category">
+            {{ group.category }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
 
-        <ion-button expand="block" (click)="addMeal()" class="ion-margin-top"
-          [disabled]="!currentMealEntry.meal || currentMealEntry.count === null || !currentMealEntry.timestamp">
-          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-          Ekle
-        </ion-button>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+      <ion-item class="modal-input-item" *ngIf="filteredMeals.length > 0">
+        <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)">
+          <ion-select-option *ngFor="let meal of filteredMeals" [value]="meal.id">
+            {{ meal.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item class="modal-input-item">
+        <ion-input label="Porsiyon" label-placement="floating" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min="1" required></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" (click)="addMeal()" class="ion-margin-top"
+        [disabled]="!currentMealEntry.meal || currentMealEntry.count === null || !currentMealEntry.timestamp">
+        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+        Ekle
+      </ion-button>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+
 </ion-content>

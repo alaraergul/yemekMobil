@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User, Gender } from 'src/app/utils'; 
+
 @Component({
   selector: 'app-settings', 
   standalone: true,
@@ -16,23 +17,27 @@ export class SettingsPage implements OnInit {
   toastController = inject(ToastController);
   navCtrl = inject(NavController);
 
-  gender: 'male' | 'female' | 'other' | undefined;
-  weight: number | null = null;
-  purineLimit: number | null = null;
-  sugarLimit: number | null = null;
-  kcalLimit: number | null = null;
+  Gender = Gender;
+  gender: Gender;
+  weight: number = 0;
+  purineLimit?: number;
+  sugarLimit?: number;
+  kcalLimit?: number;
 
   constructor() {}
 
   async ngOnInit() {
-    const user = await this.authService.getUser();
-    if (user) {
-      this.gender = user.gender as unknown as 'male' | 'female' | 'other';
-      this.weight = user.weight;
-      this.purineLimit = user.purineLimit;
-      this.sugarLimit = user.sugarLimit;
-      this.kcalLimit = user.kcalLimit;
-    }
+    this.authService.onLogin(async () => {
+      const user = await this.authService.getUser();
+
+      if (user) {
+        this.gender = user.gender;
+        this.weight = user.weight;
+        this.purineLimit = user.purineLimit;
+        this.sugarLimit = user.sugarLimit;
+        this.kcalLimit = user.kcalLimit;
+      }
+    });
   }
 
   async saveSettings() {
@@ -54,14 +59,14 @@ export class SettingsPage implements OnInit {
       this.purineLimit ?? undefined,
       this.sugarLimit ?? undefined,
       this.kcalLimit ?? undefined,
-      this.gender as unknown as Gender
+      this.gender
     );
     
     const toast = await this.toastController.create({
-      message: 'Ayarların kaydedildi!',
+      message: "Ayarların kaydedildi!",
       duration: 2000,
-      position: 'top',
-      color: 'success'
+      position: "top",
+      color: "success"
     });
     toast.present();
     

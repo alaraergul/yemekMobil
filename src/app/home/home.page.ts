@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController } from '@ionic/angular'; 
+import { IonicModule, ToastController } from '@ionic/angular';
 import { meals } from 'src/app/data';
-import { MealEntry } from 'src/app/utils';
+import { MealEntry, Meal } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MealService } from 'src/app/services/meal/meal.service';
 import { ChartComponent } from 'src/app/components/chart.component';
@@ -19,74 +19,100 @@ import { Router } from '@angular/router';
 export class HomePage {
   authService = inject(AuthService);
   mealService = inject(MealService);
-  toastController = inject(ToastController); 
+  toastController = inject(ToastController);
+  router = inject(Router);
 
   today = new Date();
-  date = { day: this.today.getDate(), month: this.today.getMonth(), year: this.today.getFullYear() };
+  date = {
+    day: this.today.getDate(),
+    month: this.today.getMonth(),
+    year: this.today.getFullYear()
+  };
 
   currentMealEntry: MealEntry = {
     meal: null,
     count: 1,
-    timestamp: this.today.getTime(),
+    timestamp: this.today.getTime()
   };
 
-  isGraphMode = true; 
-  isModalOpen = false; 
+  isGraphMode = true;
+  isModalOpen = false;
 
-  constructor(private router: Router) {}
+  selectedCategory: string | null = null;
+  filteredMeals: Meal[] = [];
+
+  categorizedMeals = this.getCategorizedMeals();
+
+  getCategorizedMeals() {
+    const map: { [key: string]: Meal[] } = {};
+    for (const meal of meals) {
+      if (!map[meal.category]) map[meal.category] = [];
+      map[meal.category].push(meal);
+    }
+    return Object.entries(map).map(([category, meals]) => ({ category, meals }));
+  }
+
+  onCategoryChange(event: any) {
+    const category = event.detail.value;
+    this.selectedCategory = category;
+    this.filteredMeals = this.categorizedMeals.find(c => c.category === category)?.meals || [];
+  }
 
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
-    if (!isOpen) {
-      this.resetCurrentMealEntry();
-    }
+    if (!isOpen) this.resetCurrentMealEntry();
   }
-  
-  async presentToast(message: string, color: 'success' | 'danger') {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 2000,
-      position: 'top',
-      color: color,
-    });
-    toast.present();
-  }
-  
+
   resetCurrentMealEntry() {
     this.currentMealEntry = {
       meal: null,
       count: 1,
-      timestamp: new Date().getTime(),
+      timestamp: new Date().getTime()
     };
+    this.selectedCategory = null;
+    this.filteredMeals = [];
+  }
+
+  async presentToast(message: string, color: 'success' | 'danger') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'top',
+      color
+    });
+    toast.present();
   }
 
   async addMeal() {
-    if (!this.currentMealEntry.meal || !this.currentMealEntry.count || !this.currentMealEntry.timestamp) {
-        return;
-    }
+    if (!this.currentMealEntry.meal || !this.currentMealEntry.count || !this.currentMealEntry.timestamp) return;
+
     await this.mealService.addMealEntry(
       this.currentMealEntry.meal.id,
       this.currentMealEntry.count,
       this.currentMealEntry.timestamp
     );
 
-    this.presentToast('Yemek başarıyla eklendi!', 'success'); 
-    this.setOpen(false); 
+    this.presentToast('Yemek başarıyla eklendi!', 'success');
+    this.setOpen(false);
   }
 
   async deleteMeal(mealId: number, timestamp: number) {
     await this.mealService.deleteMealEntry(mealId, timestamp);
-    this.presentToast('Yemek silindi.', 'danger'); 
+    this.presentToast('Yemek silindi.', 'danger');
   }
 
   addZero(n: number): string {
-    return n.toString().padStart(2, "0");
+    return n.toString().padStart(2, '0');
   }
 
   onDateInput(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     const date = new Date(input);
-    this.date = { day: date.getDate(), month: date.getMonth(), year: date.getFullYear() };
+    this.date = {
+      day: date.getDate(),
+      month: date.getMonth(),
+      year: date.getFullYear()
+    };
   }
 
   onTimestampInput(event: Event) {
@@ -94,31 +120,32 @@ export class HomePage {
     this.currentMealEntry.timestamp = new Date(input).getTime();
   }
 
-  onSelectMeal(event: Event) {
-    const mealId = +(event.target as HTMLSelectElement).value;
+  onSelectMeal(event: any) {
+    const mealId = event.detail.value;
     const meal = meals.find((m) => m.id === mealId);
     if (meal) this.currentMealEntry.meal = meal;
   }
 
   getEntriesOfDate(entries: MealEntry[]): MealEntry[] {
-  return entries
-    .filter((entry) => {
-      const d = new Date(entry.timestamp);
-      return d.getDate() === this.date.day &&
-        d.getMonth() === this.date.month &&
-        d.getFullYear() === this.date.year;
-    })
-    .map((entry) => {
-      const meal = meals.find((m) => m.id === entry.meal?.id);
-      return {
-        ...entry,
-        meal: meal || entry.meal 
-      };
-    })
-    .filter((entry) => entry.meal)
-    .sort((a, b) => b.timestamp - a.timestamp);
-}
-
+    return entries
+      .filter((entry) => {
+        const d = new Date(entry.timestamp);
+        return (
+          d.getDate() === this.date.day &&
+          d.getMonth() === this.date.month &&
+          d.getFullYear() === this.date.year
+        );
+      })
+      .map((entry) => {
+        const meal = meals.find((m) => m.id === entry.meal?.id);
+        return {
+          ...entry,
+          meal: meal || entry.meal
+        };
+      })
+      .filter((entry) => entry.meal)
+      .sort((a, b) => b.timestamp - a.timestamp);
+  }
 
   createDateFrom(timestamp: number): Date {
     return new Date(timestamp);
@@ -135,11 +162,10 @@ export class HomePage {
   }
 
   getWeeklyComment(weeklyPurine: number): string {
-  if (weeklyPurine < 1500) return 'Harika gidiyorsun! Haftalık pürin oldukça düşük.';
-  if (weeklyPurine < 2100) return 'İyi gidiyorsun ama dikkatli olmaya devam et.';
-  return 'Bu hafta çok fazla pürin alındı! Daha dikkatli ol.';
-}
-
+    if (weeklyPurine < 1500) return 'Harika gidiyorsun! Haftalık pürin oldukça düşük.';
+    if (weeklyPurine < 2100) return 'İyi gidiyorsun ama dikkatli olmaya devam et.';
+    return 'Bu hafta çok fazla pürin alındı! Daha dikkatli ol.';
+  }
 
   getWeeklyNumberData(entries: MealEntry[]) {
     const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
@@ -149,14 +175,13 @@ export class HomePage {
     const mondayAt = monday.getTime();
     const sundayAt = sunday.getTime();
     const filtered = entries.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
-    
-    const values: (number[])[] = Array(7).fill(0).map((_) => Array(3).fill(0));
-    
-    for (const entry of filtered) {
 
-      if (entry.meal) { 
+    const values: number[][] = Array(7).fill(0).map(() => Array(3).fill(0));
+
+    for (const entry of filtered) {
+      if (entry.meal) {
         const day = (new Date(entry.timestamp)).getDay();
-        const index = day === 0 ? 6 : day - 1; 
+        const index = day === 0 ? 6 : day - 1;
         values[index][0] += (entry.meal.purine * entry.count);
         values[index][1] += (entry.meal.sugar * entry.count);
         values[index][2] += (entry.meal.kcal * entry.count);

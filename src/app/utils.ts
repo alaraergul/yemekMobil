@@ -1,4 +1,4 @@
-export const API_URL = "http://demo.bussion.com/purin";
+export const API_URL = "https://demo.bussion.com/purin";
 
 export type Nullable<T> = {
   [P in keyof T]: T[P] | null;
@@ -37,4 +37,5 @@ export interface Meal {
   quantity: number; // g
   kcal: number;
   sugar: number; // g
+  category: string;
 }
