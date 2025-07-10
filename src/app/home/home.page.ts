@@ -35,6 +35,9 @@ export class HomePage {
     timestamp: this.today.getTime()
   };
 
+  currentDateString = this.toInputDate(this.today);
+  currentTimeString = this.toInputTime(this.today);
+
   isGraphMode = true;
   isModalOpen = false;
 
@@ -42,6 +45,19 @@ export class HomePage {
   filteredMeals: Meal[] = [];
 
   categorizedMeals = this.getCategorizedMeals();
+
+  
+  onMainDateChange(event: any) {
+    const selectedDateString = event.detail.value; 
+    if (!selectedDateString) return;
+
+    const parts = selectedDateString.split('-');
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; 
+    const day = parseInt(parts[2], 10);
+
+    this.date = { day, month, year };
+  }
 
   getCategorizedMeals() {
     const map: { [key: string]: Meal[] } = {};
@@ -64,13 +80,39 @@ export class HomePage {
   }
 
   resetCurrentMealEntry() {
+    const now = new Date();
     this.currentMealEntry = {
       meal: null,
       count: 1,
-      timestamp: new Date().getTime()
+      timestamp: now.getTime()
     };
+    this.currentDateString = this.toInputDate(now);
+    this.currentTimeString = this.toInputTime(now);
     this.selectedCategory = null;
     this.filteredMeals = [];
+  }
+
+  onDateChange(event: any) {
+    this.currentDateString = event.detail.value;
+    this.updateTimestampFromInputs();
+  }
+
+  onTimeChange(event: any) {
+    this.currentTimeString = event.detail.value;
+    this.updateTimestampFromInputs();
+  }
+
+  updateTimestampFromInputs() {
+    const fullString = `${this.currentDateString}T${this.currentTimeString}`;
+    this.currentMealEntry.timestamp = new Date(fullString).getTime();
+  }
+
+  toInputDate(date: Date): string {
+    return `${date.getFullYear()}-${this.addZero(date.getMonth() + 1)}-${this.addZero(date.getDate())}`;
+  }
+
+  toInputTime(date: Date): string {
+    return `${this.addZero(date.getHours())}:${this.addZero(date.getMinutes())}`;
   }
 
   async presentToast(message: string, color: 'success' | 'danger') {
@@ -103,21 +145,6 @@ export class HomePage {
 
   addZero(n: number): string {
     return n.toString().padStart(2, '0');
-  }
-
-  onDateInput(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    const date = new Date(input);
-    this.date = {
-      day: date.getDate(),
-      month: date.getMonth(),
-      year: date.getFullYear()
-    };
-  }
-
-  onTimestampInput(event: Event) {
-    const input = (event.target as any).value;
-    this.currentMealEntry.timestamp = new Date(input).getTime();
   }
 
   onSelectMeal(event: any) {

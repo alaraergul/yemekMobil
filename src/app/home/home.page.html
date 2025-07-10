@@ -15,7 +15,7 @@
           <ion-input label="Tarih" label-placement="floating" type="date"
             [value]="`${date.year}-${addZero(date.month + 1)}-${addZero(date.day)}`"
             [max]="`${today.getFullYear()}-${addZero(today.getMonth() + 1)}-${addZero(today.getDate())}`"
-            (ionInput)="onDateInput($event)">
+            (ionChange)="onMainDateChange($event)">
           </ion-input>
         </ion-item>
         <ion-item lines="none">
@@ -103,54 +103,83 @@
     </div>
   </div>
 
+
+
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button (click)="setOpen(true)">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
+
+
+
   <ion-modal [isOpen]="isModalOpen" (didDismiss)="setOpen(false)" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Yeni Yemek Ekle</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Kapat</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      
-      <ion-item class="modal-input-item">
-        <ion-select label="Kategori" placeholder="Kategori Seçin" (ionChange)="onCategoryChange($event)">
-          <ion-select-option *ngFor="let group of categorizedMeals" [value]="group.category">
-            {{ group.category }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Yeni Yemek Ekle</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false)">Kapat</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
 
-      <ion-item class="modal-input-item" *ngIf="filteredMeals.length > 0">
-        <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)">
-          <ion-select-option *ngFor="let meal of filteredMeals" [value]="meal.id">
-            {{ meal.name }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
+      <ion-content class="ion-padding">
 
-      <ion-item class="modal-input-item">
-        <ion-input label="Porsiyon" label-placement="floating" inputmode="numeric" type="number" [(ngModel)]="currentMealEntry.count" min="1" required></ion-input>
-      </ion-item>
+        <ion-item>
+          <ion-select label="Kategori" placeholder="Kategori Seçin" (ionChange)="onCategoryChange($event)">
+            <ion-select-option *ngFor="let group of categorizedMeals" [value]="group.category">
+              {{ group.category }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
 
-      <ion-button expand="block" (click)="addMeal()" class="ion-margin-top"
-        [disabled]="!currentMealEntry.meal || currentMealEntry.count === null || !currentMealEntry.timestamp">
-        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-        Ekle
-      </ion-button>
+        <ion-item *ngIf="filteredMeals.length > 0">
+          <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)">
+            <ion-select-option *ngFor="let meal of filteredMeals" [value]="meal.id">
+              {{ meal.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
 
-    </ion-content>
-  </ng-template>
-</ion-modal>
+        <ion-item>
+          <ion-input
+            label="Porsiyon"
+            label-placement="floating"
+            type="number"
+            inputmode="numeric"
+            [(ngModel)]="currentMealEntry.count"
+            min="1">
+          </ion-input>
+        </ion-item>
 
+        <ion-item>
+          <ion-input
+            label="Tarih"
+            label-placement="floating"
+            type="date"
+            [value]="currentDateString"
+            (ionChange)="onDateChange($event)">
+          </ion-input>
+        </ion-item>
 
+        <ion-item>
+          <ion-input
+            label="Saat"
+            label-placement="floating"
+            type="time"
+            [value]="currentTimeString"
+            (ionChange)="onTimeChange($event)">
+          </ion-input>
+        </ion-item>
 
+        <ion-button expand="block" (click)="addMeal()" class="ion-margin-top"
+          [disabled]="!currentMealEntry.meal || currentMealEntry.count === null || !currentMealEntry.timestamp">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Ekle
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
