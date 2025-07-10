@@ -48,8 +48,9 @@ export class AuthService {
 
   async getLimits() {
     const user = await this.getUser();
-    const purineFactor = (user.gender == Gender.MALE) ? 4 : 3;
-    const kcalFactor = (user.gender == Gender.MALE) ? 30 : 25;
+    const genderEnum = typeof user.gender === "string" ? Gender[user.gender as keyof typeof Gender] : user.gender;
+    const purineFactor = (genderEnum === Gender.MALE) ? 4 : 3;
+    const kcalFactor = (genderEnum === Gender.MALE) ? 30 : 25;
     const kcalLimit = (user.kcalLimit && user.kcalLimit != -1) ? user.kcalLimit : (user.weight * kcalFactor);
 
     return {

@@ -1,13 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular'; 
+import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Router } from '@angular/router';
-import { Gender } from '../utils';
-
+import { User, Gender } from 'src/app/utils'; 
 @Component({
-  selector: 'app-tab2',
+  selector: 'app-settings', 
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule],
   templateUrl: './settings.page.html',
@@ -15,22 +13,57 @@ import { Gender } from '../utils';
 })
 export class SettingsPage implements OnInit {
   authService = inject(AuthService);
-  public purineLimit?: number;
-  public sugarLimit?: number;
-  public kcalLimit?: number;
-  public weight: Gender = 0;
-  public gender?: Gender;
+  toastController = inject(ToastController);
+  navCtrl = inject(NavController);
 
-  Gender = Gender;
+  gender: 'male' | 'female' | 'other' | undefined;
+  weight: number | null = null;
+  purineLimit: number | null = null;
+  sugarLimit: number | null = null;
+  kcalLimit: number | null = null;
 
-  constructor(private router: Router) {}
+  constructor() {}
 
   async ngOnInit() {
     const user = await this.authService.getUser();
-    user.weight = user.weight;
+    if (user) {
+      this.gender = user.gender as unknown as 'male' | 'female' | 'other';
+      this.weight = user.weight;
+      this.purineLimit = user.purineLimit;
+      this.sugarLimit = user.sugarLimit;
+      this.kcalLimit = user.kcalLimit;
+    }
   }
 
-  async setUserSettings() {
-    await this.authService.editUser(this.purineLimit, this.sugarLimit, this.kcalLimit, this.gender)
+  async saveSettings() {
+    const settingsToUpdate: Partial<User> = {
+      gender: this.gender,
+      weight: this.weight,
+      ...(this.purineLimit !== null || this.sugarLimit !== null || this.kcalLimit !== null
+        ? {
+            limits: {
+              purine: this.purineLimit ?? undefined,
+              sugar: this.sugarLimit ?? undefined,
+              kcal: this.kcalLimit ?? undefined
+            }
+          }
+        : {})
+    };
+    
+    await this.authService.editUser(
+      this.purineLimit ?? undefined,
+      this.sugarLimit ?? undefined,
+      this.kcalLimit ?? undefined,
+      this.gender as unknown as Gender
+    );
+    
+    const toast = await this.toastController.create({
+      message: 'Ayarların kaydedildi!',
+      duration: 2000,
+      position: 'top',
+      color: 'success'
+    });
+    toast.present();
+    
   }
 }
