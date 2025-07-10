@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true" class="ion-padding" *ngIf="authService.isLogged">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Ayarlar</ion-title>
@@ -19,11 +19,12 @@
   <ion-list-header>
     <ion-label>Kişisel Bilgiler</ion-label>
   </ion-list-header>
+
   <ion-list [inset]="true">
     <ion-item>
       <ion-select label="Cinsiyet" [(ngModel)]="gender">
-        <ion-select-option value="male">Erkek</ion-select-option>
-        <ion-select-option value="female">Kadın</ion-select-option>
+        <ion-select-option [value]="Gender.MALE">Erkek</ion-select-option>
+        <ion-select-option [value]="Gender.FEMALE">Kadın</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
@@ -38,9 +39,11 @@
     <ion-item>
       <ion-input label="Pürin Limiti (mg)" labelPlacement="floating" type="number" [(ngModel)]="purineLimit"></ion-input>
     </ion-item>
+
     <ion-item>
       <ion-input label="Kalori Limiti (kcal)" labelPlacement="floating" type="number" [(ngModel)]="kcalLimit"></ion-input>
     </ion-item>
+
     <ion-item>
       <ion-input label="Şeker Limiti (g)" labelPlacement="floating" type="number" [(ngModel)]="sugarLimit"></ion-input>
     </ion-item>

@@ -6,9 +6,8 @@ import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
-  private isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private user$: Promise<User | null> = Promise.resolve(null);
-  public username?: string;
   public error$?: Promise<Error>;
   private cookieService = inject(CookieService);
 
@@ -18,6 +17,12 @@ export class AuthService {
     return this.isLogged$.getValue();
   }
 
+  public onLogin(fn: (value: boolean) => any) {
+    this.isLogged$.subscribe((value) => {
+      fn(value);
+    });
+  }
+
   async getUser() {
     return await this.user$;
   }
@@ -25,8 +30,8 @@ export class AuthService {
   async initialize() {
     return new Promise((resolve) => {
       if (typeof document !== "undefined" && document.cookie) {
-        const username = document.cookie.split("username=")[1]?.split(";")[0];
-        const password = document.cookie.split("password=")[1]?.split(";")[0];
+        const username = this.cookieService.get("username");
+        const password = this.cookieService.get("password");
 
         if (!username || !password) return resolve(false);
 
@@ -62,10 +67,11 @@ export class AuthService {
 
   async editUser(purineLimit?: number, sugarLimit?: number, kcalLimit?: number, gender?: Gender) {
     const user = await this.getUser();
+    const username = this.cookieService.get("username");
     const password = this.cookieService.get("password");
 
     return new Promise((resolve) => {
-      this.http.patch<"" | Error>(`${API_URL}/users`, { purineLimit, sugarLimit, kcalLimit, gender, username: user.username, password }).subscribe((response) => {
+      this.http.patch<"" | Error>(`${API_URL}/users/${user.id}`, { purineLimit, sugarLimit, kcalLimit, gender, username, password }).subscribe((response) => {
         if ((response as Error).code) {
           return resolve(false);
         }
