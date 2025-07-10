@@ -25,7 +25,6 @@ ion-header.ios ion-toolbar:last-of-type {
 }
 
 ion-list-header {
-
   font-size: 20px;
   font-weight: 700;
   color: white;
@@ -33,7 +32,10 @@ ion-list-header {
   margin-top: 24px;
   margin-bottom: 8px;
   padding-left: 8px;
+}
 
+ion-list {
+  background: white;
 }
 
 
@@ -94,6 +96,7 @@ ion-item {
   --padding-start: 16px;
   --inner-padding-end: 16px;
   --border-color: rgba(255, 255, 255, 0.2);
+  --ripple-color: transparent;
   border-radius: 12 px;
   margin-bottom: 8px;
 
@@ -111,12 +114,14 @@ ion-item {
 
   ion-input,
   ion-select {
+    --background: white;
+    --border-color: white;
     --color: black;
     --placeholder-color: rgba(255, 255, 255, 0.7);
     font-weight: 600;
   }
-
 }
+
 ion-button {
   height: 50px;
   font-size: 1.2rem;
