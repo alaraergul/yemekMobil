@@ -1,18 +1,135 @@
-ion-list-header {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--ion-color-medium-shade);
-  margin-top: 16px;
+ion-content {
+  --background: linear-gradient(135deg, #6dd5ed, #2193b0);
+
 }
+
+ion-toolbar {
+  --background: transparent;
+  --color: white;
+
+  ion-back-button,
+  ion-title {
+
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+
+  }
+
+}
+
+ion-header.ios ion-toolbar:last-of-type {
+
+  --border-width: 0;
+
+
+}
+
+ion-list-header {
+
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 24px;
+  margin-bottom: 8px;
+  padding-left: 8px;
+
+}
+
 
 ion-list[inset] {
+  margin: 16px 0;
   border-radius: 16px;
-  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+
+  ion-item {
+    --background: transparent;
+    color: white;
+    --color-activated: white;
+    --padding-start: 16px;
+    --inner-padding-end: 16px;
+    --border-color: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      --border-width: 0;
+      margin-bottom: 0;
+    }
+
+    ion-label,
+    .input-label {
+      color: black;
+      font-weight: 500;
+    }
+
+    ion-input {
+      --color: black;
+      font-weight: 600;
+    }
+
+    ion-select {
+      font-weight: 600;
+
+      &::part(text) {
+        color: #333;
+      }
+
+      &::part(icon) {
+        color: white;
+      }
+    }
+  }
 }
 
+ion-item {
+  --background: transparent;
+  color: black;
+  --color-activated: black;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  --border-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12 px;
+  margin-bottom: 8px;
+
+
+  &:last-child {
+    --border-width: 0;
+    margin-bottom: 0;
+  }
+
+  ion-label,
+  .input-label {
+    color: white (255, 255, 255, 0.9) !important;
+    font-weight: 500;
+  }
+
+  ion-input,
+  ion-select {
+    --color: black;
+    --placeholder-color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+  }
+
+}
 ion-button {
-  height: 48px;
-  font-size: 1.1rem;
+  height: 50px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 16px;
+  --background: white;
+  --background-activated: #f0f0f0;
+  --color: #2193b0;
+  margin-top: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  text-transform: none;
 }
 
-//şimdilik tasarım böyle? // 
+ion-select::part(text) {
+  color: black !important;
+}
