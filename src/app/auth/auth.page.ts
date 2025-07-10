@@ -36,7 +36,11 @@ export class AuthPage {
     public authService: AuthService,
     private toastController: ToastController,
     private router: Router
-  ) {}
+  ) {
+    this.authService.onLogin(() => {
+      this.router.navigateByUrl("/home");
+    });
+  }
 
   async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
     const toast = await this.toastController.create({
@@ -52,7 +56,6 @@ export class AuthPage {
     const success = await this.authService.login(this.username, this.password);
     if (success) {
       this.showToast('Giriş başarılı!', 'success');
-      this.router.navigateByUrl('/home');  
     } else {
       this.showToast('Kullanıcı adı veya şifre hatalı!', 'danger');
     }
