@@ -231,4 +231,8 @@ export class HomePage {
     await this.authService.logout();
     this.router.navigate(["/auth"]);
   }
+
+  goSettings() {
+    this.router.navigate(["/settings"]);
+  }
 }
