@@ -35,18 +35,14 @@ export class HomePage {
     timestamp: this.today.getTime()
   };
 
-  currentDateString = this.toInputDate(this.today);
-  currentTimeString = this.toInputTime(this.today);
+  currentDateString = this.getDateString(this.date.day, this.date.month + 1, this.date.year);
+  currentTimeString = `${this.today.getHours().toString().padStart(2, "0")}:${this.today.getMinutes().toString().padStart(2, "0")}`;
 
   isGraphMode = true;
   isModalOpen = false;
 
   selectedCategory: string | null = null;
-  filteredMeals: Meal[] = [];
 
-  categorizedMeals = this.getCategorizedMeals();
-
-  
   onMainDateChange(event: any) {
     const selectedDateString = event.detail.value; 
     if (!selectedDateString) return;
@@ -61,17 +57,27 @@ export class HomePage {
 
   getCategorizedMeals() {
     const map: { [key: string]: Meal[] } = {};
+
     for (const meal of meals) {
       if (!map[meal.category]) map[meal.category] = [];
       map[meal.category].push(meal);
     }
+
     return Object.entries(map).map(([category, meals]) => ({ category, meals }));
   }
 
-  onCategoryChange(event: any) {
-    const category = event.detail.value;
-    this.selectedCategory = category;
-    this.filteredMeals = this.categorizedMeals.find(c => c.category === category)?.meals || [];
+  getCategoryNames(): string[] {
+    const categories: string[] = [];
+
+    for (const meal of meals) {
+      if (!categories.includes(meal.category)) categories.push(meal.category);
+    }
+
+    return categories;
+  }
+
+  filterMeals() {
+    return this.getCategorizedMeals().find(c => c.category === this.selectedCategory)?.meals || [];
   }
 
   setOpen(isOpen: boolean) {
@@ -86,10 +92,10 @@ export class HomePage {
       count: 1,
       timestamp: now.getTime()
     };
-    this.currentDateString = this.toInputDate(now);
-    this.currentTimeString = this.toInputTime(now);
+
+    this.currentDateString = this.getDateString(now.getDate(), now.getMonth() + 1, now.getFullYear());
+    this.currentTimeString = this.getTimeString(now.getHours(), now.getMinutes());
     this.selectedCategory = null;
-    this.filteredMeals = [];
   }
 
   onDateChange(event: any) {
@@ -105,14 +111,6 @@ export class HomePage {
   updateTimestampFromInputs() {
     const fullString = `${this.currentDateString}T${this.currentTimeString}`;
     this.currentMealEntry.timestamp = new Date(fullString).getTime();
-  }
-
-  toInputDate(date: Date): string {
-    return `${date.getFullYear()}-${this.addZero(date.getMonth() + 1)}-${this.addZero(date.getDate())}`;
-  }
-
-  toInputTime(date: Date): string {
-    return `${this.addZero(date.getHours())}:${this.addZero(date.getMinutes())}`;
   }
 
   async presentToast(message: string, color: 'success' | 'danger') {
@@ -143,8 +141,12 @@ export class HomePage {
     this.presentToast('Yemek silindi.', 'danger');
   }
 
-  addZero(n: number): string {
-    return n.toString().padStart(2, '0');
+  getDateString(date: number, month: number, year: number) {
+    return `${year}-${month.toString().padStart(2, "0")}-${date.toString().padStart(2, "0")}`;
+  }
+
+  getTimeString(hours: number, minutes: number) {
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
   }
 
   onSelectMeal(event: any) {

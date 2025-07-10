@@ -136,13 +136,12 @@ ion-content {
 }
 
 .meal-item {
-  --background: rgba(255, 255, 255, 0.2);
+  --background: rgba(255, 255, 255, 0.25);
   --border-radius: 12px;
   --padding-start: 16px;
   --inner-padding-end: 12px;
   margin-bottom: 12px;
-  
-  
+
   ion-label {
     h2 {
       font-weight: 600;
@@ -198,5 +197,13 @@ ion-modal {
     --border-radius: 12px;
     --background: #f4f5f8;
     margin-bottom: 16px;
+  }
+}
+
+ion-list {
+  background: transparent;
+
+  p {
+    color: white;
   }
 }

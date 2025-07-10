@@ -17,8 +17,8 @@
       <ion-card class="control-panel">
         <ion-item lines="none">
           <ion-input label="Tarih" label-placement="floating" type="date"
-            [value]="`${date.year}-${addZero(date.month + 1)}-${addZero(date.day)}`"
-            [max]="`${today.getFullYear()}-${addZero(today.getMonth() + 1)}-${addZero(today.getDate())}`"
+            [value]="getDateString(date.day, date.month + 1, date.year)"
+            [max]="getDateString(today.getDate(), today.getMonth() + 1, today.getFullYear())"
             (ionChange)="onMainDateChange($event)">
           </ion-input>
         </ion-item>
@@ -33,6 +33,7 @@
             <ion-card-subtitle>Günlük Toplam Pürin</ion-card-subtitle>
             <ion-card-title>{{ getTotalPurine(dataByDate).toFixed(0) }} mg</ion-card-title>
           </ion-card-header>
+
           <ion-card-content>
             <p>{{ getComment(getTotalPurine(dataByDate)) }}</p>
           </ion-card-content>
@@ -55,10 +56,12 @@
         } @else {
           @let weeklyData = getWeeklyNumberData(data);
           @let names = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+
           <ion-card class="summary-card weekly-summary">
             <ion-card-header>
               <ion-card-subtitle>Haftalık Pürin Dağılımı</ion-card-subtitle>
             </ion-card-header>
+
             <ion-card-content>
               <div class="weekly-grid">
                 <div *ngFor="let values of weeklyData; index as i" class="day-item">
@@ -74,7 +77,8 @@
       </div>
 
       <h2 class="section-title">
-        {{ addZero(date.day) }} {{ ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][date.month] }} Raporu
+        @let months = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+        {{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Raporu
       </h2>
 
       <ion-list lines="none" *ngIf="dataByDate.length > 0; else noData">
@@ -84,13 +88,19 @@
             <h2>{{ entry.meal.name }}</h2>
             <p>
               {{ entry.count }} porsiyon ·
-              Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg ·
+              Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg
+            </p>
+
+            <p>
               Kalori: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal ·
               Şeker: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g
             </p>
           </ion-label>
           <div class="item-actions">
-            <span class="meal-time">{{ addZero(consumedAt.getHours()) }}:{{ addZero(consumedAt.getMinutes()) }}</span>
+            <span class="meal-time">
+              {{ consumedAt.getHours().toString().padStart(2, "0") }}:{{ consumedAt.getMinutes().toString().padStart(2, "0") }}
+            </span>
+
             <ion-button fill="clear" size="small" class="delete-button" (click)="deleteMeal(entry.meal.id, entry.timestamp)">
               <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
             </ion-button>
@@ -116,8 +126,6 @@
   </ion-fab>
 
 
-
-
   <ion-modal [isOpen]="isModalOpen" (didDismiss)="setOpen(false)" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
     <ng-template>
       <ion-header>
@@ -130,22 +138,27 @@
       </ion-header>
 
       <ion-content class="ion-padding">
-
         <ion-item>
-          <ion-select label="Kategori" placeholder="Kategori Seçin" (ionChange)="onCategoryChange($event)">
-            <ion-select-option *ngFor="let group of categorizedMeals" [value]="group.category">
-              {{ group.category }}
+          @let categoryNames = getCategoryNames();
+
+          <ion-select label="Kategori" placeholder="Kategori Seçin" [(ngModel)]="selectedCategory">
+            <ion-select-option *ngFor="let category of categoryNames" [value]="category">
+              {{ category }}
             </ion-select-option>
           </ion-select>
         </ion-item>
 
-        <ion-item *ngIf="filteredMeals.length > 0">
-          <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)">
-            <ion-select-option *ngFor="let meal of filteredMeals" [value]="meal.id">
-              {{ meal.name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
+        @if (selectedCategory) {
+          @let filteredMeals = filterMeals();
+
+          <ion-item *ngIf="filteredMeals.length > 0">
+            <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)">
+              <ion-select-option *ngFor="let meal of filteredMeals" [value]="meal.id">
+                {{ meal.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        }
 
         <ion-item>
           <ion-input
