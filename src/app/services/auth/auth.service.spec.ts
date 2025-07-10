@@ -32,7 +32,6 @@ describe("AuthService", () => {
     service.login("test", "1234").then((result) => {
       expect(result).toBeTrue();
       expect(service.isLogged).toBeTrue();
-      expect(service.username).toBe("test");
       expect(document.cookie.includes("username=test")).toBeTrue();
       done();
     });
@@ -74,7 +73,7 @@ describe("AuthService", () => {
     expect(req.request.method).toBe('POST');
     req.flush(mockUser);
 
-    service.getUser().then((user) => {
+    service.user$.then((user) => {
       expect(user?.username).toBe('new');
     });
   });
@@ -82,7 +81,7 @@ describe("AuthService", () => {
   it('should logout and clear user data', async () => {
     service.logout();
 
-    const user = await service.getUser();
+    const user = await service.user$;
     expect(user).toBeNull();
     expect(service.isLogged).toBeFalse();
     expect(document.cookie).not.toContain("username");

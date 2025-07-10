@@ -21,7 +21,7 @@ export class MealService {
 
   async deleteMealEntry(id: number, timestamp: number): Promise<boolean> {
     if (!this.authService.isLogged) return false;
-    const user = await this.authService.getUser();
+    const user = await this.authService.user$;
 
     const data = await this.data$ as MealEntry[];
     if (!data.some((entry) => entry.meal.id === id && entry.timestamp === timestamp)) return false;
@@ -40,7 +40,7 @@ export class MealService {
 
   async addMealEntry(id: number, count: number, timestamp: number): Promise<boolean> {
     if (!this.authService.isLogged) return false;
-    const user = await this.authService.getUser();
+    const user = await this.authService.user$;
 
     const meals = this.getMeals();
     const selectedMeal = meals.find((meal) => meal.id === id);
@@ -73,7 +73,7 @@ export class MealService {
 
   async getAllMealEntries(): Promise<boolean> {
     if (!this.authService.isLogged) return false;
-    const user = await this.authService.getUser();
+    const user = await this.authService.user$;
 
     this.http.get<({ id: number, count: number, timestamp: number })[]>(`${API_URL}/users/${user.id}/meals`).subscribe((response) => {
       const entries: MealEntry[] = [];

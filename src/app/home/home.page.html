@@ -1,5 +1,7 @@
 <ion-content>
   <div *ngIf="authService.isLogged">
+    @let user = (authService.user$ | async);
+
     <div *ngIf="(mealService.data$ | async) as data" class="page-container">
       @let dataByDate = getEntriesOfDate(data);
 
@@ -24,6 +26,7 @@
             (ionChange)="onMainDateChange($event)">
           </ion-input>
         </ion-item>
+
         <ion-item lines="none">
           <ion-toggle [(ngModel)]="isGraphMode" label-placement="start">Haftalık Grafik</ion-toggle>
         </ion-item>
@@ -66,11 +69,13 @@
 
             <ion-card-content>
               <div class="weekly-grid">
+                @let limits = authService.getLimits(user);
+
                 <div *ngFor="let values of weeklyData; index as i" class="day-item">
                   <div class="day-name">{{ names[i] }}</div>
-                  <div class="day-value">{{ values[0].toFixed(0) }} mg pürin</div>
-                  <div class="day-value">{{ values[1].toFixed(2) }} g şeker</div>
-                  <div class="day-value">{{ values[2].toFixed(0) }} kcal</div>
+                  <div [class]="`day-value ${limits.purineLimit < values[0] ? 'red' : ''}`">{{ values[0].toFixed(0) }} mg pürin</div>
+                  <div [class]="`day-value ${limits.sugarLimit < values[1] ? 'red' : ''}`">{{ values[1].toFixed(2) }} g şeker</div>
+                  <div [class]="`day-value  ${limits.kcalLimit < values[2] ? 'red' : ''}`">{{ values[2].toFixed(0) }} kcal</div>
                 </div>
               </div>
             </ion-card-content>

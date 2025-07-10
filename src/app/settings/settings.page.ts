@@ -29,7 +29,7 @@ export class SettingsPage implements OnInit {
 
   async ngOnInit() {
     this.authService.onLogin(async () => {
-      const user = await this.authService.getUser();
+      const user = await this.authService.user$;
 
       if (user) {
         this.gender = user.gender;

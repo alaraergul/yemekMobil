@@ -7,7 +7,7 @@ import { CookieService } from 'ngx-cookie-service';
 @Injectable({ providedIn: "root" })
 export class AuthService {
   public isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  private user$: Promise<User | null> = Promise.resolve(null);
+  public user$: Promise<User | null> = Promise.resolve(null);
   public error$?: Promise<Error>;
   private cookieService = inject(CookieService);
 
@@ -21,10 +21,6 @@ export class AuthService {
     this.isLogged$.subscribe((value) => {
       fn(value);
     });
-  }
-
-  async getUser() {
-    return await this.user$;
   }
 
   async initialize() {
@@ -51,9 +47,8 @@ export class AuthService {
     });
   }
 
-  async getLimits() {
-    const user = await this.getUser();
-    const genderEnum = typeof user.gender === "string" ? Gender[user.gender as keyof typeof Gender] : user.gender;
+  getLimits(user: User) {
+    const genderEnum = user.gender || Gender.MALE;
     const purineFactor = (genderEnum === Gender.MALE) ? 4 : 3;
     const kcalFactor = (genderEnum === Gender.MALE) ? 30 : 25;
     const kcalLimit = (user.kcalLimit && user.kcalLimit != -1) ? user.kcalLimit : (user.weight * kcalFactor);
@@ -66,7 +61,7 @@ export class AuthService {
   }
 
   async editUser(purineLimit?: number, sugarLimit?: number, kcalLimit?: number, gender?: Gender, weight?: number) {
-    const user = await this.getUser();
+    const user = await this.user$;
     const username = this.cookieService.get("username");
     const password = this.cookieService.get("password");
 
@@ -84,16 +79,15 @@ export class AuthService {
 
     return new Promise((resolve) => {
       this.http.patch<"" | Error>(`${API_URL}/users/${user.id}`, updates).subscribe(async (response) => {
-        
-
         if (response && (response as Error).code) {
           return resolve(false);
         }
 
-        const currentUser = await this.getUser();
+        const currentUser = await this.user$;
+
         if (currentUser) {
-            const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight } };
-            this.user$ = Promise.resolve(updatedUser);
+          const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight } };
+          this.user$ = Promise.resolve(updatedUser);
         }
 
         return resolve(true);
