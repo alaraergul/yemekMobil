@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { User, Gender } from 'src/app/utils'; 
+import { User, Gender } from 'src/app/utils';
 
 @Component({
-  selector: 'app-settings', 
+  selector: 'app-settings',
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule],
   templateUrl: './settings.page.html',
@@ -18,11 +18,12 @@ export class SettingsPage implements OnInit {
   navCtrl = inject(NavController);
 
   Gender = Gender;
-  gender: Gender;
-  weight: number = 0;
-  purineLimit?: number;
-  sugarLimit?: number;
-  kcalLimit?: number;
+
+  gender: Gender | undefined;
+  weight: number | undefined;
+  purineLimit: number | undefined;
+  sugarLimit: number | undefined;
+  kcalLimit: number | undefined;
 
   constructor() {}
 
@@ -41,34 +42,33 @@ export class SettingsPage implements OnInit {
   }
 
   async saveSettings() {
-    const settingsToUpdate: Partial<User> = {
-      gender: this.gender,
-      weight: this.weight,
-      ...(this.purineLimit !== null || this.sugarLimit !== null || this.kcalLimit !== null
-        ? {
-            limits: {
-              purine: this.purineLimit ?? undefined,
-              sugar: this.sugarLimit ?? undefined,
-              kcal: this.kcalLimit ?? undefined
-            }
-          }
-        : {})
-    };
-    
-    await this.authService.editUser(
-      this.purineLimit ?? undefined,
-      this.sugarLimit ?? undefined,
-      this.kcalLimit ?? undefined,
-      this.gender
-    );
-    
-    const toast = await this.toastController.create({
-      message: "Ayarların kaydedildi!",
-      duration: 2000,
-      position: "top",
-      color: "success"
-    });
-    toast.present();
-    
+    try {
+
+      await this.authService.editUser(
+        this.purineLimit ?? null,
+        this.sugarLimit ?? null,
+        this.kcalLimit ?? null,
+        this.gender ?? null,
+        this.weight ?? null
+      );
+
+      const toast = await this.toastController.create({
+        message: "Ayarların başarıyla kaydedildi!",
+        duration: 2000,
+        position: "top",
+        color: "success"
+      });
+      toast.present();
+
+    } catch (error) {
+      console.error("Ayarlar kaydedilirken hata oluştu:", error);
+      const toast = await this.toastController.create({
+        message: "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
+        duration: 3000,
+        position: "top",
+        color: "danger"
+      });
+      toast.present();
+    }
   }
 }

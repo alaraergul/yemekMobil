@@ -36,7 +36,7 @@ export class AuthService {
         if (!username || !password) return resolve(false);
 
         this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(async (response) => {
-          if ((response as Error).code) {
+          if (response && (response as Error).code) {
             this.error$ = Promise.resolve(response as Error);
             return resolve(false);
           }
@@ -65,15 +65,35 @@ export class AuthService {
     };
   }
 
-  async editUser(purineLimit?: number, sugarLimit?: number, kcalLimit?: number, gender?: Gender) {
+  async editUser(purineLimit?: number, sugarLimit?: number, kcalLimit?: number, gender?: Gender, weight?: number) {
     const user = await this.getUser();
     const username = this.cookieService.get("username");
     const password = this.cookieService.get("password");
 
+    const genderAsString = gender !== null && gender !== undefined ? Gender[gender] : undefined;
+    
+    const updates = { 
+      purineLimit, 
+      sugarLimit, 
+      kcalLimit, 
+      gender: genderAsString,
+      weight, 
+      username, 
+      password 
+    };
+
     return new Promise((resolve) => {
-      this.http.patch<"" | Error>(`${API_URL}/users/${user.id}`, { purineLimit, sugarLimit, kcalLimit, gender, username, password }).subscribe((response) => {
-        if ((response as Error).code) {
+      this.http.patch<"" | Error>(`${API_URL}/users/${user.id}`, updates).subscribe(async (response) => {
+        
+
+        if (response && (response as Error).code) {
           return resolve(false);
+        }
+
+        const currentUser = await this.getUser();
+        if (currentUser) {
+            const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight } };
+            this.user$ = Promise.resolve(updatedUser);
         }
 
         return resolve(true);
@@ -88,7 +108,7 @@ export class AuthService {
       if (!username || !password || !weight) return resolve(false);
 
       this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight }).subscribe(response => {
-        if ((response as Error).code) {
+        if (response && (response as Error).code) {
           this.error$ = Promise.resolve(response as Error);
           return resolve(false);
         }
@@ -108,7 +128,7 @@ export class AuthService {
 
     return new Promise((resolve) => {
       this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(response => {
-        if ((response as Error).code) {
+        if (response && (response as Error).code) {
           this.error$ = Promise.resolve(response as Error);
           return resolve(false);
         }
@@ -131,4 +151,3 @@ export class AuthService {
     this.cookieService.delete("password");
   }
 }
-
