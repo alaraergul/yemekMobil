@@ -4,6 +4,12 @@ export type Nullable<T> = {
   [P in keyof T]: T[P] | null;
 };
 
+export enum DataType {
+  PURINE,
+  KCAL,
+  SUGAR
+};
+
 export enum Gender {
   MALE,
   FEMALE

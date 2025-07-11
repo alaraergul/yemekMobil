@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { meals } from 'src/app/data';
-import { MealEntry, Meal } from 'src/app/utils';
+import { MealEntry, Meal, User, DataType } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MealService } from 'src/app/services/meal/meal.service';
 import { ChartComponent } from 'src/app/components/chart.component';
@@ -21,6 +21,8 @@ export class HomePage {
   mealService = inject(MealService);
   toastController = inject(ToastController);
   router = inject(Router);
+
+  DataType = DataType;
 
   today = new Date();
   date = {
@@ -180,20 +182,69 @@ export class HomePage {
     return new Date(timestamp);
   }
 
-  getTotalPurine(entries: MealEntry[]): number {
-    return entries.reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
+  getTotal(type: DataType, entries: MealEntry[]): number {
+    switch (type) {
+      case DataType.PURINE:
+        return entries.reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
+
+      case DataType.KCAL:
+        return entries.reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
+
+      case DataType.SUGAR:
+        return entries.reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
+    }
   }
 
-  getComment(purine: number): string {
-    if (purine < 300) return 'İyi gidiyorsun!';
-    if (purine < 500) return 'Dikkatli olmalısın.';
-    return 'Çok fazla pürin alındı!';
+  getComment(type: DataType, data: number, user: User): string {
+    const limits = this.authService.getLimits(user);
+    let name: string, limit: number;
+
+    switch (type) {
+      case DataType.PURINE:
+        name = "pürin";
+        limit = limits.purineLimit;
+        break;
+
+      case DataType.KCAL:
+        name = "kalori";
+        limit = limits.kcalLimit;
+        break;
+
+      case DataType.SUGAR:
+        name = "şeker";
+        limit = limits.sugarLimit;
+        break;
+    }
+
+    if (data < (limit * 0.6)) return "İyi gidiyorsun!";
+    if (data < limit) return `Dikkatli olmalısın, günlük ${name} alımının %60'ını doldurdun.`;
+    return `Çok fazla ${name} adın!`;
   }
 
-  getWeeklyComment(weeklyPurine: number): string {
-    if (weeklyPurine < 1500) return 'Harika gidiyorsun! Haftalık pürin oldukça düşük.';
-    if (weeklyPurine < 2100) return 'İyi gidiyorsun ama dikkatli olmaya devam et.';
-    return 'Bu hafta çok fazla pürin alındı! Daha dikkatli ol.';
+  getWeeklyComment(type: DataType, data: number, user: User): string {
+    const limits = this.authService.getLimits(user);
+    let name: string, limit: number;
+
+    switch (type) {
+      case DataType.PURINE:
+        name = "pürin";
+        limit = limits.purineLimit * 7;
+        break;
+
+      case DataType.KCAL:
+        name = "kalori";
+        limit = limits.kcalLimit * 7;
+        break;
+
+      case DataType.SUGAR:
+        name = "şeker";
+        limit = limits.sugarLimit * 7;
+        break;
+    }
+
+    if (data < (limit * 0.6)) return `Harika gidiyorsun! Haftalık ${name} oldukça düşük.`;
+    if (data < limit) return `İyi gidiyorsun ama dikkatli olmaya devam et, haftalık ${name} alımının %60'ını doldurdun.`;
+    return `Bu hafta çok fazla ${name} alındı! Daha dikkatli ol.`;
   }
 
   getWeeklyNumberData(entries: MealEntry[]) {
@@ -219,14 +270,28 @@ export class HomePage {
     return values;
   }
 
-  getWeeklyPurine(entries: MealEntry[]): number {
+  getWeeklyTotal(type: DataType, entries: MealEntry[]): number {
     const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
     const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
     monday.setDate(monday.getDate() - dayDiff);
     const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
-    return entries
-      .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
-      .reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
+
+    switch (type) {
+      case DataType.PURINE:
+        return entries
+          .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
+          .reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
+
+      case DataType.SUGAR:
+        return entries
+          .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
+          .reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
+
+      case DataType.KCAL:
+        return entries
+          .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
+          .reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
+    }
   }
 
   async logout() {
