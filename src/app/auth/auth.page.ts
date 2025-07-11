@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Gender } from '../utils';
+import { MealService } from '../services/meal/meal.service';
 
 enum Tabs {
   LOGIN,
@@ -37,11 +38,13 @@ export class AuthPage {
   regGender: Gender;
 
   constructor(
-    public authService: AuthService,
+    private authService: AuthService,
+    private mealService: MealService,
     private toastController: ToastController,
     private router: Router
   ) {
-    this.authService.onLogin(() => {
+    this.authService.onLogin(async () => {
+      await this.mealService.getAllMealEntries();
       this.router.navigateByUrl("/home");
     });
   }
