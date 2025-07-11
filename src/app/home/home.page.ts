@@ -38,7 +38,7 @@ export class HomePage {
   currentDateString = this.getDateString(this.date.day, this.date.month + 1, this.date.year);
   currentTimeString = `${this.today.getHours().toString().padStart(2, "0")}:${this.today.getMinutes().toString().padStart(2, "0")}`;
 
-  isGraphMode = true;
+  isGraphMode = false;
   isModalOpen = false;
 
   selectedCategory: string | null = null;
