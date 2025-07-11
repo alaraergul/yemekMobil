@@ -233,3 +233,7 @@ ion-list {
     color: white;
   }
 }
+
+ion-fab {
+  margin-bottom: calc(var(--ion-safe-area-bottom, 0) + 25px);
+}
