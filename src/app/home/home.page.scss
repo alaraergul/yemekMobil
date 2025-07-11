@@ -202,11 +202,27 @@ ion-content {
 ion-modal {
   ion-toolbar {
     --background: #f4f5f8;
+    --color: black;
   }
+
   .modal-input-item {
     --border-radius: 12px;
     --background: #f4f5f8;
     margin-bottom: 16px;
+  }
+
+  ion-select {
+    color: black;
+    --background: white;
+  }
+
+  ion-item {
+    --background: white;
+  }
+
+  ion-input {
+    --placeholder-color: black;
+    --color: black;
   }
 }
 
