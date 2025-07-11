@@ -19,11 +19,17 @@ export class SettingsPage implements OnInit {
 
   Gender = Gender;
 
-  gender: Gender | undefined;
-  weight: number | undefined;
-  purineLimit: number | undefined;
-  sugarLimit: number | undefined;
-  kcalLimit: number | undefined;
+  gender: Gender;
+  weight: number;
+  purineLimit?: number;
+  sugarLimit?: number;
+  kcalLimit?: number;
+
+  recommendedPurine: number = 0;
+  recommendedSugar: number = 0;
+  recommendedKcal: number = 0;
+
+  currentUser: User;
 
   constructor() {}
 
@@ -32,16 +38,43 @@ export class SettingsPage implements OnInit {
       const user = await this.authService.user$;
 
       if (user) {
+        this.currentUser = user;
         this.gender = user.gender;
         this.weight = user.weight;
-        this.purineLimit = user.purineLimit;
-        this.sugarLimit = user.sugarLimit;
-        this.kcalLimit = user.kcalLimit;
+
+        const userPurineLimit = user.purineLimit;
+        const userSugarLimit = user.sugarLimit;
+        const userKcalLimit = user.kcalLimit;
+
+        delete user.purineLimit;
+        delete user.sugarLimit;
+        delete user.kcalLimit;
+
+        const defaults = this.authService.getLimits(user);
+        this.recommendedPurine = defaults.purineLimit;
+        this.recommendedSugar = defaults.sugarLimit;
+        this.recommendedKcal = defaults.kcalLimit;
+
+        user.purineLimit = userPurineLimit;
+        user.sugarLimit = userSugarLimit;
+        user.kcalLimit = userKcalLimit;
+
+        this.purineLimit = (typeof user.purineLimit === 'number' && user.purineLimit !== -1) ? user.purineLimit : defaults.purineLimit;
+        this.sugarLimit = (typeof user.sugarLimit === 'number' && user.sugarLimit !== -1) ? user.sugarLimit : defaults.sugarLimit;
+        this.kcalLimit = (typeof user.kcalLimit === 'number' && user.kcalLimit !== -1) ? user.kcalLimit : defaults.kcalLimit;
       }
     });
   }
 
+  sanitizeLimits() {
+    this.purineLimit = (typeof this.purineLimit === 'number' && !isNaN(this.purineLimit)) ? this.purineLimit : null;
+    this.sugarLimit = (typeof this.sugarLimit === 'number' && !isNaN(this.sugarLimit)) ? this.sugarLimit : null;
+    this.kcalLimit = (typeof this.kcalLimit === 'number' && !isNaN(this.kcalLimit)) ? this.kcalLimit : null;
+  }
+
   async saveSettings() {
+    this.sanitizeLimits();
+
     try {
       await this.authService.editUser(
         this.purineLimit ?? null,
@@ -70,5 +103,24 @@ export class SettingsPage implements OnInit {
       });
       toast.present();
     }
+  }
+
+  resetLimits() {
+    this.currentUser.purineLimit = null;
+    this.currentUser.sugarLimit = null;
+    this.currentUser.kcalLimit = null;
+
+    const defaults = this.authService.getLimits(this.currentUser);
+    this.purineLimit = defaults.purineLimit;
+    this.sugarLimit = defaults.sugarLimit;
+    this.kcalLimit = defaults.kcalLimit;
+
+    const toast = this.toastController.create({
+      message: "Limitler önerilen değerlere sıfırlandı.",
+      duration: 2000,
+      position: "top",
+      color: "warning"
+    });
+    toast.then(t => t.present());
   }
 }

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>
       Ayarlar
@@ -31,26 +31,41 @@
       <ion-input label="Kilo (kg)" labelPlacement="floating" type="number" [(ngModel)]="weight"></ion-input>
     </ion-item>
   </ion-list>
-  
+
   <ion-list-header>
     <ion-label>Günlük Limit Hedefleri</ion-label>
   </ion-list-header>
 
   <ion-list [inset]="true">
-    <ion-item>
+
+    <ion-item lines="none">
       <ion-input label="Pürin Limiti (mg)" labelPlacement="floating" type="number" [(ngModel)]="purineLimit"></ion-input>
+      <ion-label slot="end" color="medium" style="font-size: 12px;">
+        Önerilen: {{ recommendedPurine | number:'1.0-0' }} mg
+      </ion-label>
     </ion-item>
 
-    <ion-item>
+    <ion-item lines="none">
       <ion-input label="Kalori Limiti (kcal)" labelPlacement="floating" type="number" [(ngModel)]="kcalLimit"></ion-input>
+      <ion-label slot="end" color="medium" style="font-size: 12px;">
+        Önerilen: {{ recommendedKcal | number:'1.0-0' }} kcal
+      </ion-label>
     </ion-item>
 
-    <ion-item>
+    <ion-item lines="none">
       <ion-input label="Şeker Limiti (g)" labelPlacement="floating" type="number" [(ngModel)]="sugarLimit"></ion-input>
+      <ion-label slot="end" color="medium" style="font-size: 12px;">
+        Önerilen: {{ recommendedSugar | number:'1.0-1' }} g
+      </ion-label>
     </ion-item>
+
   </ion-list>
-  
+
   <ion-button expand="block" (click)="saveSettings()" class="ion-margin-top">
     Ayarları Kaydet
+  </ion-button>
+
+  <ion-button expand="block" fill="outline" color="medium" (click)="resetLimits()" class="ion-margin-top">
+    Limitleri Önerilen Değerlere Sıfırla
   </ion-button>
 </ion-content>
