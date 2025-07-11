@@ -6,16 +6,16 @@
       @let dataByDate = getEntriesOfDate(data);
 
       <div class="top-bar">
-        <h1 class="page-title">Pürin Takibi</h1>
+        <h1 class="page-title">NutriLog</h1>
         <div class="top-bar-actions">
-        <ion-button fill="clear" (click)="goSettings()" class="icon-button">
-          <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
-        </ion-button>
+          <ion-button fill="clear" (click)="goSettings()" class="icon-button">
+            <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+          </ion-button>
 
-        <ion-button fill="clear" (click)="logout()" class="icon-button">
-          <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
-        </ion-button>
-      </div>
+          <ion-button fill="clear" (click)="logout()" class="icon-button">
+            <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+          </ion-button>
+        </div>
       </div>
 
       <ion-card class="control-panel">
@@ -85,7 +85,7 @@
 
       <h2 class="section-title">
         @let months = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-        {{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Raporu
+        {{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Tüketimi
       </h2>
 
       <ion-list lines="none" *ngIf="dataByDate.length > 0; else noData">
