@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "com.bussion.purine",
+  appId: "com.bussion.nutrilog",
   appName: "NutriLog",
   webDir: "www"
 };
