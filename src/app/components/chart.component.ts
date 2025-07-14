@@ -1,24 +1,35 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MealEntry } from '../utils';
-import { ChartConfiguration, ChartType, registerables, scales } from 'chart.js';
+import { ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { IonicModule } from '@ionic/angular';;
+import { IonicModule } from '@ionic/angular';
 
 import { Chart } from 'chart.js';
-Chart.register(...registerables); 
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-chart',
   standalone: true,
   imports: [CommonModule, BaseChartDirective, IonicModule],
   styles: [`
+    .chart-card {
+      background: white; 
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 10px;
+      margin-top: 16px;
+    }
+
     ion-card-content {
-      height: 280px; 
+      height: 300px;
     }
 
     ion-card-title {
-      color: white;
+      color: #1e2023; 
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding-left: 6px;
     }
 
     canvas {
@@ -26,19 +37,18 @@ Chart.register(...registerables);
       width: 100% !important;
     }
 
-    @media (min-width: 768px) {
-      ion-card-content {
-        height: 320px;
-      }
-    }
-
-    ion-card {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 20px;
+    .empty-chart-state {
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        background: #f9f9f9;
+        border-radius: 16px;
     }
   `],
   template: `
-    <ion-card *ngIf="chartData?.datasets[0]?.data?.length">
+    <ion-card class="chart-card" *ngIf="chartData?.datasets[0]?.data?.length > 0">
       <ion-card-header>
         <ion-card-title>Haftalık Grafik</ion-card-title>
       </ion-card-header>
@@ -52,11 +62,9 @@ Chart.register(...registerables);
       </ion-card-content>
     </ion-card>
 
-    <ion-card *ngIf="!chartData?.datasets[0]?.data?.length">
-      <ion-card-content>
-        Bugün için gösterilecek pürin verisi yok.
-      </ion-card-content>
-    </ion-card>
+    <div *ngIf="!chartData?.datasets[0]?.data?.length" class="empty-chart-state">
+        Bu hafta için gösterilecek veri bulunmuyor.
+    </div>
   `,
 })
 export class ChartComponent implements OnChanges {
@@ -65,16 +73,7 @@ export class ChartComponent implements OnChanges {
 
   chartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
-    datasets: [
-      {
-        data: [],
-        label: "Pürin Alımı (mg)",
-        borderColor: "rgba(75, 192, 192,1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        fill: true,
-        tension: 0.3,
-      },
-    ],
+    datasets: [],
   };
 
   chartType: ChartType = "line";
@@ -87,38 +86,37 @@ export class ChartComponent implements OnChanges {
         position: "top",
         labels: {
           font: { size: 13 },
-          color: "#fff"
+          color: "#333" 
         },
       },
       tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        titleFont: { size: 14 },
+        bodyFont: { size: 12 },
         callbacks: {
           label: ((context) => {
-            switch (context.dataset.label) {
-              case "Şeker":
-                return `Şeker: ${(context.raw as number).toLocaleString()} g`;
-
-              case "Pürin":
-                return `Pürin: ${(context.raw as number).toLocaleString()} mg`;
-
-              case "kcal":
-                return `${(context.raw as number).toLocaleString()} kcal`;
-              
-              default:
-                return "no known data";
+            let label = context.dataset.label || '';
+            if (label) {
+                label += ': ';
             }
+            if (context.parsed.y !== null) {
+                const unit = context.dataset.label === 'kcal' ? 'kcal' : (context.dataset.label === 'Şeker' ? 'g' : 'mg');
+                label += `${context.parsed.y.toLocaleString()} ${unit}`;
+            }
+            return label;
           })
         }
       }
     },
     scales: {
       x: {
-        ticks: { font: { size: 12 }, color: "#fff" },
-        grid: { display: false, color: "rgba(255, 255, 255, 0.6)" }
+        ticks: { font: { size: 12 }, color: "#666" }, 
+        grid: { display: false } 
       },
       y: {
         beginAtZero: true,
-        ticks: { font: { size: 12 }, color: "#fff" },
-        grid: { color: "rgba(255, 255, 255, 0.6)" }
+        ticks: { font: { size: 12 }, color: "#666" }, 
+        grid: { color: "#e9e9e9" } 
       }
     },
   };
@@ -139,48 +137,45 @@ export class ChartComponent implements OnChanges {
     const values: (number[])[] = Array(7).fill(0).map((_) => [0, 0, 0]);
 
     for (const entry of filtered) {
-      const day = (new Date(entry.timestamp)).getDay();
-      values[day][0] += (entry.meal.purine * entry.count);
-      values[day][1] += (entry.meal.sugar * entry.count);
-      values[day][2] += (entry.meal.kcal * entry.count);
+        const dayIndex = new Date(entry.timestamp).getDay();
+        const adjustedIndex = dayIndex === 0 ? 6 : dayIndex - 1; 
+
+        values[adjustedIndex][0] += (entry.meal.purine * entry.count);
+        values[adjustedIndex][1] += (entry.meal.sugar * entry.count);
+        values[adjustedIndex][2] += (entry.meal.kcal * entry.count);
     }
-
-    const data = values.slice(1);
-    data.push(values[0]);
-
+    
     this.chartData = {
-      labels: ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"],
+      labels: ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"], 
       datasets: [
         {
-          data: data.map((value) => value[0]),
+          data: values.map((value) => value[0]),
           label: "Pürin",
-          borderColor: "rgb(87, 75, 192)",
+          borderColor: "#574bc0", 
           backgroundColor: "rgba(87, 75, 192, 0.2)",
           fill: true,
-          tension: 0.3,
+          tension: 0.4,
+          pointBackgroundColor: "#574bc0",
         },
         {
-          data: data.map((value) => value[1]),
+          data: values.map((value) => value[1]),
           label: "Şeker",
-          borderColor: "rgb(79, 192, 75)",
-          backgroundColor: "rgba(79, 192, 75, 0.2)",
+          borderColor: "#2dd36f", 
+          backgroundColor: "rgba(45, 211, 111, 0.2)",
           fill: true,
-          tension: 0.3,
+          tension: 0.4,
+          pointBackgroundColor: "#2dd36f",
         },
         {
-          data: data.map((value) => value[2]),
+          data: values.map((value) => value[2]),
           label: "kcal",
-          borderColor: "rgb(192, 75, 75)",
-          backgroundColor: "rgba(192, 75, 75, 0.2)",
+          borderColor: "#ffc409", 
+          backgroundColor: "rgba(255, 196, 9, 0.2)",
           fill: true,
-          tension: 0.3,
+          tension: 0.4,
+          pointBackgroundColor: "#ffc409",
         },
       ],
     };
   }
-
-  zero(n: number): string {
-    return n.toString().padStart(2, "0");
-  }
 }
-
