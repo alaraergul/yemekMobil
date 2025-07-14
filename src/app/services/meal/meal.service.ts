@@ -38,34 +38,38 @@ export class MealService {
     return true;
   }
 
-  async addMealEntry(id: number, count: number, timestamp: number): Promise<boolean> {
+  async addMealEntries(mealEntries: MealEntry[]): Promise<boolean> {
     if (!this.authService.isLogged) return false;
     const user = await this.authService.user$;
 
     const meals = this.getMeals();
-    const selectedMeal = meals.find((meal) => meal.id === id);
-    if (!selectedMeal) return false;
-
-    const mealEntry: MealEntry = {
-      meal: selectedMeal,
-      count,
-      timestamp
-    };
-
-    await fetch(`${API_URL}/users/${user.id}/meals`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id,
-        count,
-        timestamp
-      })
-    });
-
     const data = await this.data$ || [];
-    data.push(mealEntry);
+
+    for (const entry of mealEntries) {
+      const selectedMeal = meals.find((meal) => meal.id === entry.meal.id);
+      if (!selectedMeal) return false;
+
+      const mealEntry: MealEntry = {
+        meal: selectedMeal,
+        count: entry.count,
+        timestamp: entry.timestamp
+      };
+
+      await fetch(`${API_URL}/users/${user.id}/meals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: selectedMeal.id,
+          count: entry.count,
+          timestamp: entry.timestamp
+        })
+      });
+
+      
+      data.push(mealEntry);
+    }
 
     this.data$ = Promise.resolve(data);
     return true;
@@ -80,6 +84,7 @@ export class MealService {
 
       for (const value of response) {
         const matchedMeal = meals.find((meal) => meal.id === value.id);
+
         if (matchedMeal) {
           entries.push({
             meal: matchedMeal,

@@ -31,19 +31,24 @@ export class HomePage {
     year: this.today.getFullYear()
   };
 
+  mealEntries: MealEntry[] = [];
+  
   currentMealEntry: MealEntry = {
     meal: null,
     count: 1,
     timestamp: this.today.getTime()
   };
 
-  currentDateString = this.getDateString(this.date.day, this.date.month + 1, this.date.year);
-  currentTimeString = `${this.today.getHours().toString().padStart(2, "0")}:${this.today.getMinutes().toString().padStart(2, "0")}`;
+  currentDateString: string;
+  currentTimeString: string;
 
   isGraphMode = false;
   isModalOpen = false;
-
   selectedCategory: string | null = null;
+  
+  constructor() {
+    this.resetCurrentMealEntry();
+  }
 
   onMainDateChange(event: any) {
     const selectedDateString = event.detail.value; 
@@ -59,32 +64,30 @@ export class HomePage {
 
   getCategorizedMeals() {
     const map: { [key: string]: Meal[] } = {};
-
     for (const meal of meals) {
       if (!map[meal.category]) map[meal.category] = [];
       map[meal.category].push(meal);
     }
-
     return Object.entries(map).map(([category, meals]) => ({ category, meals }));
   }
 
   getCategoryNames(): string[] {
     const categories: string[] = [];
-
     for (const meal of meals) {
       if (!categories.includes(meal.category)) categories.push(meal.category);
     }
-
-    return categories;
+    return categories.sort((a, b) => a.localeCompare(b, 'tr'));
   }
 
   filterMeals() {
-    return this.getCategorizedMeals().find(c => c.category === this.selectedCategory)?.meals || [];
+    return this.mealService.getSortedMeals().filter(c => c.category === this.selectedCategory) || [];
   }
 
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
-    if (!isOpen) this.resetCurrentMealEntry();
+    if (!isOpen) {
+      this.resetCurrentMealEntries();
+    }
   }
 
   resetCurrentMealEntry() {
@@ -94,10 +97,35 @@ export class HomePage {
       count: 1,
       timestamp: now.getTime()
     };
-
     this.currentDateString = this.getDateString(now.getDate(), now.getMonth() + 1, now.getFullYear());
     this.currentTimeString = this.getTimeString(now.getHours(), now.getMinutes());
-    this.selectedCategory = null;
+    
+    this.selectedCategory = null; 
+  }
+  
+  resetCurrentMealEntries() {
+    this.mealEntries = [];
+    this.resetCurrentMealEntry();
+  }
+
+  pushMealEntry() {
+    if (!this.currentMealEntry.meal || !this.currentMealEntry.count || this.currentMealEntry.count <= 0) {
+      this.presentToast('Lütfen geçerli bir yemek seçin ve porsiyonu girin.', 'danger');
+      return;
+    }
+    
+    this.updateTimestampFromInputs(); 
+
+    this.mealEntries.push(JSON.parse(JSON.stringify(this.currentMealEntry)));
+
+    const timestamp = this.currentMealEntry.timestamp; 
+    this.resetCurrentMealEntry();
+    this.currentMealEntry.timestamp = timestamp; 
+    this.updateStringInputsFromTimestamp();
+  }
+  
+  removeMealEntryFromList(index: number) {
+    this.mealEntries.splice(index, 1);
   }
 
   onDateChange(event: any) {
@@ -111,14 +139,22 @@ export class HomePage {
   }
 
   updateTimestampFromInputs() {
-    const fullString = `${this.currentDateString}T${this.currentTimeString}`;
-    this.currentMealEntry.timestamp = new Date(fullString).getTime();
+    if (this.currentDateString && this.currentTimeString) {
+      const fullString = `${this.currentDateString}T${this.currentTimeString}`;
+      this.currentMealEntry.timestamp = new Date(fullString).getTime();
+    }
+  }
+
+  updateStringInputsFromTimestamp() {
+      const date = new Date(this.currentMealEntry.timestamp);
+      this.currentDateString = this.getDateString(date.getDate(), date.getMonth() + 1, date.getFullYear());
+      this.currentTimeString = this.getTimeString(date.getHours(), date.getMinutes());
   }
 
   async presentToast(message: string, color: 'success' | 'danger') {
     const toast = await this.toastController.create({
       message,
-      duration: 2000,
+      duration: 2500,
       position: 'top',
       color
     });
@@ -126,16 +162,18 @@ export class HomePage {
   }
 
   async addMeal() {
-    if (!this.currentMealEntry.meal || !this.currentMealEntry.count || !this.currentMealEntry.timestamp) return;
+    if (this.mealEntries.length === 0) {
+      this.presentToast('Kaydedilecek yemek bulunmuyor. Lütfen önce listeye ekleyin.', 'danger');
+      return;
+    }
 
-    await this.mealService.addMealEntry(
-      this.currentMealEntry.meal.id,
-      this.currentMealEntry.count,
-      this.currentMealEntry.timestamp
-    );
-
-    this.presentToast('Yemek başarıyla eklendi!', 'success');
-    this.setOpen(false);
+    const result = await this.mealService.addMealEntries(this.mealEntries);
+    if (result) {
+      this.presentToast('Yemekler başarıyla eklendi!', 'success');
+      this.setOpen(false);
+    } else {
+      this.presentToast('Yemekler eklenirken bir hata oluştu.', 'danger');
+    }
   }
 
   async deleteMeal(mealId: number, timestamp: number) {
@@ -169,10 +207,7 @@ export class HomePage {
       })
       .map((entry) => {
         const meal = meals.find((m) => m.id === entry.meal?.id);
-        return {
-          ...entry,
-          meal: meal || entry.meal
-        };
+        return { ...entry, meal: meal || entry.meal };
       })
       .filter((entry) => entry.meal)
       .sort((a, b) => b.timestamp - a.timestamp);
@@ -184,66 +219,35 @@ export class HomePage {
 
   getTotal(type: DataType, entries: MealEntry[]): number {
     switch (type) {
-      case DataType.PURINE:
-        return entries.reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
-
-      case DataType.KCAL:
-        return entries.reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
-
-      case DataType.SUGAR:
-        return entries.reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
+      case DataType.PURINE: return entries.reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
+      case DataType.KCAL: return entries.reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
+      case DataType.SUGAR: return entries.reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
     }
   }
 
   getComment(type: DataType, data: number, user: User): string {
     const limits = this.authService.getLimits(user);
     let name: string, limit: number;
-
     switch (type) {
-      case DataType.PURINE:
-        name = "pürin";
-        limit = limits.purineLimit;
-        break;
-
-      case DataType.KCAL:
-        name = "kalori";
-        limit = limits.kcalLimit;
-        break;
-
-      case DataType.SUGAR:
-        name = "şeker";
-        limit = limits.sugarLimit;
-        break;
+      case DataType.PURINE: name = "pürin"; limit = limits.purineLimit; break;
+      case DataType.KCAL: name = "kalori"; limit = limits.kcalLimit; break;
+      case DataType.SUGAR: name = "şeker"; limit = limits.sugarLimit; break;
     }
-
     if (data < (limit * 0.6)) return "İyi gidiyorsun!";
     if (data < limit) return `Dikkatli olmalısın, günlük ${name} alımının %60'ını doldurdun.`;
-    return `Çok fazla ${name} adın!`;
+    return `Çok fazla ${name} aldın!`;
   }
 
   getWeeklyComment(type: DataType, data: number, user: User): string {
     const limits = this.authService.getLimits(user);
     let name: string, limit: number;
-
     switch (type) {
-      case DataType.PURINE:
-        name = "pürin";
-        limit = limits.purineLimit * 7;
-        break;
-
-      case DataType.KCAL:
-        name = "kalori";
-        limit = limits.kcalLimit * 7;
-        break;
-
-      case DataType.SUGAR:
-        name = "şeker";
-        limit = limits.sugarLimit * 7;
-        break;
+      case DataType.PURINE: name = "pürin"; limit = limits.purineLimit * 7; break;
+      case DataType.KCAL: name = "kalori"; limit = limits.kcalLimit * 7; break;
+      case DataType.SUGAR: name = "şeker"; limit = limits.sugarLimit * 7; break;
     }
-
-    if (data < (limit * 0.6)) return `Harika gidiyorsun! Haftalık ${name} oldukça düşük.`;
-    if (data < limit) return `İyi gidiyorsun ama dikkatli olmaya devam et, haftalık ${name} alımının %60'ını doldurdun.`;
+    if (data < (limit * 0.6)) return `Harika gidiyorsun! Haftalık ${name} alımın oldukça düşük.`;
+    if (data < limit) return `İyi gidiyorsun ama dikkatli ol, haftalık ${name} alımının %60'ını doldurdun.`;
     return `Bu hafta çok fazla ${name} alındı! Daha dikkatli ol.`;
   }
 
@@ -257,7 +261,6 @@ export class HomePage {
     const filtered = entries.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
 
     const values: number[][] = Array(7).fill(0).map(() => Array(3).fill(0));
-
     for (const entry of filtered) {
       if (entry.meal) {
         const day = (new Date(entry.timestamp)).getDay();
@@ -277,20 +280,9 @@ export class HomePage {
     const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
 
     switch (type) {
-      case DataType.PURINE:
-        return entries
-          .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
-          .reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
-
-      case DataType.SUGAR:
-        return entries
-          .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
-          .reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
-
-      case DataType.KCAL:
-        return entries
-          .filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime())
-          .reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
+      case DataType.PURINE: return entries.filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime()).reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
+      case DataType.SUGAR: return entries.filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime()).reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
+      case DataType.KCAL: return entries.filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime()).reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
     }
   }
 

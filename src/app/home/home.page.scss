@@ -206,35 +206,52 @@ ion-modal {
     --color: black;
   }
 
-  .modal-input-item {
-    --border-radius: 12px;
-    --background: #f4f5f8;
-    margin-bottom: 16px;
-  }
-
-  ion-select {
-    color: black;
-    --background: white;
-  }
-
   ion-item {
     --background: white;
+    --ion-item-background: white; 
+    --border-width: 0;           
+    --inner-border-width: 0;     
+    --border-color: transparent; 
+    --padding-start: 16px;       
+    border-radius: 12px;
+    margin: 0 16px 16px 16px;    
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
   }
 
+  ion-select,
   ion-input {
-    --placeholder-color: black;
-    --color: black;
+    --placeholder-color: #888; 
+    color: black;
+  }
+  
+  ion-list {
+    background: transparent;
+    padding-top: 16px;       
+
+    ion-label {
+      h2 {
+        color: #333; 
+        font-weight: 600;
+      }
+      p {
+        color: #666; 
+      }
+    }
   }
 }
 
-ion-list {
+.page-container > ion-list {
   background: transparent;
 
-  p, h2, span.meal-time {
-    color: white;
+  .meal-item {
+    ion-label h2, ion-label p, .meal-time {
+      color: white;
+    }
   }
 }
 
 ion-fab {
   margin-bottom: calc(var(--ion-safe-area-bottom, 0) + 25px);
 }
+
+
