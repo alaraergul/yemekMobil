@@ -238,6 +238,14 @@ ion-modal {
       }
     }
   }
+
+  ion-card-title {
+    color: black;
+  }
+
+  ion-card {
+    --background: white;
+  }
 }
 
 .page-container > ion-list {
