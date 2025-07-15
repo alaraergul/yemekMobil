@@ -54,22 +54,17 @@ export class MealService {
         count: entry.count,
         timestamp: entry.timestamp
       };
-
-      await fetch(`${API_URL}/users/${user.id}/meals`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: selectedMeal.id,
-          count: entry.count,
-          timestamp: entry.timestamp
-        })
-      });
-
       
       data.push(mealEntry);
     }
+
+    await fetch(`${API_URL}/users/${user.id}/meals`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data)
+    });
 
     this.data$ = Promise.resolve(data);
     return true;
