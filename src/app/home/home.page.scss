@@ -287,13 +287,14 @@ ion-list.meals {
 
   @media (prefers-color-scheme: light) {
     color: #888;
+    background: white;
   }
 
   @media (prefers-color-scheme: dark) {
     color: #777;
+    background: black;
   }
 
-  background: white;
   border-radius: 16px;
 
   ion-icon {
