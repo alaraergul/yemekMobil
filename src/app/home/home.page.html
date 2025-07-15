@@ -130,7 +130,7 @@
         {{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Tüketimi
       </h2>
 
-      <ion-list lines="none" *ngIf="dataByDate.length > 0; else noData">
+      <ion-list class="meals" lines="none" *ngIf="dataByDate.length > 0; else noData">
         <ion-item *ngFor="let entry of dataByDate" class="meal-item">
           @let consumedAt = createDateFrom(entry.timestamp);
           <ion-label>
