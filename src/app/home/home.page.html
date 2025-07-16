@@ -30,86 +30,116 @@
       <div class="summary-grid">
         <div>
           <ion-card class="summary-card">
+            @let riskOfDailyPurine = getRisk(DataType.PURINE, getTotal(DataType.PURINE, dataByDate), user, 1);
+
             <ion-card-header>
               <ion-card-subtitle>Günlük Toplam Pürin</ion-card-subtitle>
-              <ion-card-title>{{ getTotal(DataType.PURINE, dataByDate).toFixed(0) }} / {{
-                authService.getLimits(user).purineLimit }} mg</ion-card-title>
+
+              <ion-card-title [style.color]="getColor(riskOfDailyPurine)">
+                <ion-icon [name]="getIcon(riskOfDailyPurine)"></ion-icon>
+                {{ getTotal(DataType.PURINE, dataByDate).toFixed(0) }} / {{authService.getLimits(user).purineLimit }} mg</ion-card-title>
             </ion-card-header>
+
             <ion-card-content>
-              <p>{{ getComment(DataType.PURINE, getTotal(DataType.PURINE, dataByDate), user) }}</p>
+              <p>{{ getComment(riskOfDailyPurine) }}</p>
             </ion-card-content>
           </ion-card>
 
           <ion-card class="summary-card">
+            @let riskOfWeeklyPurine = getRisk(DataType.PURINE, getWeeklyTotal(DataType.PURINE, data), user, 7);
+
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
                 <ion-toggle [(ngModel)]="chartModes.purine"></ion-toggle>
               </ion-card-subtitle>
 
-              <ion-card-title>{{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{
-                authService.getLimits(user).purineLimit * 7 }} mg</ion-card-title>
+              <ion-card-title [style.color]="getColor(riskOfWeeklyPurine)">
+                <ion-icon [name]="getIcon(riskOfWeeklyPurine)"></ion-icon>
+                {{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{authService.getLimits(user).purineLimit * 7 }} mg
+              </ion-card-title>
             </ion-card-header>
 
             <ion-card-content>
-              <p>{{ getWeeklyComment(DataType.PURINE, getWeeklyTotal(DataType.PURINE, data), user) }}</p>
+              <p>{{ getComment(riskOfWeeklyPurine) }}</p>
             </ion-card-content>
           </ion-card>
         </div>
 
         <div>
           <ion-card class="summary-card">
+            @let riskOfDailySugar = getRisk(DataType.SUGAR, getTotal(DataType.SUGAR, dataByDate), user, 1);
+
             <ion-card-header>
               <ion-card-subtitle>Günlük Toplam Şeker</ion-card-subtitle>
-              <ion-card-title>{{ getTotal(DataType.SUGAR, dataByDate).toFixed(0) }} / {{
-                authService.getLimits(user).sugarLimit }} g</ion-card-title>
+
+              <ion-card-title [style.color]="getColor(riskOfDailySugar)">
+                <ion-icon [name]="getIcon(riskOfDailySugar)"></ion-icon>
+                {{ getTotal(DataType.SUGAR, dataByDate).toFixed(0) }} / {{authService.getLimits(user).sugarLimit }} g
+              </ion-card-title>
             </ion-card-header>
 
             <ion-card-content>
-              <p>{{ getComment(DataType.SUGAR, getTotal(DataType.SUGAR, dataByDate), user) }}</p>
+              <p>{{ getComment(riskOfDailySugar) }}</p>
             </ion-card-content>
           </ion-card>
 
           <ion-card class="summary-card">
+            @let riskOfWeeklySugar = getRisk(DataType.SUGAR, getWeeklyTotal(DataType.SUGAR, data), user, 7);
+
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
                 <ion-toggle [(ngModel)]="chartModes.sugar"></ion-toggle>
               </ion-card-subtitle>
 
-              <ion-card-title>{{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{
-                authService.getLimits(user).sugarLimit * 7 }} g</ion-card-title>
+              <ion-card-title [style.color]="getColor(riskOfWeeklySugar)">
+                <ion-icon [name]="getIcon(riskOfWeeklySugar)"></ion-icon>
+                {{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{authService.getLimits(user).sugarLimit * 7 }} g
+              </ion-card-title>
             </ion-card-header>
 
             <ion-card-content>
-              <p>{{ getWeeklyComment(DataType.SUGAR, getWeeklyTotal(DataType.SUGAR, data), user) }}</p>
+              <p>{{ getComment(riskOfWeeklySugar) }}</p>
             </ion-card-content>
           </ion-card>
         </div>
 
         <div>
           <ion-card class="summary-card">
+            @let riskOfDailyKCAL = getRisk(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user, 1);
+
             <ion-card-header>
               <ion-card-subtitle>Günlük Toplam Kalori</ion-card-subtitle>
-              <ion-card-title>{{ getTotal(DataType.KCAL, dataByDate).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit }}</ion-card-title>
+
+              <ion-card-title [style.color]="getColor(riskOfDailyKCAL)">
+                <ion-icon [name]="getIcon(riskOfDailyKCAL)"></ion-icon>
+                {{ getTotal(DataType.KCAL, dataByDate).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit }}
+              </ion-card-title>
             </ion-card-header>
 
             <ion-card-content>
-              <p>{{ getComment(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user) }}</p>
+              <p>{{ getComment(riskOfDailyKCAL) }}</p>
             </ion-card-content>
           </ion-card>
 
           <ion-card class="summary-card">
+            @let riskOfWeeklyKCAL = getRisk(DataType.KCAL, getWeeklyTotal(DataType.KCAL, data), user, 7);
+
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
                 <ion-toggle [(ngModel)]="chartModes.kcal"></ion-toggle>
               </ion-card-subtitle>
 
-              <ion-card-title>{{ getWeeklyTotal(DataType.KCAL, data).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit * 7 }}</ion-card-title>
+              <ion-card-title [style.color]="getColor(riskOfWeeklyKCAL)">
+                <ion-icon [name]="getIcon(riskOfWeeklyKCAL)"></ion-icon>
+                {{ getWeeklyTotal(DataType.KCAL, data).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit * 7 }}
+              </ion-card-title>
             </ion-card-header>
+
             <ion-card-content>
-              <p>{{ getWeeklyComment(DataType.KCAL, getWeeklyTotal(DataType.KCAL, data), user) }}</p>
+              <p>{{ getComment(riskOfWeeklyKCAL) }}</p>
             </ion-card-content>
           </ion-card>
         </div>

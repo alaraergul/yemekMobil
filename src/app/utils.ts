@@ -10,6 +10,12 @@ export enum DataType {
   SUGAR
 };
 
+export enum Risk {
+  LOW,
+  MEDIUM,
+  HIGH
+}
+
 export enum Gender {
   MALE,
   FEMALE

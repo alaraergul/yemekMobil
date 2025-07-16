@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { meals } from 'src/app/data';
-import { MealEntry, Meal, User, DataType } from 'src/app/utils';
+import { MealEntry, Meal, User, DataType, Risk } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MealService } from 'src/app/services/meal/meal.service';
 import { ChartComponent } from 'src/app/components/chart.component';
@@ -253,30 +253,66 @@ export class HomePage {
     }
   }
 
-  getComment(type: DataType, data: number, user: User): string {
+  getRisk(type: DataType, data: number, user: User, multiplier: number) {
     const limits = this.authService.getLimits(user);
-    let name: string, limit: number;
+    let limit: number;
+
     switch (type) {
-      case DataType.PURINE: name = "pürin"; limit = limits.purineLimit; break;
-      case DataType.KCAL: name = "kalori"; limit = limits.kcalLimit; break;
-      case DataType.SUGAR: name = "şeker"; limit = limits.sugarLimit; break;
+      case DataType.PURINE:
+        limit = limits.purineLimit * multiplier;
+        break;
+
+      case DataType.KCAL:
+        limit = limits.kcalLimit * multiplier;
+        break;
+
+      case DataType.SUGAR:
+        limit = limits.sugarLimit * multiplier;
+        break;
     }
-    if (data < (limit * 0.6)) return "İyi gidiyorsun!";
-    if (data < limit) return `Dikkatli olmalısın, günlük ${name} alımının %60'ını doldurdun.`;
-    return `Çok fazla ${name} aldın!`;
+
+    if (data < (limit * 0.6)) return Risk.LOW;
+    if (data < limit) return Risk.MEDIUM;
+    return Risk.HIGH;
   }
 
-  getWeeklyComment(type: DataType, data: number, user: User): string {
-    const limits = this.authService.getLimits(user);
-    let name: string, limit: number;
-    switch (type) {
-      case DataType.PURINE: name = "pürin"; limit = limits.purineLimit * 7; break;
-      case DataType.KCAL: name = "kalori"; limit = limits.kcalLimit * 7; break;
-      case DataType.SUGAR: name = "şeker"; limit = limits.sugarLimit * 7; break;
+  getComment(risk: Risk): string {
+    switch (risk) {
+      case Risk.LOW:
+        return "Tüketimin oldukça düşük.";
+
+      case Risk.MEDIUM:
+        return "Limitinin %60'ını doldurdun.";
+
+      case Risk.HIGH:
+        return "Limiti aştın!";
     }
-    if (data < (limit * 0.6)) return `Harika gidiyorsun! Haftalık ${name} alımın oldukça düşük.`;
-    if (data < limit) return `İyi gidiyorsun ama dikkatli ol, haftalık ${name} alımının %60'ını doldurdun.`;
-    return `Bu hafta çok fazla ${name} alındı! Daha dikkatli ol.`;
+  }
+
+  getIcon(risk: Risk): string {
+    switch (risk) {
+      case Risk.LOW:
+        return "checkmark-circle-outline";
+
+      case Risk.MEDIUM:
+        return "alert-circle-outline";
+
+      case Risk.HIGH:
+        return "close-circle-outline";
+    }
+  }
+
+  getColor(risk: Risk): string {
+    switch (risk) {
+      case Risk.LOW:
+        return "green";
+
+      case Risk.MEDIUM:
+        return "orange";
+
+      case Risk.HIGH:
+        return "red";
+    }
   }
 
   getWeeklyNumberData(entries: MealEntry[]) {
