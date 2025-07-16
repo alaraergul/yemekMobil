@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
@@ -42,12 +42,40 @@ export class HomePage {
   currentDateString: string;
   currentTimeString: string;
 
-  isGraphMode = false;
+  chartModes = {
+    purine: false,
+    sugar: false,
+    kcal: false
+  };
+
+
   isModalOpen = false;
   selectedCategory: string | null = null;
   
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.resetCurrentMealEntry();
+  }
+
+  get isGraphMode() {
+    return this.chartModes.kcal || this.chartModes.purine || this.chartModes.sugar;
+  }
+
+  handeChangeMode(event: number) {
+    switch (event) {
+      case 0:
+        this.chartModes.purine = !this.chartModes.purine;
+        break;
+
+      case 1:
+        this.chartModes.sugar = !this.chartModes.sugar;
+        break;
+
+      case 2:
+        this.chartModes.kcal = !this.chartModes.kcal
+        break;
+    }
+
+    this.cdr.detectChanges();
   }
 
   onMainDateChange(event: any) {

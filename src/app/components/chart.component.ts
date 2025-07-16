@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MealEntry } from '../utils';
 import { ChartConfiguration, ChartType, registerables } from 'chart.js';
@@ -71,6 +71,11 @@ export class ChartComponent implements OnChanges {
   @Input() data: MealEntry[] = [];
   @Input() date?: { day: number; month: number; year: number };
 
+  @Input() kcalMode: boolean;
+  @Input() sugarMode: boolean;
+  @Input() purineMode: boolean;
+  @Output() changeMode = new EventEmitter<number>();
+
   chartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: [],
@@ -88,6 +93,7 @@ export class ChartComponent implements OnChanges {
           font: { size: 13 },
           color: "#333" 
         },
+        onClick: this.onLegendClick.bind(this)
       },
       tooltip: {
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -116,10 +122,26 @@ export class ChartComponent implements OnChanges {
       y: {
         beginAtZero: true,
         ticks: { font: { size: 12 }, color: "#666" }, 
-        grid: { color: "#e9e9e9" } 
+        grid: { color: "#E9E9E9" } 
       }
     },
   };
+
+  private onLegendClick(e, legendItem, legend) {
+    const index = legendItem.datasetIndex;
+    const ci = legend.chart;
+
+    if (ci.isDatasetVisible(index)) {
+      ci.hide(index);
+      legendItem.hidden = true;
+    } else {
+      ci.show(index);
+      legendItem.hidden = false;
+    }
+
+    this.changeMode.emit(index);
+  }
+ 
 
   ngOnChanges(): void {
     if (!this.data || !this.date) return;
@@ -151,29 +173,32 @@ export class ChartComponent implements OnChanges {
         {
           data: values.map((value) => value[0]),
           label: "Pürin",
-          borderColor: "#574bc0", 
+          borderColor: "#574BC0", 
           backgroundColor: "rgba(87, 75, 192, 0.2)",
           fill: true,
           tension: 0.4,
-          pointBackgroundColor: "#574bc0",
+          pointBackgroundColor: "#574BC0",
+          hidden: !this.purineMode
         },
         {
           data: values.map((value) => value[1]),
           label: "Şeker",
-          borderColor: "#2dd36f", 
+          borderColor: "#2DD36F", 
           backgroundColor: "rgba(45, 211, 111, 0.2)",
           fill: true,
           tension: 0.4,
-          pointBackgroundColor: "#2dd36f",
+          pointBackgroundColor: "#2DD36F",
+          hidden: !this.sugarMode
         },
         {
           data: values.map((value) => value[2]),
           label: "kcal",
-          borderColor: "#ffc409", 
+          borderColor: "#FFC409", 
           backgroundColor: "rgba(255, 196, 9, 0.2)",
           fill: true,
           tension: 0.4,
-          pointBackgroundColor: "#ffc409",
+          pointBackgroundColor: "#FFC409",
+          hidden: !this.kcalMode
         },
       ],
     };

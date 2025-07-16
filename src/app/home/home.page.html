@@ -44,7 +44,7 @@
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
-                <ion-toggle [(ngModel)]="isGraphMode"></ion-toggle>
+                <ion-toggle [(ngModel)]="chartModes.purine"></ion-toggle>
               </ion-card-subtitle>
 
               <ion-card-title>{{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{
@@ -74,7 +74,7 @@
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
-                <ion-toggle [(ngModel)]="isGraphMode"></ion-toggle>
+                <ion-toggle [(ngModel)]="chartModes.sugar"></ion-toggle>
               </ion-card-subtitle>
 
               <ion-card-title>{{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{
@@ -103,7 +103,7 @@
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
-                <ion-toggle [(ngModel)]="isGraphMode"></ion-toggle>
+                <ion-toggle [(ngModel)]="chartModes.kcal"></ion-toggle>
               </ion-card-subtitle>
 
               <ion-card-title>{{ getWeeklyTotal(DataType.KCAL, data).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit * 7 }}</ion-card-title>
@@ -117,7 +117,7 @@
 
       <div class="conditional-content">
         @if (isGraphMode) {
-        <app-chart [data]="data" [date]="date"></app-chart>
+        <app-chart [data]="data" [date]="date" [purineMode]="chartModes.purine" [sugarMode]="chartModes.sugar" [kcalMode]="chartModes.kcal" (changeMode)="handeChangeMode($event)"></app-chart>
         } @else {
         @let weeklyData = getWeeklyNumberData(data);
         @let names = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
