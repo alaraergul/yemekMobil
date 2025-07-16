@@ -133,6 +133,7 @@
       <ion-list class="meals" lines="none" *ngIf="dataByDate.length > 0; else noData">
         <ion-item *ngFor="let entry of dataByDate" class="meal-item">
           @let consumedAt = createDateFrom(entry.timestamp);
+
           <ion-label>
             <h2>{{ entry.meal.name }}</h2>
             <p>Porsiyon: {{ entry.count }}</p>
@@ -145,6 +146,7 @@
           <div class="item-actions">
             <span class="meal-time">{{ consumedAt.getHours().toString().padStart(2, "0") }}:{{
               consumedAt.getMinutes().toString().padStart(2, "0") }}</span>
+
             <ion-button fill="clear" size="small" class="delete-button"
               (click)="deleteMeal(entry.meal.id, entry.timestamp)">
               <ion-icon slot="icon-only" name="trash-outline"></ion-icon>

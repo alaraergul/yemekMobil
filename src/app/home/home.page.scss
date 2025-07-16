@@ -374,3 +374,7 @@ ion-modal {
     margin: 8px 16px; 
   }
 }
+
+ion-fab {
+  margin-bottom: calc(var(--ion-safe-area-bottom, 0) + 25px);
+}
