@@ -259,7 +259,7 @@ export class HomePage {
         break;
     }
 
-    if (data < (limit * 0.6)) return Risk.LOW;
+    if (data < (limit * 0.85)) return Risk.LOW;
     if (data < limit) return Risk.MEDIUM;
     return Risk.HIGH;
   }
@@ -270,7 +270,7 @@ export class HomePage {
         return "Tüketimin oldukça düşük.";
 
       case Risk.MEDIUM:
-        return "Limitinin %60'ını doldurdun.";
+        return "Limitinin %85'ini doldurdun.";
 
       case Risk.HIGH:
         return "Limiti aştın!";
