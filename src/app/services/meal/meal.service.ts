@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { API_URL, Meal, MealEntry } from 'src/app/utils';
 import { AuthService } from '../auth/auth.service';
 import { meals } from 'src/app/data';
+import { timestamp } from 'rxjs';
 
 @Injectable({ providedIn: "root" })
 export class MealService {
@@ -44,6 +45,7 @@ export class MealService {
 
     const meals = this.getMeals();
     const data = await this.data$ || [];
+    const willBeAdded = [];
 
     for (const entry of mealEntries) {
       const selectedMeal = meals.find((meal) => meal.id === entry.meal.id);
@@ -54,8 +56,13 @@ export class MealService {
         count: entry.count,
         timestamp: entry.timestamp
       };
-      
+
       data.push(mealEntry);
+      willBeAdded.push({
+        id: selectedMeal.id,
+        count: entry.count,
+        timestamp: entry.timestamp
+      })
     }
 
     await fetch(`${API_URL}/users/${user.id}/meals`, {
@@ -63,7 +70,7 @@ export class MealService {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(willBeAdded)
     });
 
     this.data$ = Promise.resolve(data);
