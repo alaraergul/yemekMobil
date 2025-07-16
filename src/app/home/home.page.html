@@ -235,14 +235,14 @@
       <ion-content class="ion-padding">
         <ion-list>
           <ion-item>
-            <ion-input placeholder="Yemek ara" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery" />
+            <ion-input #searchInput placeholder="Yemek ara" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery" />
           </ion-item>
 
-          <ion-item>
+          <ion-item *ngIf="searchResults.length != 0">
             <div forceOverscroll="false" class="search-results">
-              <ion-list *ngIf="searchResults.length != 0">
+              <ion-list>
                 <ion-item *ngFor="let meal of searchResults;" (click)="selectSearchResult(meal)">
-                  <p>{{ meal.name.split("(").slice(0, -1).join("(") }}</p>
+                  <p>{{ meal.name }}</p>
                 </ion-item>
               </ion-list>
             </div>
@@ -317,7 +317,7 @@
           </ion-card-content>
         </ion-card>
 
-        <ion-button expand="block" (click)="addMeal()" class="ion-margin-top" [disabled]="mealEntries.length === 0">
+        <ion-button expand="block" (click)="addMeal()" class="ion-margin-top bottom-button" [disabled]="mealEntries.length === 0">
           <ion-icon name="add-circle-outline" slot="start"></ion-icon>
           Seçilenleri Ekle
         </ion-button>

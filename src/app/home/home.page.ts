@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController } from '@ionic/angular';
+import { IonicModule, IonInput, ToastController } from '@ionic/angular';
 import { meals } from 'src/app/data';
 import { MealEntry, Meal, User, DataType, Risk } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -43,6 +43,7 @@ export class HomePage {
   currentTimeString: string;
   chartType: DataType;
 
+  @ViewChild("searchInput", { static: false }) searchInput: IonInput;
   isModalOpen = false;
   searchQuery: string;
   searchResults: Meal[] = [];
@@ -56,6 +57,7 @@ export class HomePage {
     this.selectedCategory = meal.category;
     this.currentMealEntry.meal = meal;
     this.searchQuery = null;
+    this.searchResults = [];
     this.cdr.detectChanges();
   }
 
@@ -138,6 +140,8 @@ export class HomePage {
     this.resetCurrentMealEntry();
     this.currentMealEntry.timestamp = timestamp; 
     this.updateStringInputsFromTimestamp();
+
+    this.searchInput.setFocus();
   }
   
   removeMealEntryFromList(index: number) {

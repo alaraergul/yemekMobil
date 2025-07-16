@@ -359,7 +359,7 @@ ion-modal {
     margin: 0 16px 16px 16px;
 
     ion-item {
-      --padding-start: 16px;
+      padding: 4px 0;
       border-radius: 12px;
 
       @media (prefers-color-scheme: light) {
@@ -397,27 +397,31 @@ ion-modal {
         box-shadow: none;
       }
     }
+  }
 
-    > ion-button.ion-margin-top {
-      --background: #2dd36f;
-      --background-activated: #28b860;
-      --border-radius: 12px;
-      height: 48px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-transform: none;
-      margin: 8px 16px; 
+  ion-button.ion-margin-top {
+    --background: #2dd36f;
+    --background-activated: #28b860;
+    --border-radius: 12px;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: none;
+    margin: 8px 16px; 
 
-      @media (prefers-color-scheme: light) {
-        --color: white;
-        --box-shadow: 0 4px 15px rgba(45, 211, 111, 0.2);
-      }
-
-      @media (prefers-color-scheme: dark) {
-        --color: black;
-        --box-shadow: 0 4px 15px rgba(215, 44, 144, 0.2);
-      }
+    @media (prefers-color-scheme: light) {
+      --color: white;
+      --box-shadow: 0 4px 15px rgba(45, 211, 111, 0.2);
     }
+
+    @media (prefers-color-scheme: dark) {
+      --color: black;
+      --box-shadow: 0 4px 15px rgba(215, 44, 144, 0.2);
+    }
+  }
+
+  .bottom-button {
+    margin-bottom: 32px !important;
   }
 }
 
