@@ -18,11 +18,11 @@ export enum Gender {
 export interface User {
   id: string;
   username?: string;
-  weight?: number;
+  weight: number;
   sugarLimit?: number;
   purineLimit?: number;
   kcalLimit?: number;
-  gender?: Gender;
+  gender: Gender;
 };
 
 export interface Error {

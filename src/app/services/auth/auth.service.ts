@@ -1,15 +1,14 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { API_URL, Error, Gender, User } from 'src/app/utils';
-import { CookieService } from 'ngx-cookie-service';
+import { Preferences } from '@capacitor/preferences';
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
   public isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public user$: Promise<User | null> = Promise.resolve(null);
   public error$?: Promise<Error>;
-  private cookieService = inject(CookieService);
 
   constructor(private http: HttpClient) {}
 
@@ -24,26 +23,22 @@ export class AuthService {
   }
 
   async initialize() {
-    return new Promise((resolve) => {
-      if (typeof document !== "undefined" && document.cookie) {
-        const username = this.cookieService.get("username");
-        const password = this.cookieService.get("password");
+    return new Promise(async (resolve) => {
+      const {value: username} = await Preferences.get({"key": "username"});
+      const {value: password} = await Preferences.get({"key": "password"});
 
-        if (!username || !password) return resolve(false);
+      if (!username || !password) return resolve(false);
 
-        this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(async (response) => {
-          if (response && (response as Error).code) {
-            this.error$ = Promise.resolve(response as Error);
-            return resolve(false);
-          }
+      this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(async (response) => {
+        if (response && (response as Error).code) {
+          this.error$ = Promise.resolve(response as Error);
+          return resolve(false);
+        }
 
-          this.user$ = Promise.resolve(response as User);
-          this.isLogged$.next(true);
-          resolve(true);
-        });
-      } else {
-        resolve(false);
-      }
+        this.user$ = Promise.resolve(response as User);
+        this.isLogged$.next(true);
+        resolve(true);
+      });
     });
   }
 
@@ -62,8 +57,8 @@ export class AuthService {
 
   async editUser(purineLimit?: number, sugarLimit?: number, kcalLimit?: number, gender?: Gender, weight?: number) {
     const user = await this.user$;
-    const username = this.cookieService.get("username");
-    const password = this.cookieService.get("password");
+    const {value: username} = await Preferences.get({"key": "username"});
+    const {value: password} = await Preferences.get({"key": "password"});
 
     const updates = { 
       purineLimit, 
@@ -96,10 +91,10 @@ export class AuthService {
   register(username: string, password: string, weight: number, gender: Gender): Promise<boolean> {
     this.error$ = undefined;
 
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (!username || !password || !weight) return resolve(false);
 
-      this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight, gender }).subscribe(response => {
+      this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight, gender }).subscribe(async (response) => {
         if (response && (response as Error).code) {
           this.error$ = Promise.resolve(response as Error);
           return resolve(false);
@@ -107,8 +102,8 @@ export class AuthService {
 
         this.user$ = Promise.resolve(response as User);
         this.isLogged$.next(true);
-        this.cookieService.set("username", username);
-        this.cookieService.set("password", password);
+        await Preferences.set({"key": "username", "value": username});
+        await Preferences.set({"key": "password", "value": password});
 
         return resolve(true);
       });
@@ -118,8 +113,8 @@ export class AuthService {
   login(username: string, password: string): Promise<boolean> {
     this.error$ = undefined;
 
-    return new Promise((resolve) => {
-      this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(response => {
+    return new Promise(async (resolve) => {
+      this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(async (response) => {
         if (response && (response as Error).code) {
           this.error$ = Promise.resolve(response as Error);
           return resolve(false);
@@ -127,19 +122,19 @@ export class AuthService {
 
         this.user$ = Promise.resolve(response as User);
         this.isLogged$.next(true);
-        this.cookieService.set("username", username);
-        this.cookieService.set("password", password);
+        await Preferences.set({"key": "username", "value": username});
+        await Preferences.set({"key": "password", "value": password});
 
         return resolve(true);
       });
     });
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
     this.error$ = undefined;
     this.user$ = Promise.resolve(null);
     this.isLogged$.next(false);
-    this.cookieService.delete("username");
-    this.cookieService.delete("password");
+    await Preferences.remove({"key": "username"});
+    await Preferences.remove({"key": "password"});
   }
 }
