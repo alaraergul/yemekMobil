@@ -51,7 +51,7 @@
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
-                <ion-toggle [(ngModel)]="chartModes.purine"></ion-toggle>
+                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.PURINE : DataType.NONE)" [checked]="chartType == DataType.PURINE"></ion-toggle>
               </ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfWeeklyPurine)">
@@ -64,6 +64,8 @@
               <p>{{ getComment(riskOfWeeklyPurine) }}</p>
             </ion-card-content>
           </ion-card>
+
+          <app-chart *ngIf="chartType == DataType.PURINE" [data]="data" [date]="date" [type]="chartType"></app-chart>
         </div>
 
         <div>
@@ -90,7 +92,7 @@
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
-                <ion-toggle [(ngModel)]="chartModes.sugar"></ion-toggle>
+                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.SUGAR : DataType.NONE)" [checked]="chartType == DataType.SUGAR"></ion-toggle>
               </ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfWeeklySugar)">
@@ -103,6 +105,8 @@
               <p>{{ getComment(riskOfWeeklySugar) }}</p>
             </ion-card-content>
           </ion-card>
+
+          <app-chart *ngIf="chartType == DataType.SUGAR" [data]="data" [date]="date" [type]="chartType"></app-chart>
         </div>
 
         <div>
@@ -129,7 +133,7 @@
             <ion-card-header>
               <ion-card-subtitle>
                 Bu Haftanın Toplamı
-                <ion-toggle [(ngModel)]="chartModes.kcal"></ion-toggle>
+                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.KCAL : DataType.NONE)" [checked]="chartType == DataType.KCAL"></ion-toggle>
               </ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfWeeklyKCAL)">
@@ -142,13 +146,12 @@
               <p>{{ getComment(riskOfWeeklyKCAL) }}</p>
             </ion-card-content>
           </ion-card>
+
+          <app-chart *ngIf="chartType == DataType.KCAL" [data]="data" [date]="date" [type]="chartType"></app-chart>
         </div>
       </div>
 
       <div class="conditional-content">
-        @if (isGraphMode) {
-        <app-chart [data]="data" [date]="date" [purineMode]="chartModes.purine" [sugarMode]="chartModes.sugar" [kcalMode]="chartModes.kcal" (changeMode)="handeChangeMode($event)"></app-chart>
-        } @else {
         @let weeklyData = getWeeklyNumberData(data);
         @let names = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
         <ion-card class="summary-card weekly-summary">
@@ -170,7 +173,6 @@
             </div>
           </ion-card-content>
         </ion-card>
-        }
       </div>
 
       <h2 class="section-title">

@@ -41,13 +41,7 @@ export class HomePage {
 
   currentDateString: string;
   currentTimeString: string;
-
-  chartModes = {
-    purine: false,
-    sugar: false,
-    kcal: false
-  };
-
+  chartType: DataType;
 
   isModalOpen = false;
   searchQuery: string;
@@ -56,10 +50,6 @@ export class HomePage {
 
   constructor(private cdr: ChangeDetectorRef) {
     this.resetCurrentMealEntry();
-  }
-
-  get isGraphMode() {
-    return this.chartModes.kcal || this.chartModes.purine || this.chartModes.sugar;
   }
 
   selectSearchResult(meal: Meal) {
@@ -74,24 +64,6 @@ export class HomePage {
     const meals = this.mealService.getMeals();
 
     this.searchResults = meals.filter((meal) => meal.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()));
-  }
-
-  handeChangeMode(event: number) {
-    switch (event) {
-      case 0:
-        this.chartModes.purine = !this.chartModes.purine;
-        break;
-
-      case 1:
-        this.chartModes.sugar = !this.chartModes.sugar;
-        break;
-
-      case 2:
-        this.chartModes.kcal = !this.chartModes.kcal
-        break;
-    }
-
-    this.cdr.detectChanges();
   }
 
   onMainDateChange(event: any) {

@@ -94,10 +94,16 @@ ion-content {
       box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
     }
 
-    display: grid;
-    grid-template-columns: auto auto;
-    border-radius: 16px;
-    gap: 0;
+    & {
+      display: grid;
+      grid-template-columns: auto auto;
+      border-radius: 16px;
+      gap: 0;
+    }
+
+    app-chart {
+      grid-column: 1 / span 2;
+    }
   }
 }
 

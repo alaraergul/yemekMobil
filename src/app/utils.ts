@@ -5,6 +5,7 @@ export type Nullable<T> = {
 };
 
 export enum DataType {
+  NONE,
   PURINE,
   KCAL,
   SUGAR

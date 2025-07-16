@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MealEntry } from '../utils';
+import { DataType, MealEntry } from '../utils';
 import { ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { IonicModule } from '@ionic/angular';
@@ -70,11 +70,7 @@ Chart.register(...registerables);
 export class ChartComponent implements OnChanges {
   @Input() data: MealEntry[] = [];
   @Input() date?: { day: number; month: number; year: number };
-
-  @Input() kcalMode: boolean;
-  @Input() sugarMode: boolean;
-  @Input() purineMode: boolean;
-  @Output() changeMode = new EventEmitter<number>();
+  @Input() type: DataType;
 
   chartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
@@ -92,8 +88,7 @@ export class ChartComponent implements OnChanges {
         labels: {
           font: { size: 13 },
           color: "#333" 
-        },
-        onClick: this.onLegendClick.bind(this)
+        }
       },
       tooltip: {
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -138,8 +133,6 @@ export class ChartComponent implements OnChanges {
       ci.show(index);
       legendItem.hidden = false;
     }
-
-    this.changeMode.emit(index);
   }
  
 
@@ -169,38 +162,45 @@ export class ChartComponent implements OnChanges {
     
     this.chartData = {
       labels: ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"], 
-      datasets: [
-        {
+      datasets: []
+    };
+
+    switch (this.type) {
+      case DataType.PURINE:
+        this.chartData.datasets.push({
           data: values.map((value) => value[0]),
           label: "Pürin",
           borderColor: "#574BC0", 
           backgroundColor: "rgba(87, 75, 192, 0.2)",
           fill: true,
           tension: 0.4,
-          pointBackgroundColor: "#574BC0",
-          hidden: !this.purineMode
-        },
-        {
+          pointBackgroundColor: "#574BC0"
+        });
+        break;
+
+      case DataType.SUGAR:
+        this.chartData.datasets.push({
           data: values.map((value) => value[1]),
           label: "Şeker",
           borderColor: "#2DD36F", 
           backgroundColor: "rgba(45, 211, 111, 0.2)",
           fill: true,
           tension: 0.4,
-          pointBackgroundColor: "#2DD36F",
-          hidden: !this.sugarMode
-        },
-        {
+          pointBackgroundColor: "#2DD36F"
+        });
+        break;
+
+      case DataType.KCAL:
+        this.chartData.datasets.push({
           data: values.map((value) => value[2]),
           label: "kcal",
           borderColor: "#FFC409", 
           backgroundColor: "rgba(255, 196, 9, 0.2)",
           fill: true,
           tension: 0.4,
-          pointBackgroundColor: "#FFC409",
-          hidden: !this.kcalMode
-        },
-      ],
-    };
+          pointBackgroundColor: "#FFC409"
+        });
+        break;
+    }
   }
 }
