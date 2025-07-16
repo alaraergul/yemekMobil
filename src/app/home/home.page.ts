@@ -50,14 +50,30 @@ export class HomePage {
 
 
   isModalOpen = false;
+  searchQuery: string;
+  searchResults: Meal[] = [];
   selectedCategory: string | null = null;
-  
+
   constructor(private cdr: ChangeDetectorRef) {
     this.resetCurrentMealEntry();
   }
 
   get isGraphMode() {
     return this.chartModes.kcal || this.chartModes.purine || this.chartModes.sugar;
+  }
+
+  selectSearchResult(meal: Meal) {
+    this.selectedCategory = meal.category;
+    this.currentMealEntry.meal = meal;
+    this.searchQuery = null;
+    this.cdr.detectChanges();
+  }
+
+  handleSearch(event: CustomEvent) {
+    const value: string = event.detail.value;
+    const meals = this.mealService.getMeals();
+
+    this.searchResults = meals.filter((meal) => meal.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()));
   }
 
   handeChangeMode(event: number) {

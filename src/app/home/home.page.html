@@ -232,7 +232,21 @@
 
       <ion-content class="ion-padding">
         <ion-list>
-          <ion-item class="modal-input-item">
+          <ion-item>
+            <ion-input placeholder="Yemek ara" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery" />
+          </ion-item>
+
+          <ion-item>
+            <div forceOverscroll="false" class="search-results">
+              <ion-list *ngIf="searchResults.length != 0">
+                <ion-item *ngFor="let meal of searchResults;" (click)="selectSearchResult(meal)">
+                  <p>{{ meal.name.split("(").slice(0, -1).join("(") }}</p>
+                </ion-item>
+              </ion-list>
+            </div>
+          </ion-item>
+
+          <ion-item>
             <ion-select label="Kategori" placeholder="Kategori Seçin" [(ngModel)]="selectedCategory">
               <ion-select-option *ngFor="let category of getCategoryNames()" [value]="category">
                 {{ category }}
@@ -241,27 +255,27 @@
           </ion-item>
 
           @if (selectedCategory) {
-          <ion-item class="modal-input-item">
-            <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
-              [value]="currentMealEntry.meal?.id">
-              <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
-                {{ meal.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+            <ion-item>
+              <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
+                [value]="currentMealEntry.meal?.id">
+                <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
+                  {{ meal.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
           }
 
-          <ion-item class="modal-input-item">
+          <ion-item>
             <ion-input label="Porsiyon" label-placement="floating" type="number" inputmode="decimal" min="1"
               [(ngModel)]="currentMealEntry.count"></ion-input>
           </ion-item>
 
-          <ion-item class="modal-input-item">
+          <ion-item>
             <ion-input label="Tarih" label-placement="floating" type="date" [value]="currentDateString"
               (ionChange)="onDateChange($event)"></ion-input>
           </ion-item>
 
-          <ion-item class="modal-input-item">
+          <ion-item>
             <ion-input label="Saat" label-placement="floating" type="time" [value]="currentTimeString"
               (ionChange)="onTimeChange($event)"></ion-input>
           </ion-item>
