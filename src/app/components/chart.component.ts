@@ -13,8 +13,7 @@ Chart.register(...registerables);
   standalone: true,
   imports: [CommonModule, BaseChartDirective, IonicModule],
   styles: [`
-    .chart-card {
-      background: white; 
+    .chart-card { 
       border-radius: 20px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       padding: 10px;
@@ -22,11 +21,10 @@ Chart.register(...registerables);
     }
 
     ion-card-content {
-      height: 300px;
+      height: 200px;
     }
 
     ion-card-title {
-      color: #1e2023; 
       font-size: 1.2rem;
       font-weight: 700;
       padding-left: 6px;
@@ -35,16 +33,6 @@ Chart.register(...registerables);
     canvas {
       height: 100% !important;
       width: 100% !important;
-    }
-
-    .empty-chart-state {
-        min-height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        background: #f9f9f9;
-        border-radius: 16px;
     }
   `],
   template: `
@@ -80,14 +68,15 @@ export class ChartComponent implements OnChanges {
   chartType: ChartType = "line";
 
   chartOptions: ChartConfiguration<"line">["options"] = {
+    backgroundColor: "#ff0000",
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top",
+        align: "end",
         labels: {
-          font: { size: 13 },
-          color: "#333" 
+          font: { size: 13 }
         }
       },
       tooltip: {
@@ -117,24 +106,10 @@ export class ChartComponent implements OnChanges {
       y: {
         beginAtZero: true,
         ticks: { font: { size: 12 }, color: "#666" }, 
-        grid: { color: "#E9E9E9" } 
+        grid: { color: "#E9E9E9" }
       }
     },
   };
-
-  private onLegendClick(e, legendItem, legend) {
-    const index = legendItem.datasetIndex;
-    const ci = legend.chart;
-
-    if (ci.isDatasetVisible(index)) {
-      ci.hide(index);
-      legendItem.hidden = true;
-    } else {
-      ci.show(index);
-      legendItem.hidden = false;
-    }
-  }
- 
 
   ngOnChanges(): void {
     if (!this.data || !this.date) return;

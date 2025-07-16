@@ -35,7 +35,7 @@ export class AuthPage {
   regUsername = '';
   regPassword = '';
   regWeight: number | null = null;
-  regGender: Gender;
+  regGender: Gender | null = null;
 
   constructor(
     private authService: AuthService,
@@ -70,7 +70,7 @@ export class AuthPage {
   }
 
   async register() {
-    if (!this.regUsername || !this.regPassword || this.regWeight === null || !this.regGender) {
+    if (!this.regUsername || !this.regPassword || this.regWeight === null || this.regGender == null) {
       this.showToast('Lütfen tüm alanları doldurunuz.', 'warning');
       return;
     }
