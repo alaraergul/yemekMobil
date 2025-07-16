@@ -19,83 +19,102 @@
 
       <ion-card class="control-panel">
         <ion-item lines="none">
-          <ion-input label="Tarih" label-placement="floating" type="date"
+          <ion-input type="date"
             [value]="getDateString(date.day, date.month + 1, date.year)"
             [max]="getDateString(today.getDate(), today.getMonth() + 1, today.getFullYear())"
             (ionChange)="onMainDateChange($event)">
           </ion-input>
         </ion-item>
-        <ion-item lines="none">
-          <ion-toggle [(ngModel)]="isGraphMode" label-placement="start">Haftalık Grafik</ion-toggle>
-        </ion-item>
       </ion-card>
 
       <div class="summary-grid">
-        <ion-card class="summary-card">
-          <ion-card-header>
-            <ion-card-subtitle>Günlük Toplam Pürin</ion-card-subtitle>
-            <ion-card-title>{{ getTotal(DataType.PURINE, dataByDate).toFixed(0) }} / {{
-              authService.getLimits(user).purineLimit }} mg</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>{{ getComment(DataType.PURINE, getTotal(DataType.PURINE, dataByDate), user) }}</p>
-          </ion-card-content>
-        </ion-card>
+        <div>
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>Günlük Toplam Pürin</ion-card-subtitle>
+              <ion-card-title>{{ getTotal(DataType.PURINE, dataByDate).toFixed(0) }} / {{
+                authService.getLimits(user).purineLimit }} mg</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p>{{ getComment(DataType.PURINE, getTotal(DataType.PURINE, dataByDate), user) }}</p>
+            </ion-card-content>
+          </ion-card>
 
-        <ion-card class="summary-card">
-          <ion-card-header>
-            <ion-card-subtitle>Bu Haftanın Toplamı</ion-card-subtitle>
-            <ion-card-title>{{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{
-              authService.getLimits(user).purineLimit * 7 }} mg</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>{{ getWeeklyComment(DataType.PURINE, getWeeklyTotal(DataType.PURINE, data), user) }}</p>
-          </ion-card-content>
-        </ion-card>
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>
+                Bu Haftanın Toplamı
+                <ion-toggle [(ngModel)]="isGraphMode"></ion-toggle>
+              </ion-card-subtitle>
 
-        <ion-card class="summary-card">
-          <ion-card-header>
-            <ion-card-subtitle>Günlük Toplam Şeker</ion-card-subtitle>
-            <ion-card-title>{{ getTotal(DataType.SUGAR, dataByDate).toFixed(0) }} / {{
-              authService.getLimits(user).sugarLimit }} g</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>{{ getComment(DataType.SUGAR, getTotal(DataType.SUGAR, dataByDate), user) }}</p>
-          </ion-card-content>
-        </ion-card>
+              <ion-card-title>{{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{
+                authService.getLimits(user).purineLimit * 7 }} mg</ion-card-title>
+            </ion-card-header>
 
-        <ion-card class="summary-card">
-          <ion-card-header>
-            <ion-card-subtitle>Bu Haftanın Toplamı</ion-card-subtitle>
-            <ion-card-title>{{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{
-              authService.getLimits(user).sugarLimit * 7 }} g</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>{{ getWeeklyComment(DataType.SUGAR, getWeeklyTotal(DataType.SUGAR, data), user) }}</p>
-          </ion-card-content>
-        </ion-card>
-
-        <ion-card class="summary-card">
-          <ion-card-header>
-            <ion-card-subtitle>Günlük Toplam Kalori</ion-card-subtitle>
-            <ion-card-title>{{ getTotal(DataType.KCAL, dataByDate).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit }}</ion-card-title>
-          </ion-card-header>
-
-          <ion-card-content>
-            <p>{{ getComment(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user) }}</p>
-          </ion-card-content>
-        </ion-card>
-
-        <ion-card class="summary-card">
-          <ion-card-header>
-            <ion-card-subtitle>Bu Haftanın Toplamı</ion-card-subtitle>
-            <ion-card-title>{{ getWeeklyTotal(DataType.KCAL, data).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit * 7 }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>{{ getWeeklyComment(DataType.KCAL, getWeeklyTotal(DataType.KCAL, data), user) }}</p>
-          </ion-card-content>
-        </ion-card>
+            <ion-card-content>
+              <p>{{ getWeeklyComment(DataType.PURINE, getWeeklyTotal(DataType.PURINE, data), user) }}</p>
+            </ion-card-content>
+          </ion-card>
         </div>
+
+        <div>
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>Günlük Toplam Şeker</ion-card-subtitle>
+              <ion-card-title>{{ getTotal(DataType.SUGAR, dataByDate).toFixed(0) }} / {{
+                authService.getLimits(user).sugarLimit }} g</ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p>{{ getComment(DataType.SUGAR, getTotal(DataType.SUGAR, dataByDate), user) }}</p>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>
+                Bu Haftanın Toplamı
+                <ion-toggle [(ngModel)]="isGraphMode"></ion-toggle>
+              </ion-card-subtitle>
+
+              <ion-card-title>{{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{
+                authService.getLimits(user).sugarLimit * 7 }} g</ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p>{{ getWeeklyComment(DataType.SUGAR, getWeeklyTotal(DataType.SUGAR, data), user) }}</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+        <div>
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>Günlük Toplam Kalori</ion-card-subtitle>
+              <ion-card-title>{{ getTotal(DataType.KCAL, dataByDate).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit }}</ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p>{{ getComment(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user) }}</p>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>
+                Bu Haftanın Toplamı
+                <ion-toggle [(ngModel)]="isGraphMode"></ion-toggle>
+              </ion-card-subtitle>
+
+              <ion-card-title>{{ getWeeklyTotal(DataType.KCAL, data).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit * 7 }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p>{{ getWeeklyComment(DataType.KCAL, getWeeklyTotal(DataType.KCAL, data), user) }}</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </div>
+
       <div class="conditional-content">
         @if (isGraphMode) {
         <app-chart [data]="data" [date]="date"></app-chart>

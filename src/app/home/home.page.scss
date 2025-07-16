@@ -81,24 +81,32 @@ ion-content {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
   margin-bottom: 16px;
+
+  div {
+    display: grid;
+    grid-template-columns: auto auto;
+    border-radius: 16px;
+    gap: 0px;
+  }
 }
 
 .summary-card {
   margin: 0;
-  border-radius: 16px;
 
   @media (prefers-color-scheme: light) {
     background: white;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    //box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: none;
     color: #1E2023;
   }
 
   @media (prefers-color-scheme: dark) {
     background: black;
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+    // box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+    box-shadow: none;
     color: #E1DFDC;
   }
 
@@ -130,6 +138,9 @@ ion-content {
     @media (prefers-color-scheme: dark) {
       color: #999;
     }
+
+    display: grid;
+    grid-template-columns: auto auto;
 
     text-transform: uppercase;
     font-weight: 600;
