@@ -20,7 +20,7 @@
     -webkit-backdrop-filter: blur(10px);
   }
 
-     @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: dark) {
     background: rgba(7, 10, 7, 0.85); 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -141,7 +141,7 @@ ion-content {
   gap: 16px;
   margin-bottom: 16px;
 
-  div {
+  div.item {
     display: grid;
     grid-template-columns: auto auto;
     border-radius: 16px;
@@ -157,6 +157,59 @@ ion-content {
 
     app-chart {
       grid-column: 1 / span 2;
+    }
+
+    div.water-buttons {
+      grid-column: 1 / span 2;
+      display: grid;
+      width: 100%;
+      grid-template-columns: auto auto;
+      gap: 9px;
+
+      div {
+        height: 5rem;
+        text-align: center;
+
+        @media (prefers-color-scheme: light) {
+          background: rgb(240, 240, 240);
+          border: solid 1px rgb(235, 235, 235);
+        }
+
+        @media (prefers-color-scheme: dark) {
+          background: rgb(8, 8, 8);
+          border: solid 1px rgb(20, 20, 20);
+        }
+
+        img {
+          width: 40px;
+          height: 40px;
+        }
+
+        p {
+          line-height: 0;
+        }
+
+        &:first-child::after {
+          content: "";
+          position: absolute;
+          height: 5rem;
+          width: 1px;
+
+          // half of element width - line width - center of gap - border size
+          right: calc(50% - 1px - 5px - 1px);
+
+          // line height + border size
+          margin-top: calc(-5rem + 1px);
+
+          @media (prefers-color-scheme: light) {
+            background: rgba(153, 153, 153, 0.3);
+          }
+
+          @media (prefers-color-scheme: dark) {
+            background: rgba(102, 102, 102, 0.3);
+          }
+        }
+      }
     }
   }
 }

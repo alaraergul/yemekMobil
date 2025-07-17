@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/angular';
 import { meals } from 'src/app/data';
-import { MealEntry, Meal, User, DataType, Risk } from 'src/app/utils';
+import { MealEntry, Meal, User, DataType, Risk, WaterValue, WaterConsumption } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MealService } from 'src/app/services/meal/meal.service';
 import { ChartComponent } from 'src/app/components/chart.component';
 import { Router } from '@angular/router';
+import { WaterConsumptionService } from '../services/water_consumption/water_consumption';
 
 @Component({
   selector: 'app-tab2',
@@ -19,10 +20,12 @@ import { Router } from '@angular/router';
 export class HomePage {
   authService = inject(AuthService);
   mealService = inject(MealService);
+  waterConsumptionService = inject(WaterConsumptionService);
   toastController = inject(ToastController);
   router = inject(Router);
 
   DataType = DataType;
+  WaterValue = WaterValue;
 
   today = new Date();
   date = {
@@ -32,7 +35,7 @@ export class HomePage {
   };
 
   mealEntries: MealEntry[] = [];
-  
+
   currentMealEntry: MealEntry = {
     meal: null,
     count: 1,
@@ -354,6 +357,42 @@ export class HomePage {
       case DataType.SUGAR: return entries.filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime()).reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
       case DataType.KCAL: return entries.filter(e => monday.getTime() <= e.timestamp && e.timestamp <= sunday.getTime()).reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
     }
+  }
+
+  getDailyWater(waterConsumption: WaterConsumption[]) {
+    const data = waterConsumption.filter((element) => {
+      const date = new Date(element.timestamp / 1);
+      return date.getDate() == this.date.day && date.getMonth() == this.date.month && date.getFullYear() == this.date.year;
+    });
+
+    const values = {
+      [WaterValue.GLASS]: 330,
+      [WaterValue.BOTTLE]: 500
+    };
+
+    return data.reduce((sum, element) => values[element.value] + sum, 0);
+  }
+
+  getWeeklyWater(waterConsumption: WaterConsumption[]) {
+    const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
+    const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
+    monday.setDate(monday.getDate() - dayDiff);
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
+
+    const data = waterConsumption.filter((element) => {
+      return monday.getTime() <= element.timestamp && element.timestamp <= sunday.getTime();
+    });
+
+    const values = {
+      [WaterValue.GLASS]: 330,
+      [WaterValue.BOTTLE]: 500
+    };
+
+    return data.reduce((sum, element) => values[element.value] + sum, 0);
+  }
+
+  async consumeWater(value: WaterValue) {
+    return this.waterConsumptionService.addWaterConsumption(value);
   }
 
   async logout() {

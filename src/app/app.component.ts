@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { SplashScreen } from '@capacitor/splash-screen'
 import { AuthService } from './services/auth/auth.service';
 import { MealService } from './services/meal/meal.service';
+import { WaterConsumptionService } from './services/water_consumption/water_consumption';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ import { MealService } from './services/meal/meal.service';
 export class AppComponent {
   authService = inject(AuthService);
   mealService = inject(MealService);
+  waterConsumptionService = inject(WaterConsumptionService);
 
   constructor() {
     this.initializeApp();
@@ -23,6 +25,7 @@ export class AppComponent {
 
     if (isLogged) {
       await this.mealService.getAllMealEntries();
+      await this.waterConsumptionService.initialize();
     }
   }
 }

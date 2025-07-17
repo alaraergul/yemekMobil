@@ -40,7 +40,7 @@
       </ion-card>
 
       <div class="summary-grid">
-        <div>
+        <div class="item">
           <ion-card class="summary-card">
             @let riskOfDailyPurine = getRisk(DataType.PURINE, getTotal(DataType.PURINE, dataByDate), user, 1);
 
@@ -82,7 +82,7 @@
           <app-chart *ngIf="chartType == DataType.PURINE" [data]="data" [date]="date" [type]="chartType"></app-chart>
         </div>
 
-        <div>
+        <div class="item">
           <ion-card class="summary-card">
             @let riskOfDailySugar = getRisk(DataType.SUGAR, getTotal(DataType.SUGAR, dataByDate), user, 1);
 
@@ -125,7 +125,7 @@
           <app-chart *ngIf="chartType == DataType.SUGAR" [data]="data" [date]="date" [type]="chartType"></app-chart>
         </div>
 
-        <div>
+        <div class="item">
           <ion-card class="summary-card">
             @let riskOfDailyKCAL = getRisk(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user, 1);
 
@@ -166,6 +166,57 @@
           </ion-card>
 
           <app-chart *ngIf="chartType == DataType.KCAL" [data]="data" [date]="date" [type]="chartType"></app-chart>
+        </div>
+
+        <div class="item" *ngIf="(waterConsumptionService.data$ | async) as waterConsumption">
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>Su</ion-card-subtitle>
+              <ion-card-subtitle>Günlük</ion-card-subtitle>
+
+              <ion-card-title [style.color]="getColor(riskOfDailyKCAL)">
+                <ion-icon [name]="getIcon(riskOfDailyKCAL)"></ion-icon>
+                {{ (getDailyWater(waterConsumption) / 1000).toFixed(1) }}L / {{ (authService.getLimits(user).waterLimit / 1000).toFixed(1) }}L
+              </ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p>{{ getComment(riskOfDailyKCAL) }}</p>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card class="summary-card">
+            <ion-card-header>
+              <ion-card-subtitle>
+                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.KCAL : DataType.NONE)" [checked]="chartType == DataType.KCAL"></ion-toggle>
+              </ion-card-subtitle>
+
+              <ion-card-subtitle>Haftalık</ion-card-subtitle>
+
+              <ion-card-title [style.color]="getColor(riskOfWeeklyKCAL)">
+                <ion-icon [name]="getIcon(riskOfWeeklyKCAL)"></ion-icon>
+                {{ (getWeeklyWater(waterConsumption) / 1000).toFixed(1) }}L / {{ ((authService.getLimits(user).waterLimit * 7) / 1000).toFixed(1) }}L
+              </ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p>{{ getComment(riskOfWeeklyKCAL) }}</p>
+            </ion-card-content>
+          </ion-card>
+
+          <app-chart *ngIf="chartType == DataType.KCAL" [data]="data" [date]="date" [type]="chartType"></app-chart>
+
+          <div class="water-buttons">
+            <div class="glass" (click)="consumeWater(WaterValue.GLASS)">
+              <img src="assets/images/glass.png" />
+              <p>330 mL</p>
+            </div>
+
+            <div class="bottle" (click)="consumeWater(WaterValue.BOTTLE)">
+              <img src="assets/images/bottle.png" />
+              <p>0.5 L</p>
+            </div>
+          </div>
         </div>
       </div>
 

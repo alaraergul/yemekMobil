@@ -15,12 +15,17 @@ export enum Risk {
   LOW,
   MEDIUM,
   HIGH
-}
+};
 
 export enum Gender {
   MALE,
   FEMALE
-}
+};
+
+export enum WaterValue {
+  GLASS,
+  BOTTLE
+};
 
 export interface User {
   id: string;
@@ -29,6 +34,7 @@ export interface User {
   sugarLimit?: number;
   purineLimit?: number;
   kcalLimit?: number;
+  waterLimit?: number;
   gender: Gender;
 };
 
@@ -41,6 +47,11 @@ export interface MealEntry {
   meal: Meal | null;
   count: number | null; // number of servings
   timestamp: number | null; // timestamp in milliseconds
+};
+
+export interface WaterConsumption {
+  value: WaterValue;
+  timestamp: number;
 };
 
 export interface Meal {

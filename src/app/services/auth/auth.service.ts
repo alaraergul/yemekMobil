@@ -51,7 +51,8 @@ export class AuthService {
     return {
       purineLimit: (user.purineLimit && user.purineLimit != -1) ? user.purineLimit : (user.weight * purineFactor + 200),
       sugarLimit: (user.sugarLimit && user.sugarLimit != -1) ? user.sugarLimit : (kcalLimit * 0.05 / 4),
-      kcalLimit
+      kcalLimit,
+      waterLimit: (user.waterLimit && user.waterLimit != -1) ? user.waterLimit : 2000
     };
   }
 

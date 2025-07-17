@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { API_URL, Meal, MealEntry } from 'src/app/utils';
 import { AuthService } from '../auth/auth.service';
 import { meals } from 'src/app/data';
-import { timestamp } from 'rxjs';
 
 @Injectable({ providedIn: "root" })
 export class MealService {
