@@ -71,6 +71,15 @@ ion-content {
     @media (prefers-color-scheme: dark) {
       color: #CCC;
     }
+
+    ion-input[type="date"] {
+      width: 100%;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      --padding-top: 14px;
+      --padding-bottom: 14px;
+    }
     
     ion-toggle {
       --handle-background-checked: #2DD36F;
@@ -228,6 +237,9 @@ ion-content {
   font-weight: 700;
   font-size: 22px;
   margin: 24px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   @media (prefers-color-scheme: light) {
     color: #1E2023;
@@ -235,6 +247,92 @@ ion-content {
 
   @media (prefers-color-scheme: dark) {
     color: #E1DFDC;
+  }
+
+  span {
+    flex-grow: 1;
+  }
+}
+
+.info-card {
+  margin: 0 0 16px 0;
+  border-radius: 16px;
+
+  @media (prefers-color-scheme: light) {
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    color: #333;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: black;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+    color: #E1DFDC;
+  }
+  
+  ion-card-content {
+    padding: 16px;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 8px;
+  }
+  
+  h3:first-child {
+    margin-top: 0;
+  }
+  
+  h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    
+    @media (prefers-color-scheme: light) {
+      color: #555;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      color: #bbb;
+    }
+  }
+
+  p, ul {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    
+    @media (prefers-color-scheme: light) {
+      color: #666;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      color: #999;
+    }
+  }
+  
+  ul {
+    padding-left: 18px;
+  }
+  
+  li {
+     margin-bottom: 5px;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid;
+    margin: 20px 0;
+    @media (prefers-color-scheme: light) {
+      border-color: #f0f0f0;
+    }
+    @media (prefers-color-scheme: dark) {
+      border-color: #2e2e2e;
+    }
   }
 }
 

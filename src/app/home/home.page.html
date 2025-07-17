@@ -174,12 +174,81 @@
           </ion-card-content>
         </ion-card>
       </div>
-
       <h2 class="section-title">
         @let months =
         ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-        {{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Tüketimi
-      </h2>
+       <span>{{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Tüketimi </span>
+      <ion-button fill="clear" (click)="toggleInfo()" class="icon-button">
+        <ion-icon slot="icon-only" name="information-circle-outline">
+        </ion-icon>
+      </ion-button>
+    </h2>
+
+      <ion-card class="info-card" *ngIf="isInfoVisible">
+        <ion-card-content>
+          <h3>🍽️ NutriLog Nedir?</h3>
+          <p>Nutrilog, günlük Pürin, Şeker ve Kalori alımınızı tükettiğiniz gıdalar üzerinden takip eder. Böylece ihtiyacınız kadar 
+            beslenmenizi sağlar, sınırları aşmadan sağlıklı bir denge kurmanıza yardımcı olur. Nutrilog sayesinde vucudunuzda sağlıksız 
+            atıklar birikmez, organlarınız daha rahata çalışır. Uzun vadeli daha sağlıklı hissedersiniz.
+          </p>
+          <h3>🧠 Pürin Nedir?</h3>
+          <p>
+            Pürin, vücudumuzda ürik aside dönüşen bir maddedir. Et, sakatat ve bazı deniz ürünlerinde bolca bulunur.
+          </p>
+          <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
+          <p>Aşırı pürin tüketimi:</p>
+          <ul>
+            <li> Ürik asit artışı</li>
+            <li>Gut hastalığı riski</li>
+            <li> Eklem ağrıları ve böbrek taşı</li>
+          </ul>
+          <h4>✅ Ne Yapabilirim?</h4>
+          <ul>
+            <li>Pürin içeriği yüksek gıdaları azaltın.</li>
+            <li>Bol su içerek vücudunuzu temizleyin.</li>
+            <li>Dengeli beslenin.</li>
+          </ul>
+          <hr/>
+          <h3>🍭 Şeker Nedir?</h3>
+          <p>
+           Şeker, enerji verir ama fazlası sağlık düşmanıdır. Özellikle hazır gıdalardaki katkılı (serbest) şeker, gizli tehlikedir. </p>
+          <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
+            <p>Aşırı şeker tüketimi:</p>
+          <ul>
+            <li> Kilo alımı ve obezite</li>
+            <li>İnsülin direnci ve diyabet</li>
+            <li> Kalp-damar hastalıkları</li>
+            <li>Diş çürükleri ve enerji düşüklüğü</li>
+          </ul>
+          <h4>✅ Ne Yapabilirim?</h4>
+          <ul>
+            <li>Paketli gıdaları azaltın.</li>
+            <li>Tatlı tüketimini haftada 1-2 ile sınırlayın.</li>
+            <li>Meyve yiyerek doğal tatlılık ihtiyacınızı karşılayın.</li>
+          </ul>
+          <hr/>
+          <h3>🔥 Kalori Nedir?</h3>
+          <p>
+            Kalori, vücudun ihtiyaç duyduğu bir enerji birimidir. Yediğiniz her şey kalori içerir, ancak her kalori eşit değildir.
+          </p>
+          <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
+          <p>Aşırı kalori alımı:</p>
+          <ul>
+          <li> Kilo alımı ve obezite</li>
+          <li>Diyabet ve kalp hastalığı riski</li>
+          <li>Halsizlik, nefes darlığı, eklem sorunları</li></ul>
+          <p>Yetersiz kalori alımı:</p>
+          <ul>
+            <li>Kas kaybı, yorgunluk, bağışıklık zayıflığı</li>
+          </ul>
+          <h4>✅ Ne Yapabilirim?</h4>
+          <ul>
+            <li>Günlük ihtiyacınıza göre dengeli kalori alın.</li>
+            <li>Fast food ve şekerli içecekleri sınırlı tutun.</li>
+            <li>Lifli, proteinli ve doğal gıdaları tercih edin.</li>
+          </ul>
+        </ion-card-content>
+      </ion-card>
 
       <ion-list class="meals" lines="none" *ngIf="dataByDate.length > 0; else noData">
         <ion-item *ngFor="let entry of dataByDate" class="meal-item">
@@ -189,8 +258,8 @@
             <h2>{{ entry.meal.name }}</h2>
             <p>Porsiyon: {{ entry.count }}</p>
             <p>
-              Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg
-              Şeker: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g
+              Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg <br>
+              Şeker: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g <br>
               Kalori: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal
             </p>
           </ion-label>
@@ -304,8 +373,8 @@
                     {{ createDateFrom(entry.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) }}
 
                   <p class="meal-details">
-                    Pürin: {{(entry.meal.purine * entry.count).toFixed(0)}}mg,
-                    Şeker: {{(entry.meal.sugar * entry.count).toFixed(1)}}g,
+                    Pürin: {{(entry.meal.purine * entry.count).toFixed(0)}}mg, <br>
+                    Şeker: {{(entry.meal.sugar * entry.count).toFixed(1)}}g, <br>
                     Kalori: {{(entry.meal.kcal * entry.count).toFixed(0)}}kcal
                   </p>
                 </ion-label>

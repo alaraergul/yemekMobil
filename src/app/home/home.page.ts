@@ -42,6 +42,7 @@ export class HomePage {
   currentDateString: string;
   currentTimeString: string;
   chartType: DataType;
+  isInfoVisible = false;
 
   @ViewChild("searchInput", { static: false }) searchInput: IonInput;
   isModalOpen = false;
@@ -51,6 +52,10 @@ export class HomePage {
 
   constructor(private cdr: ChangeDetectorRef) {
     this.resetCurrentMealEntry();
+  }
+
+  toggleInfo() {
+    this.isInfoVisible = !this.isInfoVisible;
   }
 
   selectSearchResult(meal: Meal) {
