@@ -204,6 +204,10 @@ ion-content {
     font-size: 0.7rem;
     margin-bottom: 8px;
 
+    &:nth-child(1) {
+      font-size: 0.85rem;
+    }
+
     @media (prefers-color-scheme: light) {
       color: #666;
     }

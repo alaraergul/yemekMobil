@@ -45,7 +45,8 @@
             @let riskOfDailyPurine = getRisk(DataType.PURINE, getTotal(DataType.PURINE, dataByDate), user, 1);
 
             <ion-card-header>
-              <ion-card-subtitle>Günlük Toplam Pürin</ion-card-subtitle>
+              <ion-card-subtitle>Pürin (mg)</ion-card-subtitle>
+              <ion-card-subtitle>Günlük</ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfDailyPurine)">
                 <ion-icon [name]="getIcon(riskOfDailyPurine)"></ion-icon>
@@ -62,9 +63,10 @@
 
             <ion-card-header>
               <ion-card-subtitle>
-                Bu Haftanın Toplamı
                 <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.PURINE : DataType.NONE)" [checked]="chartType == DataType.PURINE"></ion-toggle>
               </ion-card-subtitle>
+
+              <ion-card-subtitle>Haftalık</ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfWeeklyPurine)">
                 <ion-icon [name]="getIcon(riskOfWeeklyPurine)"></ion-icon>
@@ -85,7 +87,8 @@
             @let riskOfDailySugar = getRisk(DataType.SUGAR, getTotal(DataType.SUGAR, dataByDate), user, 1);
 
             <ion-card-header>
-              <ion-card-subtitle>Günlük Toplam Şeker</ion-card-subtitle>
+              <ion-card-subtitle>Şeker (g)</ion-card-subtitle>
+              <ion-card-subtitle>Günlük</ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfDailySugar)">
                 <ion-icon [name]="getIcon(riskOfDailySugar)"></ion-icon>
@@ -103,9 +106,10 @@
 
             <ion-card-header>
               <ion-card-subtitle>
-                Bu Haftanın Toplamı
                 <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.SUGAR : DataType.NONE)" [checked]="chartType == DataType.SUGAR"></ion-toggle>
               </ion-card-subtitle>
+
+              <ion-card-subtitle>Haftalık</ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfWeeklySugar)">
                 <ion-icon [name]="getIcon(riskOfWeeklySugar)"></ion-icon>
@@ -126,7 +130,8 @@
             @let riskOfDailyKCAL = getRisk(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user, 1);
 
             <ion-card-header>
-              <ion-card-subtitle>Günlük Toplam Kalori</ion-card-subtitle>
+              <ion-card-subtitle>Kalori</ion-card-subtitle>
+              <ion-card-subtitle>Günlük</ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfDailyKCAL)">
                 <ion-icon [name]="getIcon(riskOfDailyKCAL)"></ion-icon>
@@ -144,9 +149,10 @@
 
             <ion-card-header>
               <ion-card-subtitle>
-                Bu Haftanın Toplamı
                 <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.KCAL : DataType.NONE)" [checked]="chartType == DataType.KCAL"></ion-toggle>
               </ion-card-subtitle>
+
+              <ion-card-subtitle>Haftalık</ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfWeeklyKCAL)">
                 <ion-icon [name]="getIcon(riskOfWeeklyKCAL)"></ion-icon>
