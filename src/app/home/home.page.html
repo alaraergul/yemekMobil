@@ -1,4 +1,16 @@
-<ion-content>
+<div class="sticky-header" [class.visible]="showStickyHeader">
+  <h1 class="sticky-title">NutriLog</h1>
+  <div class="top-bar-actions">
+    <ion-button fill="clear" (click)="goSettings()" class="icon-button">
+      <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" (click)="logout()" class="icon-button">
+      <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+    </ion-button>
+  </div>
+</div>
+
+<ion-content [scrollEvents]="true" (ionScroll)="onScroll($event)">
   <div *ngIf="authService.isLogged">
     @let user = (authService.user$ | async);
 

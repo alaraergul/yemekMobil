@@ -1,3 +1,51 @@
+.sticky-header {
+ position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  padding-top: calc(8px + var(--ion-safe-area-top));
+  z-index: 1000;
+  transform: translateY(-120%);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+
+    @media (prefers-color-scheme: light) {
+    background: rgba(244, 245, 248, 0.85);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+     @media (prefers-color-scheme: dark) {
+    background: rgba(7, 10, 7, 0.85); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  &.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .sticky-title {
+    font-size: 20px; 
+    font-weight: 600;
+    margin: 0;
+
+    @media (prefers-color-scheme: light) {
+      color: #1E2023;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      color: #E1DFDC;
+    }
+  }
+}
 ion-content {
   @media (prefers-color-scheme: light) {
     --background: #F4F5F8;

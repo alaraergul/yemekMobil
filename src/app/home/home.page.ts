@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, IonInput, ToastController } from '@ionic/angular';
+import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/angular';
 import { meals } from 'src/app/data';
 import { MealEntry, Meal, User, DataType, Risk } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -43,6 +43,7 @@ export class HomePage {
   currentTimeString: string;
   chartType: DataType;
   isInfoVisible = false;
+  showStickyHeader = false;
 
   @ViewChild("searchInput", { static: false }) searchInput: IonInput;
   isModalOpen = false;
@@ -52,6 +53,14 @@ export class HomePage {
 
   constructor(private cdr: ChangeDetectorRef) {
     this.resetCurrentMealEntry();
+  }
+
+  onScroll(event: CustomEvent<ScrollDetail>) {
+    if (event.detail.scrollTop > 50) {
+      this.showStickyHeader = true;
+    } else {
+      this.showStickyHeader = false;
+    }
   }
 
   toggleInfo() {
