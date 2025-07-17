@@ -343,20 +343,27 @@
             </ion-select>
           </ion-item>
 
-          @if (selectedCategory) {
-            <ion-item>
-              <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
-                [value]="currentMealEntry.meal?.id">
-                <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
-                  {{ meal.name }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-          }
+          <ion-item *ngIf="selectedCategory">
+            <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
+              [value]="currentMealEntry.meal?.id">
+              <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
+                {{ meal.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
 
           <ion-item>
             <ion-input label="Porsiyon" label-placement="floating" type="number" inputmode="decimal" min="1"
               [(ngModel)]="currentMealEntry.count"></ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="currentMealEntry.meal">
+            <p>{{ currentMealEntry.count }} porsiyon için</p>
+            <ul>
+              <li>Pürin: {{ currentMealEntry.count * currentMealEntry.meal.purine }} mg</li>
+              <li>Şeker: {{ currentMealEntry.count * currentMealEntry.meal.sugar }} g</li>
+              <li>Kalori: {{ currentMealEntry.count * currentMealEntry.meal.kcal }}</li>
+            </ul>
           </ion-item>
 
           <ion-item>
