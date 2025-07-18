@@ -5,15 +5,16 @@ import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/ang
 import { MealEntry, Meal, User, DataType, Risk, WaterValue, WaterConsumption, MealCategory } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MealService } from 'src/app/services/meal/meal.service';
-import { CardComponent } from 'src/app/components/Card/card.component';
+import { CardComponent } from 'src/app/components/card/card.component';
 import { Router } from '@angular/router';
 import { WaterConsumptionService } from '../services/water_consumption/water_consumption';
 import { ChartComponent } from '../components/chart.component';
+import { WaterCardComponent } from '../components/water-consumption/water-consumption.component';
 
 @Component({
   selector: 'app-tab2',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ChartComponent, CardComponent],
+  imports: [IonicModule, CommonModule, FormsModule, ChartComponent, CardComponent, WaterCardComponent],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss']
 })
@@ -365,10 +366,6 @@ export class HomePage {
     };
 
     return data.reduce((sum, element) => values[element.value] + sum, 0);
-  }
-
-  async consumeWater(value: WaterValue) {
-    return this.waterConsumptionService.addWaterConsumption(value);
   }
 
   async logout() {

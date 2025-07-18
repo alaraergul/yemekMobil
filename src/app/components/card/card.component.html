@@ -1,6 +1,6 @@
 <div class="item">
   <ion-card class="summary-card">
-    @let riskOfDailyPurine = getRisk(type, dailyConsumption, 1);
+    @let riskOfDailyPurine = getRisk(dailyConsumption, 1);
     @let dailyLimit = getDailyLimit();
 
     <ion-card-header>
@@ -20,7 +20,7 @@
   </ion-card>
 
   <ion-card class="summary-card">
-    @let riskOfWeeklyPurine = getRisk(DataType.PURINE, weeklyConsumption, 7);
+    @let riskOfWeeklyPurine = getRisk(weeklyConsumption, 7);
     <ion-card-header>
       <ion-card-subtitle>
         <ion-toggle (ionChange)="changeChartType.emit($event.detail.checked ? type : DataType.NONE)" [checked]="chartType == type"></ion-toggle>

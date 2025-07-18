@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { DataType, MealEntry, Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth.service';
-import { ChartComponent } from '../chart.component';
 
 @Component({
   selector: 'app-card',
@@ -21,7 +20,6 @@ export class CardComponent {
   @Input() title: string;
   @Input() dailyConsumption: number;
   @Input() weeklyConsumption: number;
-  @Input() dailyLimit: number;
   @Input() chartType: DataType;
   @Output() changeChartType = new EventEmitter<DataType>();
 
@@ -46,23 +44,8 @@ export class CardComponent {
     }
   }
 
-  getRisk(type: DataType, data: number, multiplier: number) {
-    const limits = this.authService.getLimits(this.user);
-    let limit: number;
-
-    switch (type) {
-      case DataType.PURINE:
-        limit = limits.purineLimit * multiplier;
-        break;
-
-      case DataType.KCAL:
-        limit = limits.kcalLimit * multiplier;
-        break;
-
-      case DataType.SUGAR:
-        limit = limits.sugarLimit * multiplier;
-        break;
-    }
+  getRisk(data: number, multiplier: number) {
+    const limit = this.getDailyLimit() * multiplier;
 
     if (data < (limit * 0.85)) return Risk.LOW;
     if (data < limit) return Risk.MEDIUM;

@@ -22,6 +22,11 @@ export enum Gender {
   FEMALE
 };
 
+export enum Language {
+  Turkish,
+  English
+};
+
 export enum WaterValue {
   GLASS,
   BOTTLE

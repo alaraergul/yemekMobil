@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { API_URL, Error, Gender, User } from 'src/app/utils';
+import { API_URL, Error, Gender, Language, User } from 'src/app/utils';
 import { Preferences } from '@capacitor/preferences';
 
 @Injectable({ providedIn: "root" })
@@ -89,13 +89,13 @@ export class AuthService {
     });
   }
 
-  register(username: string, password: string, weight: number, gender: Gender): Promise<boolean> {
+  register(username: string, password: string, weight: number, gender: Gender, language: Language): Promise<boolean> {
     this.error$ = undefined;
 
     return new Promise(async (resolve) => {
       if (!username || !password || !weight) return resolve(false);
 
-      this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight, gender }).subscribe(async (response) => {
+      this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight, gender, language }).subscribe(async (response) => {
         if (response && (response as Error).code) {
           this.error$ = Promise.resolve(response as Error);
           return resolve(false);

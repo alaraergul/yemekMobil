@@ -4,7 +4,7 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Gender } from '../utils';
+import { Gender, Language } from '../utils';
 import { MealService } from '../services/meal/meal.service';
 import { TranslateModule, TranslateService} from '@ngx-translate/core';
 
@@ -29,6 +29,7 @@ enum Tabs {
 export class AuthPage {
   Tabs = Tabs;
   Gender = Gender;
+  Language = Language;
 
   activeTab = Tabs.LOGIN;
 
@@ -38,7 +39,7 @@ export class AuthPage {
   regPassword = '';
   regWeight: number | null = null;
   regGender: Gender | null = null;
-  regLang: string | null = null; 
+  regLang: Language | null = null; 
   currentLang: string;
 
   constructor(
@@ -54,6 +55,7 @@ export class AuthPage {
       this.router.navigateByUrl("/home");
     });
   }
+
   changeLanguage(event: any) {
     const lang = event.detail.value;
     this.translate.use(lang);
@@ -99,7 +101,7 @@ export class AuthPage {
       return;
     }
 
-    const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight, this.regGender);
+    const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight, this.regGender, this.regLang);
 
     if (success) {
       this.translate.get('AUTH.REGISTER_SUCCESS').subscribe(message => {
