@@ -44,7 +44,7 @@ export class AuthPage {
     private router: Router
   ) {
     this.authService.onLogin(async () => {
-      await this.mealService.getAllMealEntries();
+      await this.mealService.initialize();
       this.router.navigateByUrl("/home");
     });
   }

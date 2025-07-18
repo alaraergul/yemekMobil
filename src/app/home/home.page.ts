@@ -2,18 +2,18 @@ import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/angular';
-import { meals } from 'src/app/data';
 import { MealEntry, Meal, User, DataType, Risk, WaterValue, WaterConsumption } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MealService } from 'src/app/services/meal/meal.service';
-import { ChartComponent } from 'src/app/components/chart.component';
+import { CardComponent } from 'src/app/components/Card/card.component';
 import { Router } from '@angular/router';
 import { WaterConsumptionService } from '../services/water_consumption/water_consumption';
+import { ChartComponent } from '../components/chart.component';
 
 @Component({
   selector: 'app-tab2',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ChartComponent],
+  imports: [IonicModule, CommonModule, FormsModule, ChartComponent, CardComponent],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss']
 })
@@ -66,6 +66,10 @@ export class HomePage {
     this.resetCurrentMealEntry();
   }
 
+  changeChartType(type: DataType) {
+    this.chartType = type;
+  }
+
   onScroll(event: CustomEvent<ScrollDetail>) {
     if (event.detail.scrollTop > 50) {
       this.showStickyHeader = true;
@@ -87,9 +91,9 @@ export class HomePage {
     this.cdr.detectChanges();
   }
 
-  handleSearch(event: CustomEvent) {
+  async handleSearch(event: CustomEvent) {
     const value: string = event.detail.value;
-    const meals = this.mealService.getMeals();
+    const meals = this.mealService.getAllMeals(await this.mealService.categories$);
 
     this.searchResults = meals.filter((meal) => meal.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()));
   }
@@ -106,25 +110,9 @@ export class HomePage {
     this.date = { day, month, year };
   }
 
-  getCategorizedMeals() {
-    const map: { [key: string]: Meal[] } = {};
-    for (const meal of meals) {
-      if (!map[meal.category]) map[meal.category] = [];
-      map[meal.category].push(meal);
-    }
-    return Object.entries(map).map(([category, meals]) => ({ category, meals }));
-  }
-
-  getCategoryNames(): string[] {
-    const categories: string[] = [];
-    for (const meal of meals) {
-      if (!categories.includes(meal.category)) categories.push(meal.category);
-    }
-    return categories.sort((a, b) => a.localeCompare(b, 'tr'));
-  }
-
-  filterMeals() {
-    return this.mealService.getSortedMeals().filter(c => c.category === this.selectedCategory) || [];
+  async getCategoryNames(): Promise<string[]> {
+    const categories = await this.mealService.categories$;
+    return categories.map((category) => category.name).sort((a, b) => a.localeCompare(b, 'tr'));
   }
 
   setOpen(isOpen: boolean) {
@@ -242,8 +230,10 @@ export class HomePage {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
   }
 
-  onSelectMeal(event: any) {
+  async onSelectMeal(event: any) {
     const mealId = event.detail.value;
+    const meals = this.mealService.getAllMeals(await this.mealService.categories$);
+
     const meal = meals.find((m) => m.id === mealId);
     if (meal) this.currentMealEntry.meal = meal;
   }
@@ -280,7 +270,7 @@ export class HomePage {
     this.newCustomMeal = { name: '', purine: undefined, kcal: undefined, sugar: undefined }; 
   }
 
-  getEntriesOfDate(entries: MealEntry[]): MealEntry[] {
+  getEntriesOfDate(meals: Meal[], entries: MealEntry[]): MealEntry[] {
     return entries
       .filter((entry) => {
         const d = new Date(entry.timestamp);
@@ -307,68 +297,6 @@ export class HomePage {
       case DataType.PURINE: return entries.reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
       case DataType.KCAL: return entries.reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
       case DataType.SUGAR: return entries.reduce((sum, e) => sum + ((e.meal?.sugar || 0) * e.count), 0);
-    }
-  }
-
-  getRisk(type: DataType, data: number, user: User, multiplier: number) {
-    const limits = this.authService.getLimits(user);
-    let limit: number;
-
-    switch (type) {
-      case DataType.PURINE:
-        limit = limits.purineLimit * multiplier;
-        break;
-
-      case DataType.KCAL:
-        limit = limits.kcalLimit * multiplier;
-        break;
-
-      case DataType.SUGAR:
-        limit = limits.sugarLimit * multiplier;
-        break;
-    }
-
-    if (data < (limit * 0.85)) return Risk.LOW;
-    if (data < limit) return Risk.MEDIUM;
-    return Risk.HIGH;
-  }
-
-  getComment(risk: Risk): string {
-    switch (risk) {
-      case Risk.LOW:
-        return "Tüketimin oldukça düşük.";
-
-      case Risk.MEDIUM:
-        return "Limitinin %85'ini doldurdun.";
-
-      case Risk.HIGH:
-        return "Limiti aştın!";
-    }
-  }
-
-  getIcon(risk: Risk): string {
-    switch (risk) {
-      case Risk.LOW:
-        return "checkmark-circle-outline";
-
-      case Risk.MEDIUM:
-        return "alert-circle-outline";
-
-      case Risk.HIGH:
-        return "close-circle-outline";
-    }
-  }
-
-  getColor(risk: Risk): string {
-    switch (risk) {
-      case Risk.LOW:
-        return "green";
-
-      case Risk.MEDIUM:
-        return "orange";
-
-      case Risk.HIGH:
-        return "red";
     }
   }
 

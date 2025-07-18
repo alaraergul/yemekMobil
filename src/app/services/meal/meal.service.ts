@@ -1,21 +1,28 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_URL, Meal, MealEntry } from 'src/app/utils';
+import { API_URL, Meal, MealCategory, MealEntry } from 'src/app/utils';
 import { AuthService } from '../auth/auth.service';
-import { meals } from 'src/app/data';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: "root" })
 export class MealService {
   public authService = inject(AuthService);
   public data$?: Promise<MealEntry[]>;
+  public categories$?: Promise<MealCategory[]>;
 
   constructor(private http: HttpClient) {}
 
-  getMeals(): Meal[] {
+  getAllMeals(categories: MealCategory[]) {
+    const meals = [];
+
+    for (const category of categories) {
+      meals.push(...category.meals);
+    }
+
     return meals;
   }
 
-  getSortedMeals(): Meal[] {
+  getSortedMeals(meals: Meal[]): Meal[] {
     return meals.sort((a, b) => a.name.localeCompare(b.name, 'tr', { sensitivity: 'base' }));
   }
 
@@ -42,26 +49,28 @@ export class MealService {
     if (!this.authService.isLogged) return false;
     const user = await this.authService.user$;
 
-    const meals = this.getMeals();
+    const categories = await this.categories$ || [];
     const data = await this.data$ || [];
     const willBeAdded = [];
 
     for (const entry of mealEntries) {
-      const selectedMeal = meals.find((meal) => meal.id === entry.meal.id);
-      if (!selectedMeal) return false;
+      for (const category of categories) {
+        const selectedMeal = category.meals.find((meal) => meal.id === entry.meal.id);
+        if (!selectedMeal) return false;
 
-      const mealEntry: MealEntry = {
-        meal: selectedMeal,
-        count: entry.count,
-        timestamp: entry.timestamp
-      };
+        const mealEntry: MealEntry = {
+          meal: selectedMeal,
+          count: entry.count,
+          timestamp: entry.timestamp
+        };
 
-      data.push(mealEntry);
-      willBeAdded.push({
-        id: selectedMeal.id,
-        count: entry.count,
-        timestamp: entry.timestamp
-      })
+        data.push(mealEntry);
+        willBeAdded.push({
+          id: selectedMeal.id,
+          count: entry.count,
+          timestamp: entry.timestamp
+        })
+      }
     }
 
     await fetch(`${API_URL}/users/${user.id}/meals`, {
@@ -76,28 +85,34 @@ export class MealService {
     return true;
   }
 
-  async getAllMealEntries(): Promise<boolean> {
+  async initialize(): Promise<boolean> {
     if (!this.authService.isLogged) return false;
     const user = await this.authService.user$;
+    const categories = await firstValueFrom(this.http.get<MealCategory[]>(`${API_URL}/meals/${user.id}`));
 
     this.http.get<({ id: number, count: number, timestamp: number })[]>(`${API_URL}/users/${user.id}/meals`).subscribe((response) => {
       const entries: MealEntry[] = [];
 
       for (const value of response) {
-        const matchedMeal = meals.find((meal) => meal.id === value.id);
+        for (const category of categories) {
+          const matchedMeal = category.meals.find((meal) => meal.id === value.id);
 
-        if (matchedMeal) {
-          entries.push({
-            meal: matchedMeal,
-            count: value.count,
-            timestamp: value.timestamp
-          });
+          if (matchedMeal) {
+            entries.push({
+              meal: matchedMeal,
+              count: value.count,
+              timestamp: value.timestamp
+            });
+
+            break;
+          }
         }
       }
 
       this.data$ = Promise.resolve(entries);
     });
 
+    this.categories$ = Promise.resolve(categories);
     return true;
   }
 }

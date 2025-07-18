@@ -43,6 +43,11 @@ export interface Error {
   message: string;
 };
 
+export interface MealCategory {
+  name: string;
+  meals: Meal[];
+};
+
 export interface MealEntry {
   meal: Meal | null;
   count: number | null; // number of servings

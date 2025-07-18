@@ -15,341 +15,254 @@
     @let user = (authService.user$ | async);
 
     <div *ngIf="(mealService.data$ | async) as data" class="page-container">
-      @let dataByDate = getEntriesOfDate(data);
-
-      <div class="top-bar">
-        <h1 class="page-title">NutriLog</h1>
-        <div class="top-bar-actions">
-          <ion-button fill="clear" (click)="goSettings()" class="icon-button">
-            <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
-          </ion-button>
-          <ion-button fill="clear" (click)="logout()" class="icon-button">
-            <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
-          </ion-button>
-        </div>
-      </div>
-
-      <ion-card class="control-panel">
-        <ion-item lines="none">
-          <ion-input type="date"
-            [value]="getDateString(date.day, date.month + 1, date.year)"
-            [max]="getDateString(today.getDate(), today.getMonth() + 1, today.getFullYear())"
-            (ionChange)="onMainDateChange($event)">
-          </ion-input>
-        </ion-item>
-      </ion-card>
-
-      <div class="summary-grid">
-        <div class="item">
-          <ion-card class="summary-card">
-            @let riskOfDailyPurine = getRisk(DataType.PURINE, getTotal(DataType.PURINE, dataByDate), user, 1);
-
-            <ion-card-header>
-              <ion-card-subtitle>Pürin (mg)</ion-card-subtitle>
-              <ion-card-subtitle>Günlük</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfDailyPurine)">
-                <ion-icon [name]="getIcon(riskOfDailyPurine)"></ion-icon>
-                {{ getTotal(DataType.PURINE, dataByDate).toFixed(0) }} / {{authService.getLimits(user).purineLimit }} </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfDailyPurine) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <ion-card class="summary-card">
-            @let riskOfWeeklyPurine = getRisk(DataType.PURINE, getWeeklyTotal(DataType.PURINE, data), user, 7);
-
-            <ion-card-header>
-              <ion-card-subtitle>
-                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.PURINE : DataType.NONE)" [checked]="chartType == DataType.PURINE"></ion-toggle>
-              </ion-card-subtitle>
-
-              <ion-card-subtitle>Haftalık</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfWeeklyPurine)">
-                <ion-icon [name]="getIcon(riskOfWeeklyPurine)"></ion-icon>
-                {{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{authService.getLimits(user).purineLimit * 7 }} 
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfWeeklyPurine) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <app-chart *ngIf="chartType == DataType.PURINE" [data]="data" [date]="date" [type]="chartType"></app-chart>
-        </div>
-
-        <div class="item">
-          <ion-card class="summary-card">
-            @let riskOfDailySugar = getRisk(DataType.SUGAR, getTotal(DataType.SUGAR, dataByDate), user, 1);
-
-            <ion-card-header>
-              <ion-card-subtitle>Şeker (g)</ion-card-subtitle>
-              <ion-card-subtitle>Günlük</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfDailySugar)">
-                <ion-icon [name]="getIcon(riskOfDailySugar)"></ion-icon>
-                {{ getTotal(DataType.SUGAR, dataByDate).toFixed(0) }} / {{authService.getLimits(user).sugarLimit }} 
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfDailySugar) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <ion-card class="summary-card">
-            @let riskOfWeeklySugar = getRisk(DataType.SUGAR, getWeeklyTotal(DataType.SUGAR, data), user, 7);
-
-            <ion-card-header>
-              <ion-card-subtitle>
-                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.SUGAR : DataType.NONE)" [checked]="chartType == DataType.SUGAR"></ion-toggle>
-              </ion-card-subtitle>
-
-              <ion-card-subtitle>Haftalık</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfWeeklySugar)">
-                <ion-icon [name]="getIcon(riskOfWeeklySugar)"></ion-icon>
-                {{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{authService.getLimits(user).sugarLimit * 7 }} 
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfWeeklySugar) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <app-chart *ngIf="chartType == DataType.SUGAR" [data]="data" [date]="date" [type]="chartType"></app-chart>
-        </div>
-
-        <div class="item">
-          <ion-card class="summary-card">
-            @let riskOfDailyKCAL = getRisk(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user, 1);
-
-            <ion-card-header>
-              <ion-card-subtitle>Kalori (kcal)</ion-card-subtitle>
-              <ion-card-subtitle>Günlük</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfDailyKCAL)">
-                <ion-icon [name]="getIcon(riskOfDailyKCAL)"></ion-icon>
-                {{ getTotal(DataType.KCAL, dataByDate).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit }}
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfDailyKCAL) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <ion-card class="summary-card">
-            @let riskOfWeeklyKCAL = getRisk(DataType.KCAL, getWeeklyTotal(DataType.KCAL, data), user, 7);
-
-            <ion-card-header>
-              <ion-card-subtitle>
-                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.KCAL : DataType.NONE)" [checked]="chartType == DataType.KCAL"></ion-toggle>
-              </ion-card-subtitle>
-
-              <ion-card-subtitle>Haftalık</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfWeeklyKCAL)">
-                <ion-icon [name]="getIcon(riskOfWeeklyKCAL)"></ion-icon>
-                {{ getWeeklyTotal(DataType.KCAL, data).toFixed(0) }} / {{ authService.getLimits(user).kcalLimit * 7 }}
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfWeeklyKCAL) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <app-chart *ngIf="chartType == DataType.KCAL" [data]="data" [date]="date" [type]="chartType"></app-chart>
-        </div>
-
-        <div class="item" *ngIf="(waterConsumptionService.data$ | async) as waterConsumption">
-          <ion-card class="summary-card">
-            <ion-card-header>
-              <ion-card-subtitle>Su</ion-card-subtitle>
-              <ion-card-subtitle>Günlük</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfDailyKCAL)">
-                <ion-icon [name]="getIcon(riskOfDailyKCAL)"></ion-icon>
-                {{ (getDailyWater(waterConsumption) / 1000).toFixed(1) }}L / {{ (authService.getLimits(user).waterLimit / 1000).toFixed(1) }}L
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfDailyKCAL) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <ion-card class="summary-card">
-            <ion-card-header>
-              <ion-card-subtitle>
-                <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.KCAL : DataType.NONE)" [checked]="chartType == DataType.KCAL"></ion-toggle>
-              </ion-card-subtitle>
-
-              <ion-card-subtitle>Haftalık</ion-card-subtitle>
-
-              <ion-card-title [style.color]="getColor(riskOfWeeklyKCAL)">
-                <ion-icon [name]="getIcon(riskOfWeeklyKCAL)"></ion-icon>
-                {{ (getWeeklyWater(waterConsumption) / 1000).toFixed(1) }}L / {{ ((authService.getLimits(user).waterLimit * 7) / 1000).toFixed(1) }}L
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              <p>{{ getComment(riskOfWeeklyKCAL) }}</p>
-            </ion-card-content>
-          </ion-card>
-
-          <app-chart *ngIf="chartType == DataType.KCAL" [data]="data" [date]="date" [type]="chartType"></app-chart>
-
-          <div class="water-buttons">
-            <div class="glass" (click)="consumeWater(WaterValue.GLASS)">
-              <img src="assets/images/glass.png" />
-              <p>330 mL</p>
-            </div>
-
-            <div class="bottle" (click)="consumeWater(WaterValue.BOTTLE)">
-              <img src="assets/images/bottle.png" />
-              <p>0.5 L</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="conditional-content">
-        @let weeklyData = getWeeklyNumberData(data);
-        @let names = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
-        <ion-card class="summary-card weekly-summary">
-          <ion-card-header>
-            <ion-card-subtitle>Haftalık Pürin Dağılımı</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="weekly-grid">
-              @let limits = authService.getLimits(user);
-              <div *ngFor="let values of weeklyData; index as i" class="day-item">
-                <div class="day-name">{{ names[i] }}</div>
-                <div [class]="`day-value ${limits.purineLimit < values[0] ? 'red' : ''}`">{{ values[0].toFixed(0) }} mg
-                  pürin</div>
-                <div [class]="`day-value ${limits.sugarLimit < values[1] ? 'red' : ''}`">{{ values[1].toFixed(2) }} g
-                  şeker</div>
-                <div [class]="`day-value ${limits.kcalLimit < values[2] ? 'red' : ''}`">{{ values[2].toFixed(0) }} kcal
-                </div>
-              </div>
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </div>
-      <h2 class="section-title">
-        @let months =
-        ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-       <span>{{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Tüketimi </span>
-      <ion-button fill="clear" (click)="toggleInfo()" class="icon-button">
-        <ion-icon slot="icon-only" name="information-circle-outline">
-        </ion-icon>
-      </ion-button>
-    </h2>
-
-      <ion-card class="info-card" *ngIf="isInfoVisible">
-        <ion-card-content>
-          <h3>🍽️ NutriLog Nedir?</h3>
-          <p>Nutrilog, günlük Pürin, Şeker ve Kalori alımınızı tükettiğiniz gıdalar üzerinden takip eder. Böylece ihtiyacınız kadar 
-            beslenmenizi sağlar, sınırları aşmadan sağlıklı bir denge kurmanıza yardımcı olur. Nutrilog sayesinde vucudunuzda sağlıksız 
-            atıklar birikmez, organlarınız daha rahata çalışır. Uzun vadeli daha sağlıklı hissedersiniz.
-          </p>
-          <h3>🧠 Pürin Nedir?</h3>
-          <p>
-            Pürin, vücudumuzda ürik aside dönüşen bir maddedir. Et, sakatat ve bazı deniz ürünlerinde bolca bulunur.
-          </p>
-          <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
-          <p>Aşırı pürin tüketimi:</p>
-          <ul>
-            <li> Ürik asit artışı</li>
-            <li>Gut hastalığı riski</li>
-            <li> Eklem ağrıları ve böbrek taşı</li>
-          </ul>
-          <h4>✅ Ne Yapabilirim?</h4>
-          <ul>
-            <li>Pürin içeriği yüksek gıdaları azaltın.</li>
-            <li>Bol su içerek vücudunuzu temizleyin.</li>
-            <li>Dengeli beslenin.</li>
-          </ul>
-          <hr/>
-          <h3>🍭 Şeker Nedir?</h3>
-          <p>
-           Şeker, enerji verir ama fazlası sağlık düşmanıdır. Özellikle hazır gıdalardaki katkılı (serbest) şeker, gizli tehlikedir. </p>
-          <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
-            <p>Aşırı şeker tüketimi:</p>
-          <ul>
-            <li> Kilo alımı ve obezite</li>
-            <li>İnsülin direnci ve diyabet</li>
-            <li> Kalp-damar hastalıkları</li>
-            <li>Diş çürükleri ve enerji düşüklüğü</li>
-          </ul>
-          <h4>✅ Ne Yapabilirim?</h4>
-          <ul>
-            <li>Paketli gıdaları azaltın.</li>
-            <li>Tatlı tüketimini haftada 1-2 ile sınırlayın.</li>
-            <li>Meyve yiyerek doğal tatlılık ihtiyacınızı karşılayın.</li>
-          </ul>
-          <hr/>
-          <h3>🔥 Kalori Nedir?</h3>
-          <p>
-            Kalori, vücudun ihtiyaç duyduğu bir enerji birimidir. Yediğiniz her şey kalori içerir, ancak her kalori eşit değildir.
-          </p>
-          <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
-          <p>Aşırı kalori alımı:</p>
-          <ul>
-          <li> Kilo alımı ve obezite</li>
-          <li>Diyabet ve kalp hastalığı riski</li>
-          <li>Halsizlik, nefes darlığı, eklem sorunları</li></ul>
-          <p>Yetersiz kalori alımı:</p>
-          <ul>
-            <li>Kas kaybı, yorgunluk, bağışıklık zayıflığı</li>
-          </ul>
-          <h4>✅ Ne Yapabilirim?</h4>
-          <ul>
-            <li>Günlük ihtiyacınıza göre dengeli kalori alın.</li>
-            <li>Fast food ve şekerli içecekleri sınırlı tutun.</li>
-            <li>Lifli, proteinli ve doğal gıdaları tercih edin.</li>
-          </ul>
-        </ion-card-content>
-      </ion-card>
-
-      <ion-list class="meals" lines="none" *ngIf="dataByDate.length > 0; else noData">
-        <ion-item *ngFor="let entry of dataByDate" class="meal-item">
-          @let consumedAt = createDateFrom(entry.timestamp);
-
-          <ion-label>
-            <h2>{{ entry.meal.name }}</h2>
-            <p>Porsiyon: {{ entry.count }}</p>
-            <p>
-              Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg <br>
-              Şeker: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g <br>
-              Kalori: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal
-            </p>
-          </ion-label>
-          <div class="item-actions">
-            <span class="meal-time">{{ consumedAt.getHours().toString().padStart(2, "0") }}:{{
-              consumedAt.getMinutes().toString().padStart(2, "0") }}</span>
-
-            <ion-button fill="clear" size="small" class="delete-button"
-              (click)="deleteMeal(entry.meal.id, entry.timestamp)">
-              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      <div *ngIf="(mealService.categories$ | async) as categories">
+        @let meals = mealService.getAllMeals(categories);
+        @let dataByDate = getEntriesOfDate(meals, data);
+        
+        <div class="top-bar">
+          <h1 class="page-title">NutriLog</h1>
+          <div class="top-bar-actions">
+            <ion-button fill="clear" (click)="goSettings()" class="icon-button">
+              <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="logout()" class="icon-button">
+              <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
             </ion-button>
           </div>
-        </ion-item>
-      </ion-list>
-
-      <ng-template #noData>
-        <div class="empty-state">
-          <ion-icon name="restaurant-outline"></ion-icon>
-          <p>Bu tarihte kayıtlı yemek bulunmuyor.</p>
         </div>
-      </ng-template>
+
+        <ion-card class="control-panel">
+          <ion-item lines="none">
+            <ion-input type="date"
+              [value]="getDateString(date.day, date.month + 1, date.year)"
+              [max]="getDateString(today.getDate(), today.getMonth() + 1, today.getFullYear())"
+              (ionChange)="onMainDateChange($event)">
+            </ion-input>
+          </ion-item>
+        </ion-card>
+
+        <div class="summary-grid">
+          <app-card
+            [user]="user"
+            [dailyLimit]="authService.getLimits(user).purineLimit"
+            [dailyConsumption]="getTotal(DataType.PURINE, dataByDate)"
+            [weeklyConsumption]="getWeeklyTotal(DataType.PURINE, data)"
+            [title]="'Pürin (mg)'"
+            [type]="DataType.PURINE"
+            (changeChartType)="changeChartType($event)">
+          </app-card>
+          <app-chart *ngIf="chartType == DataType.PURINE" [data]="data" [date]="date" [type]="chartType"></app-chart>
+
+          <app-card
+            [user]="user"
+            [dailyLimit]="authService.getLimits(user).sugarLimit"
+            [dailyConsumption]="getTotal(DataType.SUGAR, dataByDate)"
+            [weeklyConsumption]="getWeeklyTotal(DataType.SUGAR, data)"
+            [title]="'Şeker (g)'"
+            [type]="DataType.SUGAR"
+            [chartType]="chartType"
+            (changeChartType)="changeChartType($event)"
+            (data)="data"
+            (date)="date">
+          </app-card>
+          <app-chart *ngIf="chartType == DataType.SUGAR" [data]="data" [date]="date" [type]="chartType"></app-chart>
+
+          <app-card
+            [user]="user"
+            [dailyLimit]="authService.getLimits(user).kcalLimit"
+            [dailyConsumption]="getTotal(DataType.KCAL, dataByDate)"
+            [weeklyConsumption]="getWeeklyTotal(DataType.KCAL, data)"
+            [title]="'Kalori'"
+            [type]="DataType.KCAL"
+            (changeChartType)="changeChartType($event)"
+            (data)="data"
+            (date)="date">
+          </app-card>
+          <app-chart *ngIf="chartType == DataType.KCAL" [data]="data" [date]="date" [type]="chartType"></app-chart>
+
+          <!--<div class="item" *ngIf="(waterConsumptionService.data$ | async) as waterConsumption">
+            <ion-card class="summary-card">
+              <ion-card-header>
+                <ion-card-subtitle>Su</ion-card-subtitle>
+                <ion-card-subtitle>Günlük</ion-card-subtitle>
+
+                <ion-card-title [style.color]="getColor(riskOfDailyKCAL)">
+                  <ion-icon [name]="getIcon(riskOfDailyKCAL)"></ion-icon>
+                  {{ (getDailyWater(waterConsumption) / 1000).toFixed(1) }}L / {{ (authService.getLimits(user).waterLimit / 1000).toFixed(1) }}L
+                </ion-card-title>
+              </ion-card-header>
+
+              <ion-card-content>
+                <p>{{ getComment(riskOfDailyKCAL) }}</p>
+              </ion-card-content>
+            </ion-card>
+
+            <ion-card class="summary-card">
+              <ion-card-header>
+                <ion-card-subtitle>
+                  <ion-toggle (ionChange)="chartType = ($event.detail.checked ? DataType.KCAL : DataType.NONE)" [checked]="chartType == DataType.KCAL"></ion-toggle>
+                </ion-card-subtitle>
+
+                <ion-card-subtitle>Haftalık</ion-card-subtitle>
+
+                <ion-card-title [style.color]="getColor(riskOfWeeklyKCAL)">
+                  <ion-icon [name]="getIcon(riskOfWeeklyKCAL)"></ion-icon>
+                  {{ (getWeeklyWater(waterConsumption) / 1000).toFixed(1) }}L / {{ ((authService.getLimits(user).waterLimit * 7) / 1000).toFixed(1) }}L
+                </ion-card-title>
+              </ion-card-header>
+
+              <ion-card-content>
+                <p>{{ getComment(riskOfWeeklyKCAL) }}</p>
+              </ion-card-content>
+            </ion-card>
+
+            <app-chart *ngIf="chartType == DataType.KCAL" [data]="data" [date]="date" [type]="chartType"></app-chart>
+
+            <div class="water-buttons">
+              <div class="glass" (click)="consumeWater(WaterValue.GLASS)">
+                <img src="assets/images/glass.png" />
+                <p>330 mL</p>
+              </div>
+
+              <div class="bottle" (click)="consumeWater(WaterValue.BOTTLE)">
+                <img src="assets/images/bottle.png" />
+                <p>0.5 L</p>
+              </div>
+            </div>
+          </div>-->
+        </div>
+
+        <div class="conditional-content">
+          @let weeklyData = getWeeklyNumberData(data);
+          @let names = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+          <ion-card class="summary-card weekly-summary">
+            <ion-card-header>
+              <ion-card-subtitle>Haftalık Pürin Dağılımı</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="weekly-grid">
+                @let limits = authService.getLimits(user);
+                <div *ngFor="let values of weeklyData; index as i" class="day-item">
+                  <div class="day-name">{{ names[i] }}</div>
+                  <div [class]="`day-value ${limits.purineLimit < values[0] ? 'red' : ''}`">{{ values[0].toFixed(0) }} mg
+                    pürin</div>
+                  <div [class]="`day-value ${limits.sugarLimit < values[1] ? 'red' : ''}`">{{ values[1].toFixed(2) }} g
+                    şeker</div>
+                  <div [class]="`day-value ${limits.kcalLimit < values[2] ? 'red' : ''}`">{{ values[2].toFixed(0) }} kcal
+                  </div>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+        <h2 class="section-title">
+          @let months = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+          <span>{{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Tüketimi </span>
+
+          <ion-button fill="clear" (click)="toggleInfo()" class="icon-button">
+            <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
+          </ion-button>
+        </h2>
+
+        <ion-card class="info-card" *ngIf="isInfoVisible">
+          <ion-card-content>
+            <h3>🍽️ NutriLog Nedir?</h3>
+            <p>Nutrilog, günlük Pürin, Şeker ve Kalori alımınızı tükettiğiniz gıdalar üzerinden takip eder. Böylece ihtiyacınız kadar 
+              beslenmenizi sağlar, sınırları aşmadan sağlıklı bir denge kurmanıza yardımcı olur. Nutrilog sayesinde vucudunuzda sağlıksız 
+              atıklar birikmez, organlarınız daha rahata çalışır. Uzun vadeli daha sağlıklı hissedersiniz.
+            </p>
+            <h3>🧠 Pürin Nedir?</h3>
+            <p>
+              Pürin, vücudumuzda ürik aside dönüşen bir maddedir. Et, sakatat ve bazı deniz ürünlerinde bolca bulunur.
+            </p>
+            <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
+            <p>Aşırı pürin tüketimi:</p>
+            <ul>
+              <li> Ürik asit artışı</li>
+              <li>Gut hastalığı riski</li>
+              <li> Eklem ağrıları ve böbrek taşı</li>
+            </ul>
+            <h4>✅ Ne Yapabilirim?</h4>
+            <ul>
+              <li>Pürin içeriği yüksek gıdaları azaltın.</li>
+              <li>Bol su içerek vücudunuzu temizleyin.</li>
+              <li>Dengeli beslenin.</li>
+            </ul>
+            <hr/>
+            <h3>🍭 Şeker Nedir?</h3>
+            <p>
+            Şeker, enerji verir ama fazlası sağlık düşmanıdır. Özellikle hazır gıdalardaki katkılı (serbest) şeker, gizli tehlikedir. </p>
+            <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
+              <p>Aşırı şeker tüketimi:</p>
+            <ul>
+              <li> Kilo alımı ve obezite</li>
+              <li>İnsülin direnci ve diyabet</li>
+              <li> Kalp-damar hastalıkları</li>
+              <li>Diş çürükleri ve enerji düşüklüğü</li>
+            </ul>
+            <h4>✅ Ne Yapabilirim?</h4>
+            <ul>
+              <li>Paketli gıdaları azaltın.</li>
+              <li>Tatlı tüketimini haftada 1-2 ile sınırlayın.</li>
+              <li>Meyve yiyerek doğal tatlılık ihtiyacınızı karşılayın.</li>
+            </ul>
+            <hr/>
+            <h3>🔥 Kalori Nedir?</h3>
+            <p>
+              Kalori, vücudun ihtiyaç duyduğu bir enerji birimidir. Yediğiniz her şey kalori içerir, ancak her kalori eşit değildir.
+            </p>
+            <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
+            <p>Aşırı kalori alımı:</p>
+            <ul>
+            <li> Kilo alımı ve obezite</li>
+            <li>Diyabet ve kalp hastalığı riski</li>
+            <li>Halsizlik, nefes darlığı, eklem sorunları</li></ul>
+            <p>Yetersiz kalori alımı:</p>
+            <ul>
+              <li>Kas kaybı, yorgunluk, bağışıklık zayıflığı</li>
+            </ul>
+            <h4>✅ Ne Yapabilirim?</h4>
+            <ul>
+              <li>Günlük ihtiyacınıza göre dengeli kalori alın.</li>
+              <li>Fast food ve şekerli içecekleri sınırlı tutun.</li>
+              <li>Lifli, proteinli ve doğal gıdaları tercih edin.</li>
+            </ul>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-list class="meals" lines="none" *ngIf="dataByDate.length > 0; else noData">
+          <ion-item *ngFor="let entry of dataByDate" class="meal-item">
+            @let consumedAt = createDateFrom(entry.timestamp);
+
+            <ion-label>
+              <h2>{{ entry.meal.name }}</h2>
+              <p>Porsiyon: {{ entry.count }}</p>
+              <p>
+                Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg <br>
+                Şeker: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g <br>
+                Kalori: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal
+              </p>
+            </ion-label>
+            <div class="item-actions">
+              <span class="meal-time">{{ consumedAt.getHours().toString().padStart(2, "0") }}:{{
+                consumedAt.getMinutes().toString().padStart(2, "0") }}</span>
+
+              <ion-button fill="clear" size="small" class="delete-button"
+                (click)="deleteMeal(entry.meal.id, entry.timestamp)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-item>
+        </ion-list>
+
+        <ng-template #noData>
+          <div class="empty-state">
+            <ion-icon name="restaurant-outline"></ion-icon>
+            <p>Bu tarihte kayıtlı yemek bulunmuyor.</p>
+          </div>
+        </ng-template>
+      </div>
     </div>
   </div>
 
@@ -429,14 +342,14 @@
               </ion-select>
             </ion-item>
 
-            <ion-item *ngIf="selectedCategory">
+            <!--<ion-item *ngIf="selectedCategory">
               <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
                 [value]="currentMealEntry.meal?.id">
                 <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
                   {{ meal.name }}
                 </ion-select-option>
               </ion-select>
-            </ion-item>
+            </ion-item>-->
           </ion-list>
         </ng-container>
         

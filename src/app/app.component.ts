@@ -24,7 +24,7 @@ export class AppComponent {
     const isLogged = await this.authService.initialize();
 
     if (isLogged) {
-      await this.mealService.getAllMealEntries();
+      await this.mealService.initialize();
       await this.waterConsumptionService.initialize();
     }
   }
