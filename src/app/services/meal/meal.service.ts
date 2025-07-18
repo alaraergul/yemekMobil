@@ -13,10 +13,15 @@ export class MealService {
   constructor(private http: HttpClient) {}
 
   getAllMeals(categories: MealCategory[]) {
-    const meals = [];
+    const meals: Meal[] = [];
 
     for (const category of categories) {
-      meals.push(...category.meals);
+      for (const meal of category.meals) {
+        meals.push({
+          ...meal,
+          category: category.name
+        })
+      }
     }
 
     return meals;
@@ -56,22 +61,25 @@ export class MealService {
     for (const entry of mealEntries) {
       for (const category of categories) {
         const selectedMeal = category.meals.find((meal) => meal.id === entry.meal.id);
-        if (!selectedMeal) return false;
 
-        const mealEntry: MealEntry = {
-          meal: selectedMeal,
-          count: entry.count,
-          timestamp: entry.timestamp
-        };
+        if (selectedMeal) {
+          const mealEntry: MealEntry = {
+            meal: selectedMeal,
+            count: entry.count,
+            timestamp: entry.timestamp
+          };
 
-        data.push(mealEntry);
-        willBeAdded.push({
-          id: selectedMeal.id,
-          count: entry.count,
-          timestamp: entry.timestamp
-        })
+          data.push(mealEntry);
+          willBeAdded.push({
+            id: selectedMeal.id,
+            count: entry.count,
+            timestamp: entry.timestamp
+          });
+        }
       }
     }
+
+    if (willBeAdded.length == 0) return false;
 
     await fetch(`${API_URL}/users/${user.id}/meals`, {
       method: "POST",

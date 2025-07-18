@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/angular';
-import { MealEntry, Meal, User, DataType, Risk, WaterValue, WaterConsumption } from 'src/app/utils';
+import { MealEntry, Meal, User, DataType, Risk, WaterValue, WaterConsumption, MealCategory } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MealService } from 'src/app/services/meal/meal.service';
 import { CardComponent } from 'src/app/components/Card/card.component';
@@ -110,8 +110,7 @@ export class HomePage {
     this.date = { day, month, year };
   }
 
-  async getCategoryNames(): Promise<string[]> {
-    const categories = await this.mealService.categories$;
+  getCategoryNames(categories: MealCategory[]): string[] {
     return categories.map((category) => category.name).sort((a, b) => a.localeCompare(b, 'tr'));
   }
 
@@ -209,6 +208,7 @@ export class HomePage {
     }
 
     const result = await this.mealService.addMealEntries(this.mealEntries);
+
     if (result) {
       this.presentToast('Yemekler başarıyla eklendi!', 'success');
       this.setOpen(false);
@@ -257,12 +257,12 @@ export class HomePage {
     } 
 
     const customMeal: Meal = {
-        id: -Date.now(), 
+        id: -Date.now(),
         name: name.trim(),
         purine: +purine,
-        sugar: +sugar, 
+        sugar: +sugar,
         kcal: +kcal,
-        quantity: 1, 
+        quantity: 1,
         category: 'Özel Yemek'
     };
     this.currentMealEntry.meal = customMeal;
