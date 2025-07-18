@@ -4,8 +4,10 @@
     @let dailyLimit = getDailyLimit();
 
     <ion-card-header>
-      <ion-card-subtitle>{{ title }}</ion-card-subtitle>
-      <ion-card-subtitle>Günlük</ion-card-subtitle>
+      <ion-card-subtitle>
+        <p>{{ title }}</p>
+        <p>Günlük</p>
+      </ion-card-subtitle>
 
       <ion-card-title [style.color]="getColor(riskOfDailyPurine)">
         <ion-icon [name]="getIcon(riskOfDailyPurine)"></ion-icon>
@@ -19,13 +21,11 @@
 
   <ion-card class="summary-card">
     @let riskOfWeeklyPurine = getRisk(DataType.PURINE, weeklyConsumption, 7);
-
     <ion-card-header>
       <ion-card-subtitle>
         <ion-toggle (ionChange)="changeChartType.emit($event.detail.checked ? type : DataType.NONE)" [checked]="chartType == type"></ion-toggle>
+        <p>Haftalık</p>
       </ion-card-subtitle>
-
-      <ion-card-subtitle>Haftalık</ion-card-subtitle>
 
       <ion-card-title [style.color]="getColor(riskOfWeeklyPurine)">
         <ion-icon [name]="getIcon(riskOfWeeklyPurine)"></ion-icon>
