@@ -54,6 +54,14 @@ export class HomePage {
   searchResults: Meal[] = [];
   selectedCategory: string | null = null;
 
+  isCreatingNewMeal = false;
+  newCustomMeal: Partial<Meal> = {
+    name: '',
+    purine: undefined,
+    kcal: undefined,
+    sugar: undefined,
+  };
+
   constructor(private cdr: ChangeDetectorRef) {
     this.resetCurrentMealEntry();
   }
@@ -75,6 +83,7 @@ export class HomePage {
     this.currentMealEntry.meal = meal;
     this.searchQuery = null;
     this.searchResults = [];
+    this.isCreatingNewMeal = false;
     this.cdr.detectChanges();
   }
 
@@ -134,8 +143,15 @@ export class HomePage {
     };
     this.currentDateString = this.getDateString(now.getDate(), now.getMonth() + 1, now.getFullYear());
     this.currentTimeString = this.getTimeString(now.getHours(), now.getMinutes());
-    
-    this.selectedCategory = null; 
+
+    this.selectedCategory = null;
+    this.searchQuery = '';
+    this.searchResults = []; 
+    this.isCreatingNewMeal = false; 
+    this.newCustomMeal = { name: '', 
+      purine: undefined, 
+      kcal: undefined, 
+      sugar: undefined }; 
   }
   
   resetCurrentMealEntries() {
@@ -158,7 +174,7 @@ export class HomePage {
     this.currentMealEntry.timestamp = timestamp; 
     this.updateStringInputsFromTimestamp();
 
-    this.searchInput.setFocus();
+    this.searchInput?.setFocus();
   }
   
   removeMealEntryFromList(index: number) {
@@ -232,6 +248,38 @@ export class HomePage {
     if (meal) this.currentMealEntry.meal = meal;
   }
 
+   toggleCreateNewMealView(state: boolean) {
+    this.isCreatingNewMeal = state;
+    if (state) {
+      this.searchQuery = '';
+      this.searchResults = [];
+      this.selectedCategory = null;
+      this.currentMealEntry.meal = null;
+    }
+  } 
+
+  createAndSelectCustomMeal() {
+    const { name, purine, sugar, kcal } = this.newCustomMeal;
+    
+    if (!name || name.trim() === '' || purine === undefined || sugar === undefined || kcal === undefined || purine < 0 || sugar < 0 || kcal < 0) {
+        this.presentToast('Lütfen tüm alanları geçerli değerlerle doldurun.', 'danger');
+        return;
+    } 
+
+    const customMeal: Meal = {
+        id: -Date.now(), 
+        name: name.trim(),
+        purine: +purine,
+        sugar: +sugar, 
+        kcal: +kcal,
+        quantity: 1, 
+        category: 'Özel Yemek'
+    };
+    this.currentMealEntry.meal = customMeal;
+    this.toggleCreateNewMealView(false); 
+    this.newCustomMeal = { name: '', purine: undefined, kcal: undefined, sugar: undefined }; 
+  }
+
   getEntriesOfDate(entries: MealEntry[]): MealEntry[] {
     return entries
       .filter((entry) => {
@@ -243,7 +291,7 @@ export class HomePage {
         );
       })
       .map((entry) => {
-        const meal = meals.find((m) => m.id === entry.meal?.id);
+        const meal = (entry.meal && entry.meal.id > 0) ? meals.find((m) => m.id === entry.meal?.id) : entry.meal;
         return { ...entry, meal: meal || entry.meal };
       })
       .filter((entry) => entry.meal)

@@ -371,38 +371,76 @@
       </ion-header>
 
       <ion-content class="ion-padding">
+
+        <ng-container *ngIf="isCreatingNewMeal">
+          <ion-list>
+             <ion-item lines="none">
+                <ion-label>
+                  <h2>Yeni Özel Yemek Oluştur</h2>
+                  <p>1 porsiyon için besin değerlerini girin.</p>
+                </ion-label>
+                <ion-button slot="end" fill="clear" (click)="toggleCreateNewMealView(false)">
+                    Vazgeç
+                </ion-button>
+            </ion-item>
+
+            <ion-item>
+                <ion-input label="Yemek Adı" label-placement="floating" [(ngModel)]="newCustomMeal.name" required></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-input label="Pürin (mg / porsiyon)" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.purine" required></ion-input>
+            </ion-item>
+             <ion-item>
+                <ion-input label="Şeker (g / porsiyon)" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.sugar" required></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-input label="Kalori (kcal / porsiyon)" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.kcal" required></ion-input>
+            </ion-item>
+            <ion-button expand="block" (click)="createAndSelectCustomMeal()" class="ion-margin-top">
+                Oluştur ve Seç
+            </ion-button>
+        </ion-list>
+        </ng-container>
+        
+        <ng-container *ngIf="!isCreatingNewMeal">
+          <ion-list>
+            <ion-item>
+              <ion-input #searchInput placeholder="Yemek ara" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery"></ion-input>
+              <ion-button slot="end" fill="clear" (click)="toggleCreateNewMealView(true)" title="Yeni özel yemek oluştur">
+                <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <ion-item *ngIf="searchResults.length != 0">
+              <div forceOverscroll="false" class="search-results">
+                <ion-list>
+                  <ion-item *ngFor="let meal of searchResults;" (click)="selectSearchResult(meal)">
+                    <p>{{ meal.name }}</p>
+                  </ion-item>
+                </ion-list>
+              </div>
+            </ion-item>
+            
+            <ion-item>
+              <ion-select label="Kategori" placeholder="Kategori Seçin" [(ngModel)]="selectedCategory">
+                <ion-select-option *ngFor="let category of getCategoryNames()" [value]="category">
+                  {{ category }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item *ngIf="selectedCategory">
+              <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
+                [value]="currentMealEntry.meal?.id">
+                <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
+                  {{ meal.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+        </ng-container>
+        
         <ion-list>
-          <ion-item>
-            <ion-input #searchInput placeholder="Yemek ara" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery" />
-          </ion-item>
-
-          <ion-item *ngIf="searchResults.length != 0">
-            <div forceOverscroll="false" class="search-results">
-              <ion-list>
-                <ion-item *ngFor="let meal of searchResults;" (click)="selectSearchResult(meal)">
-                  <p>{{ meal.name }}</p>
-                </ion-item>
-              </ion-list>
-            </div>
-          </ion-item>
-
-          <ion-item>
-            <ion-select label="Kategori" placeholder="Kategori Seçin" [(ngModel)]="selectedCategory">
-              <ion-select-option *ngFor="let category of getCategoryNames()" [value]="category">
-                {{ category }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item *ngIf="selectedCategory">
-            <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
-              [value]="currentMealEntry.meal?.id">
-              <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
-                {{ meal.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-
           <ion-item>
             <ion-input label="Porsiyon" label-placement="floating" type="number" inputmode="decimal" min="1"
               [(ngModel)]="currentMealEntry.count"></ion-input>
