@@ -93,8 +93,6 @@ export class SettingsPage implements OnInit {
       toast.present();
 
     } catch (error) {
-      console.error("Ayarlar kaydedilirken hata oluştu:", error);
-
       const toast = await this.toastController.create({
         message: "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
         duration: 3000,

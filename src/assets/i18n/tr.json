@@ -1,0 +1,24 @@
+{
+  "AUTH": {
+    "WELCOME": "Hoş Geldiniz!",
+    "LANGUAGE": "Dil",
+    "LOGIN_TAB": "Giriş Yap",
+    "REGISTER_TAB": "Kayıt Ol",
+    "USERNAME_PLACEHOLDER": "Kullanıcı Adı",
+    "PASSWORD_PLACEHOLDER": "Şifre",
+    "NEW_USERNAME_PLACEHOLDER": "Yeni Kullanıcı Adı",
+    "NEW_PASSWORD_PLACEHOLDER": "Yeni Şifre",
+    "WEIGHT_PLACEHOLDER": "Kilonuz (kg)",
+    "GENDER_LABEL": "Cinsiyet",
+    "MALE": "Erkek",
+    "FEMALE": "Kadın",
+    "LOGIN_BUTTON": "Giriş Yap",
+    "REGISTER_BUTTON": "Kayıt Ol",
+    "LOGIN_SUCCESS": "Giriş başarılı!",
+    "LOGIN_FAIL": "Kullanıcı adı veya şifre hatalı!",
+    "REGISTER_SUCCESS": "Kayıt başarılı! Giriş yapabilirsiniz.",
+    "REGISTER_FAIL": "Bu kullanıcı adı zaten alınmış!",
+    "FILL_ALL_FIELDS": "Lütfen tüm alanları doldurunuz.",
+    "VALID_WEIGHT": "Geçerli bir kilo giriniz!"
+  }
+}

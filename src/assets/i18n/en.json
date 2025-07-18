@@ -1,0 +1,39 @@
+{
+  "AUTH": {
+    "WELCOME": "Welcome!",
+    "LANGUAGE": "Language",
+    "LOGIN_TAB": "Login",
+    "REGISTER_TAB": "Register",
+    "USERNAME_PLACEHOLDER": "Username",
+    "PASSWORD_PLACEHOLDER": "Password",
+    "NEW_USERNAME_PLACEHOLDER": "New Username",
+    "NEW_PASSWORD_PLACEHOLDER": "New Password",
+    "WEIGHT_PLACEHOLDER": "Your Weight (kg)",
+    "GENDER_LABEL": "Gender",
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "LOGIN_BUTTON": "Login",
+    "REGISTER_BUTTON": "Register",
+    "LOGIN_SUCCESS": "Login successful!",
+    "LOGIN_FAIL": "Incorrect username or password!",
+    "REGISTER_SUCCESS": "Registration successful! You can now log in.",
+    "REGISTER_FAIL": "This username is already taken!",
+    "FILL_ALL_FIELDS": "Please fill in all fields.",
+    "VALID_WEIGHT": "Please enter a valid weight!"
+  }
+}
+  {
+    "SETTINGS": {
+      "SUCCESS": "Ayarların başarıyla kaydedildi!",
+      "ERROR": "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
+      "RESETTED": "Limitler önerilen değerlere sıfırlandı.",
+      "SAVE": "Ayarları Kaydet",
+      "RESET": "Limitleri Önerilen Değerlere Sıfırla",
+      "RECOMMENDED": "Önerilen",
+      "SETTINGS": "Ayarlar",
+      "MALE": "Erkek",
+      "FEMALE": "Kadın",
+      "GENDER": "Cinsiyet",
+
+    }
+  }

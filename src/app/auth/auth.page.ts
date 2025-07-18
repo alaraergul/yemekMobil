@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Gender } from '../utils';
 import { MealService } from '../services/meal/meal.service';
+import { TranslateModule, TranslateService} from '@ngx-translate/core';
 
 enum Tabs {
   LOGIN,
@@ -21,7 +22,8 @@ enum Tabs {
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ]
 })
 export class AuthPage {
@@ -36,17 +38,24 @@ export class AuthPage {
   regPassword = '';
   regWeight: number | null = null;
   regGender: Gender | null = null;
+  currentLang: string;
 
   constructor(
     private authService: AuthService,
     private mealService: MealService,
     private toastController: ToastController,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService 
   ) {
+    this.currentLang = this.translate.currentLang || 'tr'
     this.authService.onLogin(async () => {
       await this.mealService.initialize();
       this.router.navigateByUrl("/home");
     });
+  }
+
+  changeLanguage(event: any) {
+    this.translate.use(event.detail.value);
   }
 
   async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
@@ -63,30 +72,42 @@ export class AuthPage {
     const success = await this.authService.login(this.username, this.password);
 
     if (success) {
-      this.showToast('Giriş başarılı!', 'success');
+      this.translate.get('AUTH.LOGIN_SUCCESS').subscribe(message => {
+        this.showToast(message, 'success');
+      });
     } else {
-      this.showToast('Kullanıcı adı veya şifre hatalı!', 'danger');
+      this.translate.get('AUTH.LOGIN_FAIL').subscribe(message => {
+        this.showToast(message, 'danger');
+      });
     }
   }
 
   async register() {
     if (!this.regUsername || !this.regPassword || this.regWeight === null || this.regGender == null) {
-      this.showToast('Lütfen tüm alanları doldurunuz.', 'warning');
+      this.translate.get('AUTH.FILL_ALL_FIELDS').subscribe(message => {
+        this.showToast(message, 'warning');
+      });
       return;
     }
 
     if (this.regWeight <= 0) {
-      this.showToast('Geçerli bir kilo giriniz!', 'warning');
+      this.translate.get('AUTH.VALID_WEIGHT').subscribe(message => {
+        this.showToast(message, 'warning');
+      });
       return;
     }
 
     const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight, this.regGender);
 
     if (success) {
-      this.showToast('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');
+      this.translate.get('AUTH.REGISTER_SUCCESS').subscribe(message => {
+        this.showToast(message, 'success');
+      });
       this.activeTab = Tabs.LOGIN;
     } else {
-      this.showToast('Bu kullanıcı adı zaten alınmış!', 'danger');
+      this.translate.get('AUTH.REGISTER_FAIL').subscribe(message => {
+        this.showToast(message, 'danger');
+      });
     }
   }
 
