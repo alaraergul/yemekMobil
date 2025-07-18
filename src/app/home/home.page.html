@@ -50,7 +50,7 @@
 
               <ion-card-title [style.color]="getColor(riskOfDailyPurine)">
                 <ion-icon [name]="getIcon(riskOfDailyPurine)"></ion-icon>
-                {{ getTotal(DataType.PURINE, dataByDate).toFixed(0) }} / {{authService.getLimits(user).purineLimit }} mg</ion-card-title>
+                {{ getTotal(DataType.PURINE, dataByDate).toFixed(0) }} / {{authService.getLimits(user).purineLimit }} </ion-card-title>
             </ion-card-header>
 
             <ion-card-content>
@@ -70,7 +70,7 @@
 
               <ion-card-title [style.color]="getColor(riskOfWeeklyPurine)">
                 <ion-icon [name]="getIcon(riskOfWeeklyPurine)"></ion-icon>
-                {{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{authService.getLimits(user).purineLimit * 7 }} mg
+                {{ getWeeklyTotal(DataType.PURINE, data).toFixed(0) }} / {{authService.getLimits(user).purineLimit * 7 }} 
               </ion-card-title>
             </ion-card-header>
 
@@ -92,7 +92,7 @@
 
               <ion-card-title [style.color]="getColor(riskOfDailySugar)">
                 <ion-icon [name]="getIcon(riskOfDailySugar)"></ion-icon>
-                {{ getTotal(DataType.SUGAR, dataByDate).toFixed(0) }} / {{authService.getLimits(user).sugarLimit }} g
+                {{ getTotal(DataType.SUGAR, dataByDate).toFixed(0) }} / {{authService.getLimits(user).sugarLimit }} 
               </ion-card-title>
             </ion-card-header>
 
@@ -113,7 +113,7 @@
 
               <ion-card-title [style.color]="getColor(riskOfWeeklySugar)">
                 <ion-icon [name]="getIcon(riskOfWeeklySugar)"></ion-icon>
-                {{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{authService.getLimits(user).sugarLimit * 7 }} g
+                {{ getWeeklyTotal(DataType.SUGAR, data).toFixed(0) }} / {{authService.getLimits(user).sugarLimit * 7 }} 
               </ion-card-title>
             </ion-card-header>
 
@@ -130,7 +130,7 @@
             @let riskOfDailyKCAL = getRisk(DataType.KCAL, getTotal(DataType.KCAL, dataByDate), user, 1);
 
             <ion-card-header>
-              <ion-card-subtitle>Kalori</ion-card-subtitle>
+              <ion-card-subtitle>Kalori (kcal)</ion-card-subtitle>
               <ion-card-subtitle>Günlük</ion-card-subtitle>
 
               <ion-card-title [style.color]="getColor(riskOfDailyKCAL)">
