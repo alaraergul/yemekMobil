@@ -34,8 +34,11 @@ div.item {
     ion-card-header { padding: 0; }
     ion-card-content { padding: 8px 0 0 0; }
     ion-card-title {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
 
       @media (prefers-color-scheme: light) {
         color: #1E2023;
@@ -46,6 +49,18 @@ div.item {
       }
     }
 
+     ion-card-subtitle:first-child {
+      font-weight: 800; 
+
+      @media (prefers-color-scheme: light) {
+        color: #333; 
+      }
+
+      @media (prefers-color-scheme: dark) {
+        color: #ddd; 
+      }
+    }
+    
     ion-card-subtitle {
       display: grid;
       gap: 16px;

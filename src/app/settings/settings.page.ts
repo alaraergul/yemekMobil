@@ -110,7 +110,7 @@ export class SettingsPage implements OnInit {
 
     const defaults = this.authService.getLimits(this.currentUser);
     this.purineLimit = defaults.purineLimit;
-    this.sugarLimit = defaults.sugarLimit;
+    this.sugarLimit = Math.round(defaults.sugarLimit);
     this.kcalLimit = defaults.kcalLimit;
 
     const toast = this.toastController.create({
