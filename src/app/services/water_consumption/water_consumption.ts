@@ -16,7 +16,7 @@ export class WaterConsumptionService {
     const user = await this.authService.user$;
 
     const response = firstValueFrom(
-      this.http.get<WaterConsumption[] | Error>(`${API_URL}/users/${user.id}/water_consumption`)
+      this.http.get<WaterConsumption[] | Error>(`${API_URL}/users/${user.id}/water-consumption`)
     );
 
     if ((await response as Error).code) return;
@@ -32,7 +32,7 @@ export class WaterConsumptionService {
       timestamp: Date.now()
     };
 
-    await fetch(`${API_URL}/users/${user.id}/water_consumption`, {
+    await fetch(`${API_URL}/users/${user.id}/water-consumption`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
