@@ -19,6 +19,9 @@
     "REGISTER_SUCCESS": "Kayıt başarılı! Giriş yapabilirsiniz.",
     "REGISTER_FAIL": "Bu kullanıcı adı zaten alınmış!",
     "FILL_ALL_FIELDS": "Lütfen tüm alanları doldurunuz.",
-    "VALID_WEIGHT": "Geçerli bir kilo giriniz!"
+    "VALID_WEIGHT": "Geçerli bir kilo giriniz!",
+    "LANGUAGE_LABEL": "Dil",
+    "TURKISH": "Türkçe",
+    "ENGLISH": "İngilizce"
   }
 }

@@ -1,15 +1,18 @@
 <ion-content [fullscreen]="true">
   <div class="auth-wrapper">
+
+    <div class="language-switcher-container">
+      <ion-select interface="popover"
+                  (ionChange)="changeLanguage($event)"
+                  [value]="currentLang"
+                  class="language-select-custom">
+        <ion-select-option value="tr">TR</ion-select-option>
+        <ion-select-option value="en">EN</ion-select-option>
+      </ion-select>
+    </div>
+
     <div class="auth-card">
       <h1 class="logo">{{ 'AUTH.WELCOME' | translate }}</h1>
-
-      <ion-item class="input-item language-selector">
-        <ion-label>{{ 'AUTH.LANGUAGE' | translate }}</ion-label>
-        <ion-select interface="popover" (ionChange)="changeLanguage($event)" value="tr">
-          <ion-select-option value="tr">Türkçe</ion-select-option>
-          <ion-select-option value="en">English</ion-select-option>
-        </ion-select>
-      </ion-item>
 
       <div class="tab-buttons">
         <button [class.active]="activeTab === Tabs.LOGIN" (click)="activeTab = Tabs.LOGIN">{{ 'AUTH.LOGIN_TAB' | translate }}</button>
@@ -53,11 +56,17 @@
             <ion-select-option [value]="Gender.FEMALE">{{ 'AUTH.FEMALE' | translate }}</ion-select-option>
           </ion-select>
         </ion-item>
+        
+         <ion-item class="input-item">
+          <ion-icon name="language-outline" slot="start"></ion-icon>
+          <ion-select [label]="'AUTH.LANGUAGE_LABEL' | translate" [(ngModel)]="regLang" name="regLang">
+            <ion-select-option value="tr">{{ 'AUTH.TURKISH' | translate }}</ion-select-option>
+            <ion-select-option value="en">{{ 'AUTH.ENGLISH' | translate }}</ion-select-option>
+          </ion-select>
+        </ion-item>
 
         <ion-button expand="block" type="submit" class="submit-btn">{{ 'AUTH.REGISTER_BUTTON' | translate }}</ion-button>
       </form>
     </div>
   </div>
 </ion-content>
-
-

@@ -38,6 +38,7 @@ export class AuthPage {
   regPassword = '';
   regWeight: number | null = null;
   regGender: Gender | null = null;
+  regLang: string | null = null; 
   currentLang: string;
 
   constructor(
@@ -45,7 +46,7 @@ export class AuthPage {
     private mealService: MealService,
     private toastController: ToastController,
     private router: Router,
-    private translate: TranslateService 
+    private translate: TranslateService
   ) {
     this.currentLang = this.translate.currentLang || 'tr'
     this.authService.onLogin(async () => {
@@ -53,9 +54,10 @@ export class AuthPage {
       this.router.navigateByUrl("/home");
     });
   }
-
   changeLanguage(event: any) {
-    this.translate.use(event.detail.value);
+    const lang = event.detail.value;
+    this.translate.use(lang);
+    this.currentLang = lang;
   }
 
   async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
@@ -83,7 +85,7 @@ export class AuthPage {
   }
 
   async register() {
-    if (!this.regUsername || !this.regPassword || this.regWeight === null || this.regGender == null) {
+    if (!this.regUsername || !this.regPassword || this.regWeight === null || this.regGender == null || this.regLang == null) {
       this.translate.get('AUTH.FILL_ALL_FIELDS').subscribe(message => {
         this.showToast(message, 'warning');
       });

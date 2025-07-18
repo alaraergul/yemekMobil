@@ -19,21 +19,11 @@
     "REGISTER_SUCCESS": "Registration successful! You can now log in.",
     "REGISTER_FAIL": "This username is already taken!",
     "FILL_ALL_FIELDS": "Please fill in all fields.",
-    "VALID_WEIGHT": "Please enter a valid weight!"
+    "VALID_WEIGHT": "Please enter a valid weight!",
+    "LANGUAGE_LABEL": "Language",
+    "TURKISH": "Turkish",
+    "ENGLISH": "English"
   }
 }
-  {
-    "SETTINGS": {
-      "SUCCESS": "Ayarların başarıyla kaydedildi!",
-      "ERROR": "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
-      "RESETTED": "Limitler önerilen değerlere sıfırlandı.",
-      "SAVE": "Ayarları Kaydet",
-      "RESET": "Limitleri Önerilen Değerlere Sıfırla",
-      "RECOMMENDED": "Önerilen",
-      "SETTINGS": "Ayarlar",
-      "MALE": "Erkek",
-      "FEMALE": "Kadın",
-      "GENDER": "Cinsiyet",
-
-    }
-  }
+  
+  

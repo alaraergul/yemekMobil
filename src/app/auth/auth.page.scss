@@ -14,6 +14,7 @@ ion-content {
   align-items: center;
   height: 100%;
   padding: 20px;
+  position: relative; 
 }
 
 .auth-card {
@@ -72,14 +73,14 @@ ion-content {
     padding: 12px;
     border: none;
     background: transparent;
-    color: #666; 
+    color: #666;
     font-weight: 600;
     transition: all 0.3s ease-in-out;
     font-size: 14px;
 
-    
+
     &.active {
-      background: #2dd36f; 
+      background: #2dd36f;
       color: white;
       box-shadow: 0 2px 8px rgba(45, 211, 111, 0.3);
     }
@@ -88,9 +89,9 @@ ion-content {
 
 .auth-form {
   .input-item {
-    --background: transparent; 
-    --border-width: 0;         
-    --inner-border-width: 0 0 1px 0; 
+    --background: transparent;
+    --border-width: 0;
+    --inner-border-width: 0 0 1px 0;
 
     @media (prefers-color-scheme: light) {
       --border-color: #DDD;
@@ -104,7 +105,7 @@ ion-content {
     --padding-start: 8px;
     --inner-padding-end: 8px;
     margin-bottom: 16px;
-    
+
     ion-icon {
       color: #888;
       font-size: 20px;
@@ -124,7 +125,7 @@ ion-content {
       --placeholder-opacity: 0.9;
     }
   }
-    
+
   ion-select {
     --placeholder-color: #888;
     --placeholder-opacity: 0.9;
@@ -137,7 +138,7 @@ ion-content {
   --background-activated: #28b860;
   --color: white;
   --border-radius: 12px;
-  
+
   @media (prefers-color-scheme: light) {
     --box-shadow: 0 4px 15px rgba(45, 211, 111, 0.2);
   }
@@ -151,4 +152,36 @@ ion-content {
   font-weight: 700;
   margin-top: 24px;
   text-transform: none;
+}
+
+.language-switcher-container {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+}
+
+ion-select.language-select-custom {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 10px;
+  --padding-end: 8px; 
+
+  width: auto;
+  min-width: 65px;
+  height: 34px;
+  border-radius: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &::part(text) {
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  &::part(icon) {
+    font-size: 16px;
+    opacity: 0.6;
+  }
 }
