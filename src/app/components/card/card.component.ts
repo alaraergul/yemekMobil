@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataType, getLanguageString, Risk, User } from '../../utils';
+import { DataType, Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth.service';
 import { MealEntry } from 'src/app/services/meal/meal.service';
@@ -33,10 +33,11 @@ export class CardComponent implements OnInit {
 
   async ngOnInit() {
     this.user = await this.authService.user$;
-    this.translateService.use(getLanguageString(this.user.language));
   }
 
   getDailyLimit() {
+    if (!this.user) return;
+
     const limits = this.authService.getLimits(this.user);
 
     switch (this.type) {

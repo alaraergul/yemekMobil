@@ -1,14 +1,16 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { API_URL, APIResponse, Gender, Language, User } from 'src/app/utils';
+import { API_URL, APIResponse, Gender, getLanguageString, Language, User } from 'src/app/utils';
 import { Preferences } from '@capacitor/preferences';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
   public isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public user$: Promise<User | null> = Promise.resolve(null);
   public error$?: Promise<string>;
+  private translateService = inject(TranslateService);
 
   constructor(private http: HttpClient) {}
 
@@ -32,6 +34,7 @@ export class AuthService {
     }
 
     this.user$ = Promise.resolve(response.data);
+    this.translateService.use(getLanguageString(response.data.language));
     this.isLogged$.next(true);
     return true;
   }
@@ -66,8 +69,9 @@ export class AuthService {
     const currentUser = await this.user$;
 
     if (currentUser) {
-      const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight } };
+      const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight, language } };
       this.user$ = Promise.resolve(updatedUser);
+      this.translateService.use(getLanguageString(updatedUser.language));
     }
 
     return true;

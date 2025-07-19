@@ -30,5 +30,34 @@
     "HIGH_RISK": "Limiti aştın!",
     "MEDIUM_RIKS": "Limitinin %85'ini doldurdun.",
     "LOW_RISK": "Tüketimin oldukça düşük."
+  },
+  "SETTINGS": {
+    "TITLE": "Ayarlar",
+    "PERSONAL": {
+      "TITLE": "Kişisel Bilgiler",
+      "GENDER": {
+        "TITLE": "Cinsiyet",
+        "MALE": "Erkek",
+        "FEMALE": "Kadın"
+      },
+      "LANGUAGE": {
+        "TITLE": "Dil",
+        "TURKISH": "Türkçe",
+        "ENGLISH": "İngilizce"
+      },
+      "WEIGHT": "Kilo"
+    },
+    "LIMITS": {
+      "TITLE": "Günlük Limit Hedefleri",
+      "RECOMMENDED": "Önerilen",
+      "PURINE": "Pürin Limiti",
+      "CALORIE": "Kalori Limiti",
+      "SUGAR": "Şeker Limiti"
+    },
+    "SAVE": "Ayarları Kaydet",
+    "RESET": "Limitleri Önerilen Değerlere Sıfırla",
+    "SAVED": "Ayarların başarıyla kaydedildi!",
+    "ERROR": "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
+    "RESETTED": "Limitler önerilen değerlere sıfırlandı."
   }
 }

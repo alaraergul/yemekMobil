@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Ayarlar
+      {{ "SETTINGS.TITLE" | translate}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,67 +12,67 @@
 <ion-content [fullscreen]="true" class="ion-padding" *ngIf="authService.isLogged$ | async">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Ayarlar</ion-title>
+      <ion-title size="large">{{ "SETTINGS.TITLE" | translate }}</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <ion-list-header>
-    <ion-label>Kişisel Bilgiler</ion-label>
+    <ion-label>{{ "SETTINGS.PERSONAL.TITLE" | translate }}</ion-label>
   </ion-list-header>
 
   <ion-list [inset]="true">
     <ion-item>
-      <ion-select label="Cinsiyet" [(ngModel)]="gender">
-        <ion-select-option [value]="Gender.MALE">Erkek</ion-select-option>
-        <ion-select-option [value]="Gender.FEMALE">Kadın</ion-select-option>
+      <ion-select [label]="'SETTINGS.PERSONAL.GENDER.TITLE' | translate" [(ngModel)]="gender">
+        <ion-select-option [value]="Gender.MALE">{{ "SETTINGS.PERSONAL.GENDER.MALE" | translate }}</ion-select-option>
+        <ion-select-option [value]="Gender.FEMALE">{{ "SETTINGS.PERSONAL.GENDER.FEMALE" | translate }}</ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-select label="Dil" [(ngModel)]="language">
-        <ion-select-option [value]="Language.TURKISH">Türkçe</ion-select-option>
-        <ion-select-option [value]="Language.ENGLISH">İngilizce</ion-select-option>
+      <ion-select [label]="'SETTINGS.PERSONAL.LANGUAGE.TITLE' | translate" [(ngModel)]="language">
+        <ion-select-option [value]="Language.TURKISH">{{ "SETTINGS.PERSONAL.LANGUAGE.TURKISH" | translate }}</ion-select-option>
+        <ion-select-option [value]="Language.ENGLISH">{{ "SETTINGS.PERSONAL.LANGUAGE.ENGLISH" | translate }}</ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-input label="Kilo (kg)" labelPlacement="floating" type="number" [(ngModel)]="weight"></ion-input>
+      <ion-input [label]="`${'SETTINGS.PERSONAL.WEIGHT' | translate} (kg)`" labelPlacement="floating" type="number" [(ngModel)]="weight"></ion-input>
     </ion-item>
   </ion-list>
 
   <ion-list-header>
-    <ion-label>Günlük Limit Hedefleri</ion-label>
+    <ion-label>{{ "SETTINGS.LIMITS.TITLE" | translate}}</ion-label>
   </ion-list-header>
 
   <ion-list [inset]="true">
     <ion-item lines="none">
-      <ion-input label="Pürin Limiti (mg)" labelPlacement="floating" type="number" [(ngModel)]="purineLimit"></ion-input>
+      <ion-input [label]="`${'SETTINGS.LIMITS.PURINE' | translate} (mg)`" labelPlacement="floating" type="number" [(ngModel)]="purineLimit"></ion-input>
       <ion-label slot="end" color="medium" style="font-size: 12px;">
-        Önerilen: {{ recommendedPurine | number:'1.0-0' }} mg
+        {{ "SETTINGS.LIMITS.RECOMMENDED" | translate}}: {{ recommendedPurine | number:'1.0-0' }} mg
       </ion-label>
     </ion-item>
 
     <ion-item lines="none">
-      <ion-input label="Kalori Limiti (kcal)" labelPlacement="floating" type="number" [(ngModel)]="kcalLimit"></ion-input>
+      <ion-input [label]="`${'SETTINGS.LIMITS.CALORIE' | translate} (mg)`" labelPlacement="floating" type="number" [(ngModel)]="kcalLimit"></ion-input>
       <ion-label slot="end" color="medium" style="font-size: 12px;">
-        Önerilen: {{ recommendedKcal | number:'1.0-0' }} kcal
+        {{ "SETTINGS.LIMITS.RECOMMENDED" | translate}}: {{ recommendedKcal | number:'1.0-0' }} kcal
       </ion-label>
     </ion-item>
 
     <ion-item lines="none">
-      <ion-input label="Şeker Limiti (g)" labelPlacement="floating" type="number" [(ngModel)]="sugarLimit"></ion-input>
+      <ion-input [label]="`${'SETTINGS.LIMITS.SUGAR' | translate} (g)`" labelPlacement="floating" type="number" [(ngModel)]="sugarLimit"></ion-input>
       <ion-label slot="end" color="medium" style="font-size: 12px;">
-        Önerilen: {{ recommendedSugar | number:'1.0-0' }} g
+        {{ "SETTINGS.LIMITS.RECOMMENDED" | translate}}: {{ recommendedSugar | number:'1.0-0' }} g
       </ion-label>
     </ion-item>
 
   </ion-list>
 
   <ion-button expand="block" (click)="saveSettings()" class="ion-margin-top">
-    Ayarları Kaydet
+    {{ "SETTINGS.SAVE" | translate}}
   </ion-button>
 
   <ion-button expand="block" fill="outline" color="medium" (click)="resetLimits()" class="ion-margin-top">
-    Limitleri Önerilen Değerlere Sıfırla
+    {{ "SETTINGS.RESET" | translate}}
   </ion-button>
 </ion-content>

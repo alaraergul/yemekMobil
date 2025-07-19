@@ -30,5 +30,34 @@
     "HIGH_RISK": "You exceeded the limit!",
     "MEDIUM_RIKS": "You've reached 85% of your limit.",
     "LOW_RISK": "Consumption is quite low."
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "PERSONAL": {
+      "TITLE": "Personal Information",
+      "GENDER": {
+        "TITLE": "Gender",
+        "MALE": "Male",
+        "FEMALE": "Female"
+      },
+      "LANGUAGE": {
+        "TITLE": "Language",
+        "TURKISH": "Turkish",
+        "ENGLISH": "English"
+      },
+      "WEIGHT": "Weight"
+    },
+    "LIMITS": {
+      "TITLE": "Daily Limit Goals",
+      "RECOMMENDED": "Recommended",
+      "PURINE": "Purine Limit",
+      "CALORIE": "Calorie Limit",
+      "SUGAR": "Sugar Limit"
+    },
+    "SAVE": "Save the Settings",
+    "RESET": "Reset the Limits",
+    "SAVED": "Settings saved successfully!",
+    "ERROR": "An error occured when saving the settings. Please try again.",
+    "RESETTED": "Limits are resetted to recommended values."
   }
 }

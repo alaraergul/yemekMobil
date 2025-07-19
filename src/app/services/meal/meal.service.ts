@@ -156,9 +156,6 @@ export class MealService {
       }
     }
 
-    console.log(entries);
-    console.log(!!entries);
-
     this.data$ = Promise.resolve(entries);
     this.categories$ = Promise.resolve(categories);
     return true;

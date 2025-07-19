@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { User, Gender, Language } from 'src/app/utils';
+import { User, Gender, Language, getLanguageString } from 'src/app/utils';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, TranslateModule],
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss']
 })
 export class SettingsPage implements OnInit {
   authService = inject(AuthService);
   toastController = inject(ToastController);
+  translateService = inject(TranslateService);
   navCtrl = inject(NavController);
 
   Gender = Gender;
@@ -32,8 +35,6 @@ export class SettingsPage implements OnInit {
   recommendedKcal: number = 0;
 
   currentUser: User;
-
-  constructor() {}
 
   async ngOnInit() {
     this.authService.onLogin(async () => {
@@ -89,16 +90,16 @@ export class SettingsPage implements OnInit {
       );
 
       const toast = await this.toastController.create({
-        message: "Ayarların başarıyla kaydedildi!",
+        message: await firstValueFrom(this.translateService.get("SETTINGS.SAVED")),
         duration: 2000,
         position: "top",
         color: "success"
       });
-      toast.present();
 
+      toast.present();
     } catch (error) {
       const toast = await this.toastController.create({
-        message: "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
+        message: await firstValueFrom(this.translateService.get("SETTINGS.ERROR")),
         duration: 3000,
         position: "top",
         color: "danger"
@@ -107,7 +108,7 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  resetLimits() {
+  async resetLimits() {
     this.currentUser.purineLimit = null;
     this.currentUser.sugarLimit = null;
     this.currentUser.kcalLimit = null;
@@ -118,7 +119,7 @@ export class SettingsPage implements OnInit {
     this.kcalLimit = defaults.kcalLimit;
 
     const toast = this.toastController.create({
-      message: "Limitler önerilen değerlere sıfırlandı.",
+      message: await firstValueFrom(this.translateService.get("SETTINGS.RESETTED")),
       duration: 2000,
       position: "top",
       color: "warning"

@@ -18,7 +18,7 @@
       <div *ngIf="(mealService.categories$ | async) as categories">
         @let meals = mealService.getAllMeals(categories);
         @let dataByDate = getEntriesOfDate(meals, data);
-        
+
         <div class="top-bar">
           <h1 class="page-title">NutriLog</h1>
           <div class="top-bar-actions">
@@ -89,17 +89,16 @@
             <ion-card-header>
               <ion-card-subtitle>Haftalık Pürin Dağılımı</ion-card-subtitle>
             </ion-card-header>
+
             <ion-card-content>
               <div class="weekly-grid">
                 @let limits = authService.getLimits(user);
+
                 <div *ngFor="let values of weeklyData; index as i" class="day-item">
                   <div class="day-name">{{ names[i] }}</div>
-                  <div [class]="`day-value ${limits.purineLimit < values[0] ? 'red' : ''}`">{{ values[0].toFixed(0) }} mg
-                    pürin</div>
-                  <div [class]="`day-value ${limits.sugarLimit < values[1] ? 'red' : ''}`">{{ values[1].toFixed(2) }} g
-                    şeker</div>
-                  <div [class]="`day-value ${limits.kcalLimit < values[2] ? 'red' : ''}`">{{ values[2].toFixed(0) }} kcal
-                  </div>
+                  <div [class]="`day-value ${limits.purineLimit < values[0] ? 'red' : ''}`">{{ values[0].toFixed(0) }} mg pürin</div>
+                  <div [class]="`day-value ${limits.sugarLimit < values[1] ? 'red' : ''}`">{{ values[1].toFixed(2) }} g şeker</div>
+                  <div [class]="`day-value ${limits.kcalLimit < values[2] ? 'red' : ''}`">{{ values[2].toFixed(0) }} kcal</div>
                 </div>
               </div>
             </ion-card-content>
