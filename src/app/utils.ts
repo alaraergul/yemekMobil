@@ -32,6 +32,7 @@ export interface User {
   kcalLimit?: number;
   waterLimit?: number;
   gender: Gender;
+  language: Language;
 };
 
 export interface APIResponse<T> {
@@ -39,3 +40,13 @@ export interface APIResponse<T> {
   message?: string;
   data?: T;
 };
+
+export function getLanguageString(language: Language) {
+  switch (language) {
+    case Language.TURKISH:
+      return "tr";
+
+    case Language.ENGLISH:
+      return "en";
+  }
+}

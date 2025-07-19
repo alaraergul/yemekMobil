@@ -27,6 +27,14 @@
         <ion-select-option [value]="Gender.FEMALE">Kadın</ion-select-option>
       </ion-select>
     </ion-item>
+
+    <ion-item>
+      <ion-select label="Dil" [(ngModel)]="language">
+        <ion-select-option [value]="Language.TURKISH">Türkçe</ion-select-option>
+        <ion-select-option [value]="Language.ENGLISH">İngilizce</ion-select-option>
+      </ion-select>
+    </ion-item>
+
     <ion-item>
       <ion-input label="Kilo (kg)" labelPlacement="floating" type="number" [(ngModel)]="weight"></ion-input>
     </ion-item>

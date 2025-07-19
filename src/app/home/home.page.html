@@ -43,7 +43,6 @@
 
         <div class="summary-grid">
           <app-card
-            [user]="user"
             [dailyConsumption]="getTotal(DataType.PURINE, dataByDate)"
             [weeklyConsumption]="getWeeklyTotal(DataType.PURINE, data)"
             [title]="'Pürin (mg)'"
@@ -53,7 +52,6 @@
           <app-chart *ngIf="chartType == DataType.PURINE" [data]="data" [date]="date" [type]="chartType"></app-chart>
 
           <app-card
-            [user]="user"
             [dailyConsumption]="getTotal(DataType.SUGAR, dataByDate)"
             [weeklyConsumption]="getWeeklyTotal(DataType.SUGAR, data)"
             [title]="'Şeker (g)'"
@@ -66,7 +64,6 @@
           <app-chart *ngIf="chartType == DataType.SUGAR" [data]="data" [date]="date" [type]="chartType"></app-chart>
 
           <app-card
-            [user]="user"
             [dailyConsumption]="getTotal(DataType.KCAL, dataByDate)"
             [weeklyConsumption]="getWeeklyTotal(DataType.KCAL, data)"
             [title]="'Kalori'"

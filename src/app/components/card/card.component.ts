@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataType, Risk, User } from '../../utils';
+import { DataType, getLanguageString, Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth.service';
 import { MealEntry } from 'src/app/services/meal/meal.service';
@@ -19,7 +19,6 @@ export class CardComponent implements OnInit {
   @Input() date: {day: number, month: number, year: number};
 
   @Input() type: DataType;
-  @Input() user: User;
   @Input() title: string;
   @Input() dailyConsumption: number;
   @Input() weeklyConsumption: number;
@@ -28,10 +27,13 @@ export class CardComponent implements OnInit {
 
   authService = inject(AuthService);
   translateService = inject(TranslateService);
-  DataType = DataType;
 
-  ngOnInit() {
-    this.translateService.use("tr");
+  DataType = DataType;
+  user: User;
+
+  async ngOnInit() {
+    this.user = await this.authService.user$;
+    this.translateService.use(getLanguageString(this.user.language));
   }
 
   getDailyLimit() {

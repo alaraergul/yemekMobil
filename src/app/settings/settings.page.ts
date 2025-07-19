@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { User, Gender } from 'src/app/utils';
+import { User, Gender, Language } from 'src/app/utils';
 
 @Component({
   selector: 'app-settings',
@@ -18,9 +18,11 @@ export class SettingsPage implements OnInit {
   navCtrl = inject(NavController);
 
   Gender = Gender;
+  Language = Language;
 
   gender: Gender;
   weight: number;
+  language: Language;
   purineLimit?: number;
   sugarLimit?: number;
   kcalLimit?: number;
@@ -41,6 +43,7 @@ export class SettingsPage implements OnInit {
         this.currentUser = user;
         this.gender = user.gender;
         this.weight = user.weight;
+        this.language = user.language;
 
         const userPurineLimit = user.purineLimit;
         const userSugarLimit = user.sugarLimit;
@@ -59,9 +62,9 @@ export class SettingsPage implements OnInit {
         user.sugarLimit = userSugarLimit;
         user.kcalLimit = userKcalLimit;
 
-        this.purineLimit = (typeof user.purineLimit === 'number' && user.purineLimit !== -1) ? user.purineLimit : defaults.purineLimit;
-        this.sugarLimit = (typeof user.sugarLimit === 'number' && user.sugarLimit !== -1) ? user.sugarLimit : defaults.sugarLimit;
-        this.kcalLimit = (typeof user.kcalLimit === 'number' && user.kcalLimit !== -1) ? user.kcalLimit : defaults.kcalLimit;
+        this.purineLimit = (typeof user.purineLimit === 'number') ? user.purineLimit : defaults.purineLimit;
+        this.sugarLimit = (typeof user.sugarLimit === 'number') ? user.sugarLimit : defaults.sugarLimit;
+        this.kcalLimit = (typeof user.kcalLimit === 'number') ? user.kcalLimit : defaults.kcalLimit;
       }
     });
   }
@@ -81,7 +84,8 @@ export class SettingsPage implements OnInit {
         this.sugarLimit ?? null,
         this.kcalLimit ?? null,
         this.gender ?? null,
-        this.weight ?? null
+        this.weight ?? null,
+        this.language ?? null
       );
 
       const toast = await this.toastController.create({
