@@ -23,7 +23,12 @@
     "LANGUAGE_LABEL": "Language",
     "TURKISH": "Turkish",
     "ENGLISH": "English"
+  },
+  "CARD": {
+    "DAILY": "Daily",
+    "WEEKLY": "Weekly",
+    "HIGH_RISK": "You exceeded the limit!",
+    "MEDIUM_RIKS": "You've reached 85% of your limit.",
+    "LOW_RISK": "Consumption is quite low."
   }
 }
-  
-  

@@ -1,4 +1,4 @@
-export const API_URL = "https://demo.bussion.com/purin";
+export const API_URL = "http://localhost:8087";
 
 export enum DataType {
   NONE,

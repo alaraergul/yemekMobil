@@ -4,15 +4,17 @@ import { DataType, Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth.service';
 import { MealEntry } from 'src/app/services/meal/meal.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, TranslateModule],
   templateUrl: "./card.component.html",
   styleUrls: ["./card.component.scss"]
 })
-export class CardComponent {
+export class CardComponent implements OnInit {
   @Input() data: MealEntry[];
   @Input() date: {day: number, month: number, year: number};
 
@@ -25,7 +27,12 @@ export class CardComponent {
   @Output() changeChartType = new EventEmitter<DataType>();
 
   authService = inject(AuthService);
+  translateService = inject(TranslateService);
   DataType = DataType;
+
+  ngOnInit() {
+    this.translateService.use("tr");
+  }
 
   getDailyLimit() {
     const limits = this.authService.getLimits(this.user);
@@ -53,16 +60,16 @@ export class CardComponent {
     return Risk.HIGH;
   }
 
-  getComment(risk: Risk): string {
+  getComment(risk: Risk): Observable<string> {
     switch (risk) {
       case Risk.LOW:
-        return "Tüketimin oldukça düşük.";
+        return this.translateService.get("CARD.LOW_RISK");
 
       case Risk.MEDIUM:
-        return "Limitinin %85'ini doldurdun.";
+        return this.translateService.get("CARD.MEDIUM_RISK");
 
       case Risk.HIGH:
-        return "Limiti aştın!";
+        return this.translateService.get("CARD.HIGH_RISK");
     }
   }
 

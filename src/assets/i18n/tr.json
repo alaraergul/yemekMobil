@@ -23,5 +23,12 @@
     "LANGUAGE_LABEL": "Dil",
     "TURKISH": "Türkçe",
     "ENGLISH": "İngilizce"
+  },
+  "CARD": {
+    "DAILY": "Günlük",
+    "WEEKLY": "Haftalık",
+    "HIGH_RISK": "Limiti aştın!",
+    "MEDIUM_RIKS": "Limitinin %85'ini doldurdun.",
+    "LOW_RISK": "Tüketimin oldukça düşük."
   }
 }

@@ -1,40 +1,40 @@
 <div class="item">
   <ion-card class="summary-card" mode="md">
-    @let riskOfDailyPurine = getRisk(dailyConsumption, 1);
+    @let dailyRisk = getRisk(dailyConsumption, 1);
     @let dailyLimit = getDailyLimit();
 
     <ion-card-header>
       <ion-card-subtitle>{{ title }}</ion-card-subtitle>
-      <ion-card-subtitle>Günlük</ion-card-subtitle>
+      <ion-card-subtitle>{{ "CARD.DAILY" | translate }}</ion-card-subtitle>
 
-      <ion-card-title [style.color]="getColor(riskOfDailyPurine)">
-        <ion-icon [name]="getIcon(riskOfDailyPurine)"></ion-icon>
+      <ion-card-title [style.color]="getColor(dailyRisk)">
+        <ion-icon [name]="getIcon(dailyRisk)"></ion-icon>
         {{ dailyConsumption.toFixed(0) }} / {{ dailyLimit }} </ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      <p>{{ getComment(riskOfDailyPurine) }}</p>
+      <p>{{ getComment(dailyRisk) | async }}</p>
     </ion-card-content>
   </ion-card>
 
   <ion-card class="summary-card" mode="md">
-    @let riskOfWeeklyPurine = getRisk(weeklyConsumption, 7);
+    @let weeklyRisk = getRisk(weeklyConsumption, 7);
 
     <ion-card-header>
       <ion-card-subtitle>
         <ion-toggle (ionChange)="changeChartType.emit($event.detail.checked ? type : DataType.NONE)" [checked]="chartType == type"></ion-toggle>
       </ion-card-subtitle>
 
-      <ion-card-subtitle>Haftalık</ion-card-subtitle>
+      <ion-card-subtitle>{{ "CARD.WEEKLY" | translate }}</ion-card-subtitle>
 
-      <ion-card-title [style.color]="getColor(riskOfWeeklyPurine)">
-        <ion-icon [name]="getIcon(riskOfWeeklyPurine)"></ion-icon>
+      <ion-card-title [style.color]="getColor(weeklyRisk)">
+        <ion-icon [name]="getIcon(weeklyRisk)"></ion-icon>
         {{ weeklyConsumption.toFixed(0) }} / {{dailyLimit * 7 }} 
       </ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      <p>{{ getComment(riskOfWeeklyPurine) }}</p>
+      <p>{{ getComment(weeklyRisk) | async }}</p>
     </ion-card-content>
   </ion-card>
 </div>
