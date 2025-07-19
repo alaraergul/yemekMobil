@@ -1,21 +1,22 @@
-import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/angular';
-import { DataType, Language, User } from 'src/app/utils';
+import { IonicModule, ToastController, ScrollDetail } from '@ionic/angular';
+import { DataType, Language, presentToast, ToastColors, User } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Meal, MealEntry, MealCategory, MealService } from 'src/app/services/meal/meal.service';
+import { Meal, MealEntry, MealService } from 'src/app/services/meal/meal.service';
 import { CardComponent } from 'src/app/components/card/card.component';
 import { Router } from '@angular/router';
 import { WaterValue, WaterConsumption, WaterConsumptionService } from '../services/water_consumption/water_consumption';
 import { ChartComponent } from '../components/chart.component';
 import { WaterCardComponent } from '../components/water-consumption/water-consumption.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AddModalComponent } from '../components/add-modal/add-modal.component';
 
 @Component({
   selector: 'app-tab2',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ChartComponent, CardComponent, WaterCardComponent, TranslateModule],
+  imports: [IonicModule, CommonModule, FormsModule, TranslateModule, ChartComponent, CardComponent, WaterCardComponent, AddModalComponent],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss']
 })
@@ -37,37 +38,10 @@ export class HomePage {
     year: this.today.getFullYear()
   };
 
-  mealEntries: MealEntry[] = [];
-
-  currentMealEntry: MealEntry = {
-    meal: null,
-    count: 1,
-    timestamp: this.today.getTime()
-  };
-
-  currentDateString: string;
-  currentTimeString: string;
   chartType: DataType;
   isInfoVisible = false;
   showStickyHeader = false;
-
-  @ViewChild("searchInput", { static: false }) searchInput: IonInput;
   isModalOpen = false;
-  searchQuery: string;
-  searchResults: Meal[] = [];
-  selectedCategory: string | null = null;
-
-  isCreatingNewMeal = false;
-  newCustomMeal: Partial<Meal> = {
-    name: '',
-    purine: undefined,
-    kcal: undefined,
-    sugar: undefined,
-  };
-
-  constructor(private cdr: ChangeDetectorRef) {
-    this.resetCurrentMealEntry();
-  }
 
   changeChartType(type: DataType) {
     this.chartType = type;
@@ -85,22 +59,6 @@ export class HomePage {
     this.isInfoVisible = !this.isInfoVisible;
   }
 
-  selectSearchResult(meal: Meal) {
-    this.selectedCategory = meal.category;
-    this.currentMealEntry.meal = meal;
-    this.searchQuery = null;
-    this.searchResults = [];
-    this.isCreatingNewMeal = false;
-    this.cdr.detectChanges();
-  }
-
-  async handleSearch(event: CustomEvent) {
-    const value: string = event.detail.value;
-    const meals = this.mealService.getAllMeals(await this.mealService.categories$);
-
-    this.searchResults = meals.filter((meal) => meal.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()));
-  }
-
   onMainDateChange(event: any) {
     const selectedDateString = event.detail.value; 
     if (!selectedDateString) return;
@@ -113,116 +71,17 @@ export class HomePage {
     this.date = { day, month, year };
   }
 
-  getCategoryNames(categories: MealCategory[]): string[] {
-    return categories.map((category) => category.name).sort((a, b) => a.localeCompare(b, 'tr'));
-  }
-
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
+
     if (!isOpen) {
-      this.resetCurrentMealEntries();
-    }
-  }
-
-  resetCurrentMealEntry() {
-    const now = new Date();
-    this.currentMealEntry = {
-      meal: null,
-      count: 1,
-      timestamp: now.getTime()
-    };
-    this.currentDateString = this.getDateString(now.getDate(), now.getMonth() + 1, now.getFullYear());
-    this.currentTimeString = this.getTimeString(now.getHours(), now.getMinutes());
-
-    this.selectedCategory = null;
-    this.searchQuery = '';
-    this.searchResults = []; 
-    this.isCreatingNewMeal = false; 
-    this.newCustomMeal = { name: '', 
-      purine: undefined, 
-      kcal: undefined, 
-      sugar: undefined }; 
-  }
-  
-  resetCurrentMealEntries() {
-    this.mealEntries = [];
-    this.resetCurrentMealEntry();
-  }
-
-  pushMealEntry() {
-    if (!this.currentMealEntry.meal || !this.currentMealEntry.count || this.currentMealEntry.count <= 0) {
-      this.presentToast('Lütfen geçerli bir yemek seçin ve porsiyonu girin.', 'danger');
-      return;
-    }
-    
-    this.updateTimestampFromInputs(); 
-
-    this.mealEntries.push(JSON.parse(JSON.stringify(this.currentMealEntry)));
-
-    const timestamp = this.currentMealEntry.timestamp; 
-    this.resetCurrentMealEntry();
-    this.currentMealEntry.timestamp = timestamp; 
-    this.updateStringInputsFromTimestamp();
-
-    this.searchInput?.setFocus();
-  }
-  
-  removeMealEntryFromList(index: number) {
-    this.mealEntries.splice(index, 1);
-  }
-
-  onDateChange(event: any) {
-    this.currentDateString = event.detail.value;
-    this.updateTimestampFromInputs();
-  }
-
-  onTimeChange(event: any) {
-    this.currentTimeString = event.detail.value;
-    this.updateTimestampFromInputs();
-  }
-
-  updateTimestampFromInputs() {
-    if (this.currentDateString && this.currentTimeString) {
-      const fullString = `${this.currentDateString}T${this.currentTimeString}`;
-      this.currentMealEntry.timestamp = new Date(fullString).getTime();
-    }
-  }
-
-  updateStringInputsFromTimestamp() {
-      const date = new Date(this.currentMealEntry.timestamp);
-      this.currentDateString = this.getDateString(date.getDate(), date.getMonth() + 1, date.getFullYear());
-      this.currentTimeString = this.getTimeString(date.getHours(), date.getMinutes());
-  }
-
-  async presentToast(message: string, color: 'success' | 'danger') {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2500,
-      position: 'top',
-      color
-    });
-    toast.present();
-  }
-
-  async addMeal() {
-    if (this.mealEntries.length === 0) {
-      this.presentToast('Kaydedilecek yemek bulunmuyor. Lütfen önce listeye ekleyin.', 'danger');
-      return;
-    }
-
-    const result = await this.mealService.addMealEntries(this.mealEntries);
-
-    if (result) {
-      this.presentToast('Yemekler başarıyla eklendi!', 'success');
-      this.setOpen(false);
-    } else {
-      this.presentToast('Yemekler eklenirken bir hata oluştu.', 'danger');
+      // this.resetCurrentMealEntries();
     }
   }
 
   async deleteMeal(mealId: number, timestamp: number) {
     await this.mealService.deleteMealEntry(mealId, timestamp);
-    this.presentToast('Yemek silindi.', 'danger');
+    presentToast(this.toastController, "Yemek silindi.", ToastColors.DANGER);
   }
 
   getDateString(date: number, month: number, year: number) {
@@ -233,44 +92,8 @@ export class HomePage {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
   }
 
-  async onSelectMeal(event: any) {
-    const mealId = event.detail.value;
-    const meals = this.mealService.getAllMeals(await this.mealService.categories$);
-
-    const meal = meals.find((m) => m.id === mealId);
-    if (meal) this.currentMealEntry.meal = meal;
-  }
-
-   toggleCreateNewMealView(state: boolean) {
-    this.isCreatingNewMeal = state;
-    if (state) {
-      this.searchQuery = '';
-      this.searchResults = [];
-      this.selectedCategory = null;
-      this.currentMealEntry.meal = null;
-    }
-  } 
-
-  createAndSelectCustomMeal() {
-    const { name, purine, sugar, kcal } = this.newCustomMeal;
-    
-    if (!name || name.trim() === '' || purine === undefined || sugar === undefined || kcal === undefined || purine < 0 || sugar < 0 || kcal < 0) {
-        this.presentToast('Lütfen tüm alanları geçerli değerlerle doldurun.', 'danger');
-        return;
-    } 
-
-    const customMeal: Meal = {
-        id: -Date.now(),
-        name: name.trim(),
-        purine: +purine,
-        sugar: +sugar,
-        kcal: +kcal,
-        quantity: 1,
-        category: 'Özel Yemek'
-    };
-    this.currentMealEntry.meal = customMeal;
-    this.toggleCreateNewMealView(false); 
-    this.newCustomMeal = { name: '', purine: undefined, kcal: undefined, sugar: undefined }; 
+  createDateFrom(timestamp: number): Date {
+    return new Date(timestamp);
   }
 
   getEntriesOfDate(meals: Meal[], entries: MealEntry[]): MealEntry[] {
@@ -289,10 +112,6 @@ export class HomePage {
       })
       .filter((entry) => entry.meal)
       .sort((a, b) => b.timestamp - a.timestamp);
-  }
-
-  createDateFrom(timestamp: number): Date {
-    return new Date(timestamp);
   }
 
   getTotal(type: DataType, entries: MealEntry[]): number {

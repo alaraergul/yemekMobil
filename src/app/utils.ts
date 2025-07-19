@@ -1,3 +1,5 @@
+import { ToastController } from "@ionic/angular";
+
 export const API_URL = "http://localhost:8087";
 
 export enum DataType {
@@ -49,4 +51,20 @@ export function getLanguageString(language: Language) {
     case Language.ENGLISH:
       return "en";
   }
+}
+
+export enum ToastColors {
+  DANGER = "danger",
+  SUCCESS = "success"
+};
+
+export async function presentToast(toastController: ToastController, message: string, color: ToastColors) {
+  const toast = await this.toastController.create({
+    message,
+    duration: 2500,
+    position: 'top',
+    color
+  });
+
+  toast.present();
 }
