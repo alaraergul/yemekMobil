@@ -2,12 +2,12 @@ import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/angular';
-import { MealEntry, Meal, User, DataType, Risk, WaterValue, WaterConsumption, MealCategory } from 'src/app/utils';
+import { DataType } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { MealService } from 'src/app/services/meal/meal.service';
+import { Meal, MealEntry, MealCategory, MealService } from 'src/app/services/meal/meal.service';
 import { CardComponent } from 'src/app/components/card/card.component';
 import { Router } from '@angular/router';
-import { WaterConsumptionService } from '../services/water_consumption/water_consumption';
+import { WaterValue, WaterConsumption, WaterConsumptionService } from '../services/water_consumption/water_consumption';
 import { ChartComponent } from '../components/chart.component';
 import { WaterCardComponent } from '../components/water-consumption/water-consumption.component';
 

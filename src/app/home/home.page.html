@@ -11,7 +11,7 @@
 </div>
 
 <ion-content [scrollEvents]="true" (ionScroll)="onScroll($event)">
-  <div *ngIf="authService.isLogged">
+  <div *ngIf="authService.isLogged$ | async">
     @let user = (authService.user$ | async);
 
     <div *ngIf="(mealService.data$ | async) as data" class="page-container">

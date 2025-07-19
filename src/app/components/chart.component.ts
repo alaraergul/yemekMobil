@@ -1,11 +1,12 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataType, MealEntry } from '../utils';
+import { DataType } from '../utils';
 import { ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { IonicModule } from '@ionic/angular';
 
 import { Chart } from 'chart.js';
+import { MealEntry } from '../services/meal/meal.service';
 Chart.register(...registerables);
 
 @Component({

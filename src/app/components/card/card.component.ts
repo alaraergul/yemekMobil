@@ -1,8 +1,9 @@
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataType, MealEntry, Risk, User } from '../../utils';
+import { DataType, Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth.service';
+import { MealEntry } from 'src/app/services/meal/meal.service';
 
 @Component({
   selector: 'app-card',

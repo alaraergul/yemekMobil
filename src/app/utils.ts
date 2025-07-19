@@ -1,9 +1,5 @@
 export const API_URL = "https://demo.bussion.com/purin";
 
-export type Nullable<T> = {
-  [P in keyof T]: T[P] | null;
-};
-
 export enum DataType {
   NONE,
   PURINE,
@@ -23,13 +19,8 @@ export enum Gender {
 };
 
 export enum Language {
-  Turkish,
-  English
-};
-
-export enum WaterValue {
-  GLASS,
-  BOTTLE
+  TURKISH,
+  ENGLISH
 };
 
 export interface User {
@@ -43,33 +34,8 @@ export interface User {
   gender: Gender;
 };
 
-export interface Error {
-  code: number;
-  message: string;
+export interface APIResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
 };
-
-export interface MealCategory {
-  name: string;
-  meals: Meal[];
-};
-
-export interface MealEntry {
-  meal: Meal | null;
-  count: number | null; // number of servings
-  timestamp: number | null; // timestamp in milliseconds
-};
-
-export interface WaterConsumption {
-  value: WaterValue;
-  timestamp: number;
-};
-
-export interface Meal {
-  id: number;
-  name: string;
-  purine: number; // mg
-  quantity: number; // g
-  kcal: number;
-  sugar: number; // g
-  category: string;
-}

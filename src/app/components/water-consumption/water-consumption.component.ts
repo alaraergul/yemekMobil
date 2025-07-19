@@ -1,9 +1,9 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Risk, User, WaterValue } from '../../utils';
+import { Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth.service';
-import { WaterConsumptionService } from 'src/app/services/water_consumption/water_consumption';
+import { WaterConsumptionService, WaterValue } from 'src/app/services/water_consumption/water_consumption';
 
 @Component({
   selector: 'app-water-card',

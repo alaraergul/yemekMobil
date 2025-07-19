@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding" *ngIf="authService.isLogged">
+<ion-content [fullscreen]="true" class="ion-padding" *ngIf="authService.isLogged$ | async">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Ayarlar</ion-title>
@@ -37,7 +37,6 @@
   </ion-list-header>
 
   <ion-list [inset]="true">
-
     <ion-item lines="none">
       <ion-input label="Pürin Limiti (mg)" labelPlacement="floating" type="number" [(ngModel)]="purineLimit"></ion-input>
       <ion-label slot="end" color="medium" style="font-size: 12px;">

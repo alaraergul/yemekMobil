@@ -1,46 +1,60 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_URL, WaterConsumption, Error, WaterValue } from 'src/app/utils';
+import { API_URL, APIResponse } from 'src/app/utils';
 import { AuthService } from '../auth/auth.service';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+
+export enum WaterValue {
+  GLASS,
+  BOTTLE
+};
+
+export interface WaterConsumption {
+  value: WaterValue;
+  timestamp: number;
+};
 
 @Injectable({ providedIn: "root" })
 export class WaterConsumptionService {
   private authService = inject(AuthService);
   public data$?: Promise<WaterConsumption[]>;
+  public error$: Promise<string>
 
   constructor(private http: HttpClient) {}
 
-  async initialize(): Promise<void> {
-    if (!this.authService.isLogged) return;
+  async initialize(): Promise<boolean> {
+    if (!this.authService.isLogged$.getValue()) return false;
     const user = await this.authService.user$;
 
-    const response = firstValueFrom(
-      this.http.get<WaterConsumption[] | Error>(`${API_URL}/users/${user.id}/water-consumption`)
-    );
+    const response = await firstValueFrom(this.http.get<APIResponse<WaterConsumption[]>>(`${API_URL}/users/${user.id}/water-consumption`));
 
-    if ((await response as Error).code) return;
-    this.data$ = response as Promise<WaterConsumption[]>;
+    if (!response.success) {
+      this.error$ = Promise.resolve(response.message);
+      return false;
+    }
+
+    this.data$ = Promise.resolve(response.data);
+    return true;
   }
 
   async addWaterConsumption(value: WaterValue): Promise<boolean> {
-    if (!this.authService.isLogged) return false;
+    if (!this.authService.isLogged$.getValue()) return false;
     const user = await this.authService.user$;
+
     const waterConsumption = await this.data$ || [];
-    const data: WaterConsumption = {
+    const consumption: WaterConsumption = {
       value,
       timestamp: Date.now()
     };
 
-    await fetch(`${API_URL}/users/${user.id}/water-consumption`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data)
-    });
+    const response = await firstValueFrom(this.http.post<APIResponse<void>>(`${API_URL}/users/${user.id}/water-consumption`, consumption));
 
-    waterConsumption.push(data);
+    if (!response.success) {
+      this.error$ = Promise.resolve(response.message);
+      return false;
+    }
+
+    waterConsumption.push(consumption);
     this.data$ = Promise.resolve(waterConsumption);
     return true;
   }

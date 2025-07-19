@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
-import { API_URL, Error, Gender, Language, User } from 'src/app/utils';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { API_URL, APIResponse, Gender, Language, User } from 'src/app/utils';
 import { Preferences } from '@capacitor/preferences';
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
   public isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public user$: Promise<User | null> = Promise.resolve(null);
-  public error$?: Promise<Error>;
+  public error$?: Promise<string>;
 
   constructor(private http: HttpClient) {}
-
-  get isLogged() {
-    return this.isLogged$.getValue();
-  }
 
   public onLogin(fn: (value: boolean) => any) {
     this.isLogged$.subscribe((value) => {
@@ -23,36 +19,34 @@ export class AuthService {
   }
 
   async initialize() {
-    return new Promise(async (resolve) => {
-      const {value: username} = await Preferences.get({"key": "username"});
-      const {value: password} = await Preferences.get({"key": "password"});
+    const {value: username} = await Preferences.get({"key": "username"});
+    const {value: password} = await Preferences.get({"key": "password"});
 
-      if (!username || !password) return resolve(false);
+    if (!username || !password) return false;
 
-      this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(async (response) => {
-        if (response && (response as Error).code) {
-          this.error$ = Promise.resolve(response as Error);
-          return resolve(false);
-        }
+    const response = await firstValueFrom(this.http.post<APIResponse<User>>(`${API_URL}/users/login`, { username, password }));
 
-        this.user$ = Promise.resolve(response as User);
-        this.isLogged$.next(true);
-        resolve(true);
-      });
-    });
+    if (!response.success) {
+      this.error$ = Promise.resolve(response.message);
+      return false;
+    }
+
+    this.user$ = Promise.resolve(response.data);
+    this.isLogged$.next(true);
+    return true;
   }
 
   getLimits(user: User) {
     const genderEnum = user.gender || Gender.MALE;
     const purineFactor = (genderEnum === Gender.MALE) ? 4 : 3;
     const kcalFactor = (genderEnum === Gender.MALE) ? 30 : 25;
-    const kcalLimit = (user.kcalLimit && user.kcalLimit != -1) ? user.kcalLimit : (user.weight * kcalFactor);
+    const kcalLimit = user.kcalLimit || (user.weight * kcalFactor);
 
     return {
-      purineLimit: (user.purineLimit && user.purineLimit != -1) ? user.purineLimit : (user.weight * purineFactor + 200),
-      sugarLimit: (user.sugarLimit && user.sugarLimit != -1) ? user.sugarLimit : (kcalLimit * 0.05 / 4),
+      purineLimit: user.purineLimit || (user.weight * purineFactor + 200),
+      sugarLimit: user.sugarLimit || (kcalLimit * 0.05 / 4),
       kcalLimit,
-      waterLimit: (user.waterLimit && user.waterLimit != -1) ? user.waterLimit : 2000
+      waterLimit: user.waterLimit || 2000
     };
   }
 
@@ -61,74 +55,61 @@ export class AuthService {
     const {value: username} = await Preferences.get({"key": "username"});
     const {value: password} = await Preferences.get({"key": "password"});
 
-    const updates = { 
-      purineLimit, 
-      sugarLimit, 
-      kcalLimit, 
-      gender,
-      weight, 
-      username, 
-      password 
-    };
+    const updates = { purineLimit, sugarLimit, kcalLimit, gender, weight, username, password };
+    const response = await firstValueFrom(this.http.patch<APIResponse<void>>(`${API_URL}/users/${user.id}`, updates));
 
-    return new Promise((resolve) => {
-      this.http.patch<"" | Error>(`${API_URL}/users/${user.id}`, updates).subscribe(async (response) => {
-        if (response && (response as Error).code) {
-          return resolve(false);
-        }
+    if (!response.success) {
+      this.error$ = Promise.resolve(response.message);
+      return false;
+    }
 
-        const currentUser = await this.user$;
+    const currentUser = await this.user$;
 
-        if (currentUser) {
-          const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight } };
-          this.user$ = Promise.resolve(updatedUser);
-        }
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight } };
+      this.user$ = Promise.resolve(updatedUser);
+    }
 
-        return resolve(true);
-      });
-    });
+    return true;
   }
 
-  register(username: string, password: string, weight: number, gender: Gender, language: Language): Promise<boolean> {
+  async register(username: string, password: string, weight: number, gender: Gender, language: Language): Promise<boolean> {
     this.error$ = undefined;
+    if (!username || !password || !weight) return false;
 
-    return new Promise(async (resolve) => {
-      if (!username || !password || !weight) return resolve(false);
+    const data = { username, password, weight, gender, language };
+    const response = await firstValueFrom(this.http.post<APIResponse<User>>(`${API_URL}/users/register`, data));
 
-      this.http.post<User | Error>(`${API_URL}/users/register`, { username, password, weight, gender, language }).subscribe(async (response) => {
-        if (response && (response as Error).code) {
-          this.error$ = Promise.resolve(response as Error);
-          return resolve(false);
-        }
+    if (!response.success) {
+      this.error$ = Promise.resolve(response.message);
+      return false;
+    }
 
-        this.user$ = Promise.resolve(response as User);
-        this.isLogged$.next(true);
-        await Preferences.set({"key": "username", "value": username});
-        await Preferences.set({"key": "password", "value": password});
+    this.user$ = Promise.resolve(response.data);
+    this.isLogged$.next(true);
+    await Preferences.set({"key": "username", "value": username});
+    await Preferences.set({"key": "password", "value": password});
 
-        return resolve(true);
-      });
-    });
+    return true;
   }
 
-  login(username: string, password: string): Promise<boolean> {
+  async login(username: string, password: string): Promise<boolean> {
     this.error$ = undefined;
+    if (!username || !password) return false;
 
-    return new Promise(async (resolve) => {
-      this.http.post<User | Error>(`${API_URL}/users/login`, { username, password }).subscribe(async (response) => {
-        if (response && (response as Error).code) {
-          this.error$ = Promise.resolve(response as Error);
-          return resolve(false);
-        }
+    const response = await firstValueFrom(this.http.post<APIResponse<User>>(`${API_URL}/users/login`, { username, password }));
 
-        this.user$ = Promise.resolve(response as User);
-        this.isLogged$.next(true);
-        await Preferences.set({"key": "username", "value": username});
-        await Preferences.set({"key": "password", "value": password});
+    if (response.success) {
+      this.error$ = Promise.resolve(response.message);
+      return false;
+    }
 
-        return resolve(true);
-      });
-    });
+    this.user$ = Promise.resolve(response.data);
+    this.isLogged$.next(true);
+    await Preferences.set({"key": "username", "value": username});
+    await Preferences.set({"key": "password", "value": password});
+
+    return true;
   }
 
   async logout(): Promise<void> {
