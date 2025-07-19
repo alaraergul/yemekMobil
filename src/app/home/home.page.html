@@ -4,6 +4,7 @@
     <ion-button fill="clear" (click)="goSettings()" class="icon-button">
       <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
     </ion-button>
+
     <ion-button fill="clear" (click)="logout()" class="icon-button">
       <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
     </ion-button>
@@ -25,6 +26,7 @@
             <ion-button fill="clear" (click)="goSettings()" class="icon-button">
               <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
             </ion-button>
+
             <ion-button fill="clear" (click)="logout()" class="icon-button">
               <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
             </ion-button>
@@ -45,7 +47,7 @@
           <app-card
             [dailyConsumption]="getTotal(DataType.PURINE, dataByDate)"
             [weeklyConsumption]="getWeeklyTotal(DataType.PURINE, data)"
-            [title]="'Pürin (mg)'"
+            [title]="`${'HOME.CARDS.PURINE' | translate} (mg)`"
             [type]="DataType.PURINE"
             (changeChartType)="changeChartType($event)">
           </app-card>
@@ -54,7 +56,7 @@
           <app-card
             [dailyConsumption]="getTotal(DataType.SUGAR, dataByDate)"
             [weeklyConsumption]="getWeeklyTotal(DataType.SUGAR, data)"
-            [title]="'Şeker (g)'"
+            [title]="`${'HOME.CARDS.SUGAR' | translate} (g)`"
             [type]="DataType.SUGAR"
             [chartType]="chartType"
             (changeChartType)="changeChartType($event)"
@@ -66,7 +68,7 @@
           <app-card
             [dailyConsumption]="getTotal(DataType.KCAL, dataByDate)"
             [weeklyConsumption]="getWeeklyTotal(DataType.KCAL, data)"
-            [title]="'Kalori'"
+            [title]="`${'HOME.CARDS.CALORIE' | translate} (kcal)`"
             [type]="DataType.KCAL"
             (changeChartType)="changeChartType($event)"
             (data)="data"
@@ -83,22 +85,31 @@
         </div>
 
         <div class="conditional-content">
-          @let weeklyData = getWeeklyNumberData(data);
-          @let names = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+          @let weeklyData = getWeeklyNumberData(user, data);
+
           <ion-card class="summary-card weekly-summary">
             <ion-card-header>
-              <ion-card-subtitle>Haftalık Pürin Dağılımı</ion-card-subtitle>
+              <ion-card-subtitle>{{ "HOME.DISTRIBUTION.TITLE" | translate }}</ion-card-subtitle>
             </ion-card-header>
 
             <ion-card-content>
-              <div class="weekly-grid">
+              <div class="weekly-grid" *ngIf="user">
                 @let limits = authService.getLimits(user);
+                @let days = "HOME.DISTRIBUTION.DAYS" | translate;
 
                 <div *ngFor="let values of weeklyData; index as i" class="day-item">
-                  <div class="day-name">{{ names[i] }}</div>
-                  <div [class]="`day-value ${limits.purineLimit < values[0] ? 'red' : ''}`">{{ values[0].toFixed(0) }} mg pürin</div>
-                  <div [class]="`day-value ${limits.sugarLimit < values[1] ? 'red' : ''}`">{{ values[1].toFixed(2) }} g şeker</div>
-                  <div [class]="`day-value ${limits.kcalLimit < values[2] ? 'red' : ''}`">{{ values[2].toFixed(0) }} kcal</div>
+                  <div class="day-name">{{ days[i] }}</div>
+                  <div [class]="`day-value ${limits.purineLimit < values[0] ? 'red' : ''}`">
+                    {{ values[0].toFixed(0) }} mg {{ "HOME.DISTRIBUTION.PURINE" | translate }}
+                  </div>
+
+                  <div [class]="`day-value ${limits.sugarLimit < values[1] ? 'red' : ''}`">
+                    {{ values[1].toFixed(2) }} g {{ "HOME.DISTRIBUTION.SUGAR" | translate }}
+                  </div>
+
+                  <div [class]="`day-value ${limits.kcalLimit < values[2] ? 'red' : ''}`">
+                    {{ values[2].toFixed(0) }} kcal {{ "HOME.DISTRIBUTION.CALORIE" | translate }}
+                  </div>
                 </div>
               </div>
             </ion-card-content>
@@ -106,8 +117,9 @@
         </div>
 
         <h2 class="section-title">
-          @let months = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-          <span>{{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} Tüketimi </span>
+          @let months = "HOME.CONSUMPTION.MONTHS" | translate;
+
+          <span>{{ date.day.toString().padStart(2, "0") }} {{ months[date.month] }} {{ "HOME.CONSUMPTION.TITLE" | translate }} </span>
 
           <ion-button fill="clear" (click)="toggleInfo()" class="icon-button">
             <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
@@ -116,66 +128,68 @@
 
         <ion-card class="info-card" *ngIf="isInfoVisible">
           <ion-card-content>
-            <h3>🍽️ NutriLog Nedir?</h3>
-            <p>Nutrilog, günlük Pürin, Şeker ve Kalori alımınızı tükettiğiniz gıdalar üzerinden takip eder. Böylece ihtiyacınız kadar 
-              beslenmenizi sağlar, sınırları aşmadan sağlıklı bir denge kurmanıza yardımcı olur. Nutrilog sayesinde vucudunuzda sağlıksız 
-              atıklar birikmez, organlarınız daha rahata çalışır. Uzun vadeli daha sağlıklı hissedersiniz.
-            </p>
-            <h3>🧠 Pürin Nedir?</h3>
-            <p>
-              Pürin, vücudumuzda ürik aside dönüşen bir maddedir. Et, sakatat ve bazı deniz ürünlerinde bolca bulunur.
-            </p>
-            <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
-            <p>Aşırı pürin tüketimi:</p>
+            <h3>🍽️ {{ "HOME.INFORMATION.NUTRILOG.TITLE" | translate }}</h3>
+            <p>{{ "HOME.INFORMATION.NUTRILOG.DESCRIPTION" | translate }}</p>
+
+            <h3>🧠 {{ "HOME.INFORMATION.PURINE.TITLE" | translate }}</h3>
+            <p>{{ "HOME.INFORMATION.PURINE.DESCRIPTION" | translate }}</p>
+
+            <h4>⚠️ {{ "HOME.INFORMATION.ATTENTION" | translate }}</h4>
+            <p>{{ "HOME.INFORMATION.PURINE.EXCESSIVE" | translate }}:</p>
+
             <ul>
-              <li> Ürik asit artışı</li>
-              <li>Gut hastalığı riski</li>
-              <li> Eklem ağrıları ve böbrek taşı</li>
+              @let purineRisks = "HOME.INFORMATION.PURINE.RISKS" | translate;
+              <li *ngFor="let risk of purineRisks">{{ risk }}</li>
             </ul>
-            <h4>✅ Ne Yapabilirim?</h4>
+
+            <h4>✅ {{ "HOME.INFORMATION.SUGGESTIONS" | translate }}</h4>
             <ul>
-              <li>Pürin içeriği yüksek gıdaları azaltın.</li>
-              <li>Bol su içerek vücudunuzu temizleyin.</li>
-              <li>Dengeli beslenin.</li>
+              @let purineSuggestions = "HOME.INFORMATION.PURINE.SUGGESTIONS" | translate;
+              <li *ngFor="let suggestion of purineSuggestions">{{ suggestion }}</li>
             </ul>
-            <hr/>
-            <h3>🍭 Şeker Nedir?</h3>
-            <p>
-            Şeker, enerji verir ama fazlası sağlık düşmanıdır. Özellikle hazır gıdalardaki katkılı (serbest) şeker, gizli tehlikedir. </p>
-            <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
-              <p>Aşırı şeker tüketimi:</p>
+
+            <hr />
+
+            <h3>🍭 {{ "HOME.INFORMATION.SUGAR.TITLE" | translate }}</h3>
+            <p>{{ "HOME.INFORMATION.SUGAR.DESCRIPTION" | translate }}</p>
+
+            <h4>⚠️ {{ "HOME.INFORMATION.ATTENTION" | translate }}</h4>
+            <p>{{ "HOME.INFORMATION.SUGAR.EXCESSIVE" | translate }}:</p>
+
             <ul>
-              <li> Kilo alımı ve obezite</li>
-              <li>İnsülin direnci ve diyabet</li>
-              <li> Kalp-damar hastalıkları</li>
-              <li>Diş çürükleri ve enerji düşüklüğü</li>
+              @let sugarRisks = "HOME.INFORMATION.SUGAR.RISKS" | translate;
+              <li *ngFor="let risk of sugarRisks">{{ risk }}</li>
             </ul>
-            <h4>✅ Ne Yapabilirim?</h4>
+
+            <h4>✅ {{ "HOME.INFORMATION.SUGGESTIONS" | translate }}</h4>
             <ul>
-              <li>Paketli gıdaları azaltın.</li>
-              <li>Tatlı tüketimini haftada 1-2 ile sınırlayın.</li>
-              <li>Meyve yiyerek doğal tatlılık ihtiyacınızı karşılayın.</li>
+              @let sugarSuggestions = "HOME.INFORMATION.SUGAR.RISKS" | translate;
+              <li *ngFor="let suggestion of sugarSuggestions">{{ suggestion }}</li>
             </ul>
-            <hr/>
-            <h3>🔥 Kalori Nedir?</h3>
-            <p>
-              Kalori, vücudun ihtiyaç duyduğu bir enerji birimidir. Yediğiniz her şey kalori içerir, ancak her kalori eşit değildir.
-            </p>
-            <h4>⚠️ Neden Dikkat Etmeliyim?</h4>
-            <p>Aşırı kalori alımı:</p>
+
+            <hr />
+
+            <h3>🔥 {{ "HOME.INFORMATION.CALORIE.TITLE" | translate }}</h3>
+            <p>{{ "HOME.INFORMATION.CALORIE.DESCRIPTION" | translate }}</p>
+
+            @let calorieRisks = "HOME.INFORMATION.CALORIE.RISKS" | translate;
+            <h4>⚠️ {{ "HOME.INFORMATION.ATTENTION" | translate }}</h4>
+            <p>{{ "HOME.INFORMATION.CALORIE.EXCESSIVE" | translate }}:</p>
             <ul>
-            <li> Kilo alımı ve obezite</li>
-            <li>Diyabet ve kalp hastalığı riski</li>
-            <li>Halsizlik, nefes darlığı, eklem sorunları</li></ul>
-            <p>Yetersiz kalori alımı:</p>
-            <ul>
-              <li>Kas kaybı, yorgunluk, bağışıklık zayıflığı</li>
+              <li>{{ calorieRisks[0] }}</li>
+              <li>{{ calorieRisks[1] }}</li>
+              <li>{{ calorieRisks[2] }}</li>
             </ul>
-            <h4>✅ Ne Yapabilirim?</h4>
+
+            <p>{{ "HOME.INFORMATION.CALORIE.EXCESSIVE" | translate }}:</p>
             <ul>
-              <li>Günlük ihtiyacınıza göre dengeli kalori alın.</li>
-              <li>Fast food ve şekerli içecekleri sınırlı tutun.</li>
-              <li>Lifli, proteinli ve doğal gıdaları tercih edin.</li>
+              <li>{{ calorieRisks[3] }}</li>
+            </ul>
+
+            <h4>✅ {{ "HOME.INFORMATION.SUGGESTIONS" | translate }}</h4>
+            <ul>
+              @let calorieSuggestions = "HOME.INFORMATION.CALORIE.SUGGESTIONS" | translate;
+              <li *ngFor="let suggestion of calorieSuggestions">{{ suggestion }}</li>
             </ul>
           </ion-card-content>
         </ion-card>
@@ -186,11 +200,11 @@
 
             <ion-label>
               <h2>{{ entry.meal.name }}</h2>
-              <p>Porsiyon: {{ entry.count }}</p>
+              <p>{{ "HOME.CONSUMPTION.PORTION" | translate }}: {{ entry.count }}</p>
               <p>
-                Pürin: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg <br>
-                Şeker: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g <br>
-                Kalori: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal
+                {{ "HOME.CONSUMPTION.PURINE" | translate }}: {{ (entry.meal.purine * entry.count).toFixed(0) }} mg <br />
+                {{ "HOME.CONSUMPTION.SUGAR" | translate }}: {{ (entry.meal.sugar * entry.count).toFixed(1) }} g <br />
+                {{ "HOME.CONSUMPTION.CALORIE" | translate }}: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal
               </p>
             </ion-label>
             <div class="item-actions">
@@ -208,7 +222,7 @@
         <ng-template #noData>
           <div class="empty-state">
             <ion-icon name="restaurant-outline"></ion-icon>
-            <p>Bu tarihte kayıtlı yemek bulunmuyor.</p>
+            <p>{{ "HOME.CONSUMPTION.NO_FOOD" | translate }}.</p>
           </div>
         </ng-template>
       </div>

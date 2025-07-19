@@ -1,0 +1,118 @@
+{
+  "AUTH": {
+    "WELCOME": "Welcome!",
+    "LANGUAGE": "Language",
+    "LOGIN_TAB": "Login",
+    "REGISTER_TAB": "Register",
+    "USERNAME_PLACEHOLDER": "Username",
+    "PASSWORD_PLACEHOLDER": "Password",
+    "NEW_USERNAME_PLACEHOLDER": "New Username",
+    "NEW_PASSWORD_PLACEHOLDER": "New Password",
+    "WEIGHT_PLACEHOLDER": "Your Weight (kg)",
+    "GENDER_LABEL": "Gender",
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "LOGIN_BUTTON": "Login",
+    "REGISTER_BUTTON": "Register",
+    "LOGIN_SUCCESS": "Login successful!",
+    "LOGIN_FAIL": "Incorrect username or password!",
+    "REGISTER_SUCCESS": "Registration successful! You can now log in.",
+    "REGISTER_FAIL": "This username is already taken!",
+    "FILL_ALL_FIELDS": "Please fill in all fields.",
+    "VALID_WEIGHT": "Please enter a valid weight!",
+    "LANGUAGE_LABEL": "Language",
+    "TURKISH": "Turkish",
+    "ENGLISH": "English"
+  },
+  "CARD": {
+    "DAILY": "Daily",
+    "WEEKLY": "Weekly",
+    "HIGH_RISK": "You exceeded the limit!",
+    "MEDIUM_RIKS": "You've reached 85% of your limit.",
+    "LOW_RISK": "Consumption is quite low."
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "PERSONAL": {
+      "TITLE": "Personal Information",
+      "GENDER": {
+        "TITLE": "Gender",
+        "MALE": "Male",
+        "FEMALE": "Female"
+      },
+      "LANGUAGE": {
+        "TITLE": "Language",
+        "TURKISH": "Turkish",
+        "ENGLISH": "English"
+      },
+      "WEIGHT": "Weight"
+    },
+    "LIMITS": {
+      "TITLE": "Daily Limit Goals",
+      "RECOMMENDED": "Recommended",
+      "PURINE": "Purine Limit",
+      "CALORIE": "Calorie Limit",
+      "SUGAR": "Sugar Limit"
+    },
+    "SAVE": "Save the Settings",
+    "RESET": "Reset the Limits",
+    "SAVED": "Settings saved successfully!",
+    "ERROR": "An error occured when saving the settings. Please try again.",
+    "RESETTED": "Limits are resetted to recommended values."
+  },
+  "HOME": {
+    "CARDS": {
+      "PURINE": "Purine",
+      "SUGAR": "Sugar",
+      "CALORIE": "Calorie"
+    },
+    "DISTRIBUTION": {
+      "TITLE": "Weekly Distribution",
+      "DAYS": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "PURINE": "purine",
+      "SUGAR": "sugar",
+      "CALORIE": "calorie"
+    },
+    "CONSUMPTION": {
+      "TITLE": "Consumption",
+      "MONTHS": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      "PORTION": "Portion",
+      "PURINE": "Purine",
+      "SUGAR": "Sugar",
+      "CALORIE": "Calorie",
+      "NO_FOOD": "There is no added food in this date."
+    },
+    "INFORMATION": {
+      "NUTRILOG": {
+        "TITLE": "What is NutriLog?",
+        "DESCRIPTION": "NutriLog tracks your daily intake of Purine, Sugar, and Calories based on the foods you consume.\n\
+          This helps you eat as much as you need, maintaining a healthy balance without exceeding limits.\n\
+          With NutriLog, unhealthy waste does not accumulate in your body, your organs function more comfortably, and you feel healthier in the long run."
+      },
+      "PURINE": {
+        "TITLE": "What is Purine?",
+        "DESCRIPTION": "Purine is a substance that turns into uric acid in the body. It is found in abundance in meat, organ meats, and some seafood.",
+        "RISKS": ["Increased uric acid", "Risk of gout", "Joint pain and kidney stones"],
+        "SUGGESTIONS": ["Reduce consumption of foods high in purine.", "Drink plenty of water to cleanse your body.", "Maintain a balanced diet."],
+        "EXCESSIVE": "Excessive purine intake"
+      },
+      "SUGAR": {
+        "TITLE": "What is Sugar?",
+        "DESCRIPTION": "Sugar provides energy but in excess, it becomes harmful. Especially added (free) sugar in processed foods is a hidden danger.",
+        "RISKS": ["Weight gain and obesity", "Insulin resistance and diabetes", "Cardiovascular diseases", "Tooth decay and low energy"],
+        "SUGGESTIONS": ["Reduce packaged foods.", "Limit sweet consumption to 1–2 times a week.", "Satisfy your sweet cravings with fruits."],
+        "EXCESSIVE": "Excessive sugar intake"
+      },
+      "CALORIE": {
+        "TITLE": "What is a Calorie?",
+        "DESCRIPTION": "A calorie is a unit of energy needed by the body. Everything you eat contains calories, but not all calories are equal.",
+        "RISKS": ["Weight gain and obesity", "Risk of diabetes and heart disease", "Fatigue, shortness of breath, joint problems", "Muscle loss, tiredness, weakened immunity"],
+        "SUGGESTIONS": ["Consume a balanced amount of calories based on your daily needs.", "Limit fast food and sugary drinks.", "Choose fibrous, protein-rich, and natural foods."],
+        "EXCESSIVE": "Excessive calorie intake",
+        "INSUFFICIENT": "Insufficient calorie intake"
+      },
+      "ATTENTION": "Why Should I Pay Attention?",
+      "SUGGESTIONS": "What Can I Do?"
+    }
+  }
+}

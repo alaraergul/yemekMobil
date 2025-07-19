@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, IonInput, ToastController, ScrollDetail } from '@ionic/angular';
-import { DataType } from 'src/app/utils';
+import { DataType, Language, User } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Meal, MealEntry, MealCategory, MealService } from 'src/app/services/meal/meal.service';
 import { CardComponent } from 'src/app/components/card/card.component';
@@ -10,11 +10,12 @@ import { Router } from '@angular/router';
 import { WaterValue, WaterConsumption, WaterConsumptionService } from '../services/water_consumption/water_consumption';
 import { ChartComponent } from '../components/chart.component';
 import { WaterCardComponent } from '../components/water-consumption/water-consumption.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tab2',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ChartComponent, CardComponent, WaterCardComponent],
+  imports: [IonicModule, CommonModule, FormsModule, ChartComponent, CardComponent, WaterCardComponent, TranslateModule],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss']
 })
@@ -22,6 +23,7 @@ export class HomePage {
   authService = inject(AuthService);
   mealService = inject(MealService);
   waterConsumptionService = inject(WaterConsumptionService);
+  translateService = inject(TranslateService);
   toastController = inject(ToastController);
   router = inject(Router);
 
@@ -301,26 +303,56 @@ export class HomePage {
     }
   }
 
-  getWeeklyNumberData(entries: MealEntry[]) {
-    const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
-    const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
-    monday.setDate(monday.getDate() - dayDiff);
-    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
-    const mondayAt = monday.getTime();
-    const sundayAt = sunday.getTime();
-    const filtered = entries.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
+  getWeeklyNumberData(user: User, entries: MealEntry[]) {
+    switch (user.language) {
+      case Language.TURKISH: {
+        const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
+        const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
+        monday.setDate(monday.getDate() - dayDiff);
 
-    const values: number[][] = Array(7).fill(0).map(() => Array(3).fill(0));
-    for (const entry of filtered) {
-      if (entry.meal) {
-        const day = (new Date(entry.timestamp)).getDay();
-        const index = day === 0 ? 6 : day - 1;
-        values[index][0] += (entry.meal.purine * entry.count);
-        values[index][1] += (entry.meal.sugar * entry.count);
-        values[index][2] += (entry.meal.kcal * entry.count);
+        const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 23, 59, 59, 999);
+        const mondayAt = monday.getTime();
+        const sundayAt = sunday.getTime();
+        const filtered = entries.filter((entry) => mondayAt <= entry.timestamp && entry.timestamp <= sundayAt);
+
+        const values: number[][] = Array(7).fill(0).map(() => Array(3).fill(0));
+
+        for (const entry of filtered) {
+          if (entry.meal) {
+            const day = (new Date(entry.timestamp)).getDay();
+            const index = day === 0 ? 6 : day - 1;
+            values[index][0] += (entry.meal.purine * entry.count);
+            values[index][1] += (entry.meal.sugar * entry.count);
+            values[index][2] += (entry.meal.kcal * entry.count);
+          }
+        }
+
+        return values;
+      }
+
+      case Language.ENGLISH: {
+        const sunday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
+        sunday.setDate(sunday.getDate() - sunday.getDay());
+
+        const saturday = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + 7, 23, 59, 59, 999);
+        const sundayAt = sunday.getTime();
+        const saturdayAt = saturday.getTime();
+        const filtered = entries.filter((entry) => sundayAt <= entry.timestamp && entry.timestamp <= saturdayAt);
+
+        const values: number[][] = Array(7).fill(0).map(() => Array(3).fill(0));
+
+        for (const entry of filtered) {
+          if (entry.meal) {
+            const day = (new Date(entry.timestamp)).getDay();
+            values[day][0] += (entry.meal.purine * entry.count);
+            values[day][1] += (entry.meal.sugar * entry.count);
+            values[day][2] += (entry.meal.kcal * entry.count);
+          }
+        }
+
+        return values;
       }
     }
-    return values;
   }
 
   getWeeklyTotal(type: DataType, entries: MealEntry[]): number {
