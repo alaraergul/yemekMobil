@@ -5,6 +5,7 @@ import { API_URL, APIResponse, Gender, getLanguageString, Language, User } from 
 import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
 
+// TODO: refresh meals on change language
 @Injectable({ providedIn: "root" })
 export class AuthService {
   public isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
