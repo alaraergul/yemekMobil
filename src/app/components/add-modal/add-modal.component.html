@@ -8,36 +8,47 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
+
     <ion-content class="ion-padding">
-      <ng-container *ngIf="isCreatingNewMeal">
+      <ng-container *ngIf="customMealMode">
         <ion-list>
-            <ion-item lines="none">
-              <ion-label>
-                <h2>{{ 'HOME.MODAL.CREATE_CUSTOM_TITLE' | translate }}</h2>
-                <p>{{ 'HOME.MODAL.CREATE_CUSTOM_DESC' | translate }}</p>
-              </ion-label>
-              <ion-button slot="end" fill="clear" (click)="toggleCreateNewMealView(false)">
-                  {{ 'HOME.MODAL.CANCEL' | translate }}
-              </ion-button>
+          <ion-item lines="none">
+            <ion-label>
+              <h2>{{ 'HOME.MODAL.CREATE_CUSTOM_TITLE' | translate }}</h2>
+              <p>{{ 'HOME.MODAL.CREATE_CUSTOM_DESC' | translate }}</p>
+            </ion-label>
+
+            <ion-button slot="end" fill="clear" (click)="toggleCreateNewMealView(false)">
+                {{ 'HOME.MODAL.CANCEL' | translate }}
+            </ion-button>
           </ion-item>
+
           <ion-item>
-              <ion-input [label]="'HOME.MODAL.MEAL_NAME' | translate" label-placement="floating" [(ngModel)]="newCustomMeal.name" required></ion-input>
+              <ion-input [label]="'HOME.MODAL.MEAL_NAME' | translate" label-placement="floating" [(ngModel)]="customMeal.name" required></ion-input>
           </ion-item>
+
           <ion-item>
-              <ion-input [label]="'HOME.MODAL.PURINE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.purine" required></ion-input>
+              <ion-input [label]="'HOME.MODAL.PURINE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.purine" required></ion-input>
           </ion-item>
             <ion-item>
-              <ion-input [label]="'HOME.MODAL.SUGAR_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.sugar" required></ion-input>
+              <ion-input [label]="'HOME.MODAL.SUGAR_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.sugar" required></ion-input>
           </ion-item>
+
           <ion-item>
-              <ion-input [label]="'HOME.MODAL.CALORIE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.kcal" required></ion-input>
+            <ion-input [label]="'HOME.MODAL.CALORIE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.kcal" required></ion-input>
           </ion-item>
+
+          <ion-item>
+            <ion-input [label]="'HOME.MODAL.QUANTITY_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.quantity" required></ion-input>
+          </ion-item>
+
           <ion-button expand="block" (click)="createAndSelectCustomMeal()" class="ion-margin-top">
-              {{ 'HOME.MODAL.CREATE_AND_SELECT' | translate }}
+            {{ 'HOME.MODAL.CREATE_AND_SELECT' | translate }}
           </ion-button>
       </ion-list>
       </ng-container>
-      <ng-container *ngIf="!isCreatingNewMeal">
+
+      <ng-container *ngIf="!customMealMode">
         <ion-list>
           <ion-item>
             <ion-input #searchInput [placeholder]="'HOME.MODAL.SEARCH_PLACEHOLDER' | translate" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery"></ion-input>
@@ -56,8 +67,8 @@
           </ion-item>
           <ion-item>
             <ion-select [label]="'HOME.MODAL.CATEGORY_LABEL' | translate" [placeholder]="'HOME.MODAL.CATEGORY_PLACEHOLDER' | translate" [(ngModel)]="selectedCategory">
-              <ion-select-option *ngFor="let category of getCategoryNames(categories)" [value]="category">
-                {{ category }}
+              <ion-select-option *ngFor="let category of getCategoryNames(categories)" [value]="category.index">
+                {{ category.name }}
               </ion-select-option>
             </ion-select>
           </ion-item>
@@ -103,8 +114,8 @@
                 <h2>{{ entry.meal?.name }}</h2>
                 <p>
                   {{ entry.count }} {{ 'HOME.CONSUMPTION.PORTION' | translate | lowercase }}
-                  {{ createDateFrom(entry.timestamp).toLocaleDateString(translate.currentLang) }}
-                  {{ createDateFrom(entry.timestamp).toLocaleTimeString(translate.currentLang, { hour: '2-digit', minute: '2-digit' }) }}
+                  {{ createDateFrom(entry.timestamp).toLocaleDateString(translateService.currentLang) }}
+                  {{ createDateFrom(entry.timestamp).toLocaleTimeString(translateService.currentLang, { hour: '2-digit', minute: '2-digit' }) }}
                 </p>
                 <p class="meal-details">
                   {{ 'HOME.CONSUMPTION.PURINE' | translate }}: {{(entry.meal.purine * entry.count).toFixed(0)}}mg, <br>

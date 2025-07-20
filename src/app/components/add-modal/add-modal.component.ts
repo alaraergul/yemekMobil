@@ -5,6 +5,7 @@ import { Meal, MealCategory, MealEntry, MealService } from 'src/app/services/mea
 import { FormsModule } from '@angular/forms';
 import { presentToast, ToastColors } from 'src/app/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-add-modal',
@@ -19,9 +20,9 @@ export class AddModalComponent {
 
   mealService = inject(MealService);
   toastController = inject(ToastController);
-  translate = inject(TranslateService);
+  translateService = inject(TranslateService);
 
-  isCreatingNewMeal = false;
+  customMealMode = false;
 
   @ViewChild("searchInput", { static: false }) searchInput: IonInput;
   searchQuery?: string;
@@ -35,11 +36,12 @@ export class AddModalComponent {
   };
 
   mealEntries: MealEntry[] = [];
-  newCustomMeal: Partial<Meal> = {
-    name: '',
-    purine: undefined,
-    kcal: undefined,
-    sugar: undefined,
+  customMeal: Partial<Meal> = {
+    name: null,
+    purine: null,
+    kcal: null,
+    sugar: null,
+    quantity: null
   };
 
   constructor(private cdr: ChangeDetectorRef) {}
@@ -50,23 +52,25 @@ export class AddModalComponent {
 
   async addMeal() {
     if (this.mealEntries.length === 0) {
-      const message = await this.translate.get("HOME.TOASTS.NO_MEAL_TO_SAVE").toPromise();
+      const message = await firstValueFrom(this.translateService.get("HOME.TOASTS.NO_MEAL_TO_SAVE"));
       presentToast(this.toastController, message, ToastColors.DANGER);
       return;
     }
+
     const result = await this.mealService.addMealEntries(this.mealEntries);
+
     if (result) {
-      const message = await this.translate.get("HOME.TOASTS.ADD_SUCCESS").toPromise();
+      const message = await firstValueFrom(this.translateService.get("HOME.TOASTS.ADD_SUCCESS"));
       presentToast(this.toastController, message, ToastColors.SUCCESS);
       this.closeModal();
     } else {
-      const message = await this.translate.get("HOME.TOASTS.ADD_FAIL").toPromise();
+      const message = await firstValueFrom(this.translateService.get("HOME.TOASTS.ADD_FAIL"));
       presentToast(this.toastController, message, ToastColors.DANGER);
     }
   }
 
-  getCategoryNames(categories: MealCategory[]): string[] {
-    return categories.map((category) => category.name).sort((a, b) => a.localeCompare(b, 'tr'));
+  getCategoryNames(categories: MealCategory[]) {
+    return categories.map((category, index) => ({"name": category.name, index})).sort((a, b) => a.name.localeCompare(b.name, "tr"));
   }
 
   createDateFrom(timestamp: number): Date {
@@ -79,11 +83,12 @@ export class AddModalComponent {
       count: 1,
       timestamp: Date.now()
     };
+
     this.selectedCategory = null;
     this.searchQuery = null;
     this.searchResults = [];
-    this.isCreatingNewMeal = false;
-    this.newCustomMeal = { name: null, purine: null, kcal: null, sugar: null };
+    this.customMealMode = false;
+    this.customMeal = { name: null, purine: null, kcal: null, sugar: null };
   }
   
   resetCurrentMealEntries() {
@@ -93,7 +98,7 @@ export class AddModalComponent {
 
   async pushMealEntry() {
     if (!this.currentMealEntry.meal || !this.currentMealEntry.count || this.currentMealEntry.count <= 0) {
-      const message = await this.translate.get("HOME.TOASTS.INVALID_MEAL_PORTION").toPromise();
+      const message = await firstValueFrom(this.translateService.get("HOME.TOASTS.INVALID_MEAL_PORTION"));
       presentToast(this.toastController, message, ToastColors.DANGER);
       return;
     }
@@ -133,12 +138,13 @@ export class AddModalComponent {
     this.currentMealEntry.meal = meal;
     this.searchQuery = null;
     this.searchResults = [];
-    this.isCreatingNewMeal = false;
+    this.customMealMode = false;
     this.cdr.detectChanges();
   }
 
   toggleCreateNewMealView(state: boolean) {
-    this.isCreatingNewMeal = state;
+    this.customMealMode = state;
+
     if (state) {
       this.searchQuery = null;
       this.searchResults = [];
@@ -148,23 +154,26 @@ export class AddModalComponent {
   } 
 
   async createAndSelectCustomMeal() {
-    const { name, purine, sugar, kcal } = this.newCustomMeal;
-    if (!name || name.trim() === '' || purine === undefined || sugar === undefined || kcal === undefined || purine < 0 || sugar < 0 || kcal < 0) {
-      const message = await this.translate.get("HOME.TOASTS.CUSTOM_MEAL_INVALID").toPromise();
+    const { name, purine, sugar, kcal, quantity } = this.customMeal;
+
+    if (!name || name.trim() === "" || purine === undefined || sugar == undefined || kcal == undefined || quantity == null || purine < 0 || sugar < 0 || kcal < 0 || quantity < 0) {
+      const message = await firstValueFrom(this.translateService.get("HOME.TOASTS.CUSTOM_MEAL_INVALID"));
       presentToast(this.toastController, message, ToastColors.DANGER);
       return;
     } 
+
     const customMeal: Meal = {
-        id: -Date.now(),
-        name: name.trim(),
-        purine: +purine,
-        sugar: +sugar,
-        kcal: +kcal,
-        quantity: 1,
-        category: 'Özel Yemek'
+      id: -Date.now(),
+      name: name.trim(),
+      purine: +purine,
+      sugar: +sugar,
+      kcal: +kcal,
+      quantity: +quantity,
+      category: "Özel Yemek"
     };
+
     this.currentMealEntry.meal = customMeal;
     this.toggleCreateNewMealView(false); 
-    this.newCustomMeal = { name: '', purine: undefined, kcal: undefined, sugar: undefined }; 
+    this.customMeal = { name: '', purine: undefined, kcal: undefined, sugar: undefined }; 
   }
 }

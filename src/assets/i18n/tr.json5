@@ -92,6 +92,7 @@
       "PURINE_PER_PORTION": "Pürin (mg / porsiyon)",
       "SUGAR_PER_PORTION": "Şeker (g / porsiyon)",
       "CALORIE_PER_PORTION": "Kalori (kcal / porsiyon)",
+      "QUANTITY_PER_PORTION": "Porsiyon büyüklüğü (gram / mililitre)",
       "CREATE_AND_SELECT": "Oluştur ve Seç",
       "SEARCH_PLACEHOLDER": "Yemek ara",
       "CREATE_NEW_CUSTOM_TITLE": "Yeni özel yemek oluştur",

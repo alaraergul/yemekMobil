@@ -92,6 +92,7 @@
       "PURINE_PER_PORTION": "Purine (mg / portion)",
       "SUGAR_PER_PORTION": "Sugar (g / portion)",
       "CALORIE_PER_PORTION": "Calorie (kcal / portion)",
+      "QUANTITY_PER_PORTION": "Portion size (gram / milliliter)",
       "CREATE_AND_SELECT": "Create and Select",
       "SEARCH_PLACEHOLDER": "Search for a meal",
       "CREATE_NEW_CUSTOM_TITLE": "Create new custom meal",
