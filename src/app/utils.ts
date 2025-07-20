@@ -59,7 +59,7 @@ export enum ToastColors {
 };
 
 export async function presentToast(toastController: ToastController, message: string, color: ToastColors) {
-  const toast = await this.toastController.create({
+  const toast = await toastController.create({
     message,
     duration: 2500,
     position: 'top',
