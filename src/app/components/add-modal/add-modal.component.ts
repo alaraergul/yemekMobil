@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, IonInput, ToastController } from '@ionic/angular';
 import { Meal, MealCategory, MealEntry, MealService } from 'src/app/services/meal/meal.service';
@@ -15,7 +15,7 @@ import { presentToast, ToastColors } from 'src/app/utils';
 })
 export class AddModalComponent {
   @Input() isOpen: boolean;
-  @Input() setOpen: (value: boolean) => void;
+  @Output() setOpen = new EventEmitter<boolean>();
 
   mealService = inject(MealService);
   toastController = inject(ToastController);
@@ -53,7 +53,7 @@ export class AddModalComponent {
 
     if (result) {
       presentToast(this.toastController, 'Yemekler başarıyla eklendi!', ToastColors.SUCCESS);
-      this.setOpen(false);
+      this.setOpen.emit(false);
     } else {
       presentToast(this.toastController, 'Yemekler eklenirken bir hata oluştu.', ToastColors.DANGER);
     }

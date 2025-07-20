@@ -1,10 +1,10 @@
-<ion-modal [isOpen]="isOpen" (didDismiss)="setOpen(false)" [initialBreakpoint]="1" [breakpoints]="[0, 1]" *ngIf="(mealService.categories$ | async) as categories">
+<ion-modal [isOpen]="isOpen" (didDismiss)="setOpen.emit(false)" [initialBreakpoint]="1" [breakpoints]="[0, 1]" *ngIf="(mealService.categories$ | async) as categories">
   <ng-template>
     <ion-header>
       <ion-toolbar>
         <ion-title>Yeni Yemek Ekle</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Kapat</ion-button>
+          <ion-button (click)="setOpen.emit(false)">Kapat</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>

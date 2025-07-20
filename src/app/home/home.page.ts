@@ -71,10 +71,10 @@ export class HomePage {
     this.date = { day, month, year };
   }
 
-  setOpen(isOpen: boolean) {
-    this.isModalOpen = isOpen;
+  setModalOpen(value: boolean) {
+    this.isModalOpen = value;
 
-    if (!isOpen) {
+    if (!this.isModalOpen) {
       // this.resetCurrentMealEntries();
     }
   }

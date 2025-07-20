@@ -230,10 +230,10 @@
   </div>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button (click)="setOpen(true)">
+    <ion-fab-button (click)="setModalOpen(true)">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
-  <app-add-modal [isOpen]="isModalOpen" [setOpen]="setOpen"></app-add-modal>
+  <app-add-modal [isOpen]="isModalOpen" (setOpen)="setModalOpen($event)"></app-add-modal>
 </ion-content>
