@@ -28,23 +28,15 @@
     "DAILY": "Daily",
     "WEEKLY": "Weekly",
     "HIGH_RISK": "You exceeded the limit!",
-    "MEDIUM_RIKS": "You've reached 85% of your limit.",
+    "MEDIUM_RISK": "You've reached 85% of your limit.",
     "LOW_RISK": "Consumption is quite low."
   },
   "SETTINGS": {
     "TITLE": "Settings",
     "PERSONAL": {
       "TITLE": "Personal Information",
-      "GENDER": {
-        "TITLE": "Gender",
-        "MALE": "Male",
-        "FEMALE": "Female"
-      },
-      "LANGUAGE": {
-        "TITLE": "Language",
-        "TURKISH": "Turkish",
-        "ENGLISH": "English"
-      },
+      "GENDER": { "TITLE": "Gender", "MALE": "Male", "FEMALE": "Female" },
+      "LANGUAGE": { "TITLE": "Language", "TURKISH": "Turkish", "ENGLISH": "English" },
       "WEIGHT": "Weight"
     },
     "LIMITS": {
@@ -83,36 +75,59 @@
       "NO_FOOD": "There is no added food in this date."
     },
     "INFORMATION": {
-      "NUTRILOG": {
-        "TITLE": "What is NutriLog?",
-        "DESCRIPTION": "NutriLog tracks your daily intake of Purine, Sugar, and Calories based on the foods you consume.\n\
-          This helps you eat as much as you need, maintaining a healthy balance without exceeding limits.\n\
-          With NutriLog, unhealthy waste does not accumulate in your body, your organs function more comfortably, and you feel healthier in the long run."
-      },
-      "PURINE": {
-        "TITLE": "What is Purine?",
-        "DESCRIPTION": "Purine is a substance that turns into uric acid in the body. It is found in abundance in meat, organ meats, and some seafood.",
-        "RISKS": ["Increased uric acid", "Risk of gout", "Joint pain and kidney stones"],
-        "SUGGESTIONS": ["Reduce consumption of foods high in purine.", "Drink plenty of water to cleanse your body.", "Maintain a balanced diet."],
-        "EXCESSIVE": "Excessive purine intake"
-      },
-      "SUGAR": {
-        "TITLE": "What is Sugar?",
-        "DESCRIPTION": "Sugar provides energy but in excess, it becomes harmful. Especially added (free) sugar in processed foods is a hidden danger.",
-        "RISKS": ["Weight gain and obesity", "Insulin resistance and diabetes", "Cardiovascular diseases", "Tooth decay and low energy"],
-        "SUGGESTIONS": ["Reduce packaged foods.", "Limit sweet consumption to 1–2 times a week.", "Satisfy your sweet cravings with fruits."],
-        "EXCESSIVE": "Excessive sugar intake"
-      },
-      "CALORIE": {
-        "TITLE": "What is a Calorie?",
-        "DESCRIPTION": "A calorie is a unit of energy needed by the body. Everything you eat contains calories, but not all calories are equal.",
-        "RISKS": ["Weight gain and obesity", "Risk of diabetes and heart disease", "Fatigue, shortness of breath, joint problems", "Muscle loss, tiredness, weakened immunity"],
-        "SUGGESTIONS": ["Consume a balanced amount of calories based on your daily needs.", "Limit fast food and sugary drinks.", "Choose fibrous, protein-rich, and natural foods."],
-        "EXCESSIVE": "Excessive calorie intake",
-        "INSUFFICIENT": "Insufficient calorie intake"
-      },
+      "NUTRILOG": { "TITLE": "What is NutriLog?", "DESCRIPTION": "NutriLog tracks your daily intake of Purine, Sugar, and Calories based on the foods you consume.\nThis helps you eat as much as you need, maintaining a healthy balance without exceeding limits.\nWith NutriLog, unhealthy waste does not accumulate in your body, your organs function more comfortably, and you feel healthier in the long run." },
+      "PURINE": { "TITLE": "What is Purine?", "DESCRIPTION": "Purine is a substance that turns into uric acid in the body. It is found in abundance in meat, organ meats, and some seafood.", "RISKS": ["Increased uric acid", "Risk of gout", "Joint pain and kidney stones"], "SUGGESTIONS": ["Reduce consumption of foods high in purine.", "Drink plenty of water to cleanse your body.", "Maintain a balanced diet."], "EXCESSIVE": "Excessive purine intake" },
+      "SUGAR": { "TITLE": "What is Sugar?", "DESCRIPTION": "Sugar provides energy but in excess, it becomes harmful. Especially added (free) sugar in processed foods is a hidden danger.", "RISKS": ["Weight gain and obesity", "Insulin resistance and diabetes", "Cardiovascular diseases", "Tooth decay and low energy"], "SUGGESTIONS": ["Reduce packaged foods.", "Limit sweet consumption to 1–2 times a week.", "Satisfy your sweet cravings with fruits."], "EXCESSIVE": "Excessive sugar intake" },
+      "CALORIE": { "TITLE": "What is a Calorie?", "DESCRIPTION": "A calorie is a unit of energy needed by the body. Everything you eat contains calories, but not all calories are equal.", "RISKS": ["Weight gain and obesity", "Risk of diabetes and heart disease", "Fatigue, shortness of breath, joint problems", "Muscle loss, tiredness, weakened immunity"], "SUGGESTIONS": ["Consume a balanced amount of calories based on your daily needs.", "Limit fast food and sugary drinks.", "Choose fibrous, protein-rich, and natural foods."], "EXCESSIVE": "Excessive calorie intake", "INSUFFICIENT": "Insufficient calorie intake" },
       "ATTENTION": "Why Should I Pay Attention?",
       "SUGGESTIONS": "What Can I Do?"
+    },
+    "MODAL": {
+      "TITLE": "Add New Meal",
+      "CLOSE": "Close",
+      "CREATE_CUSTOM_TITLE": "Create New Custom Meal",
+      "CREATE_CUSTOM_DESC": "Enter the nutritional values for 1 portion.",
+      "CANCEL": "Cancel",
+      "MEAL_NAME": "Meal Name",
+      "PURINE_PER_PORTION": "Purine (mg / portion)",
+      "SUGAR_PER_PORTION": "Sugar (g / portion)",
+      "CALORIE_PER_PORTION": "Calorie (kcal / portion)",
+      "CREATE_AND_SELECT": "Create and Select",
+      "SEARCH_PLACEHOLDER": "Search for a meal",
+      "CREATE_NEW_CUSTOM_TITLE": "Create new custom meal",
+      "CATEGORY_LABEL": "Category",
+      "CATEGORY_PLACEHOLDER": "Select Category",
+      "PORTION_LABEL": "Portion",
+      "FOR_N_PORTIONS": "For {{count}} portions",
+      "DATE_LABEL": "Date",
+      "TIME_LABEL": "Time",
+      "ADD_TO_LIST_BUTTON": "Add to List",
+      "MEALS_TO_BE_ADDED_TITLE": "Meals to be Added",
+      "ADD_SELECTED_BUTTON": "Add Selected"
+    },
+    "TOASTS": {
+      "DELETE_SUCCESS": "Meal deleted.",
+      "NO_MEAL_TO_SAVE": "No meals to save. Please add to the list first.",
+      "ADD_SUCCESS": "Meals added successfully!",
+      "ADD_FAIL": "An error occurred while adding meals.",
+      "INVALID_MEAL_PORTION": "Please select a valid meal and enter the portion.",
+      "CUSTOM_MEAL_INVALID": "Please fill in all fields with valid values."
+    },
+    "CHART": {
+      "TITLE": "Weekly Chart",
+      "NO_DATA": "No data to display for this week.",
+      "LABEL_PURINE": "Purine",
+      "LABEL_SUGAR": "Sugar",
+      "LABEL_KCAL": "Kcal",
+      "DAYS_SHORT": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    },
+    "WATER_CARD": {
+      "TITLE": "Water",
+      "DAILY": "Daily",
+      "WEEKLY": "Weekly",
+      "COMMENT_GOOD": "Doing great.",
+      "COMMENT_MEDIUM": "You drank a little.",
+      "COMMENT_LOW": "Your consumption is quite low."
     }
   }
 }
