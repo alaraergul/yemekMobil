@@ -37,6 +37,8 @@
     "TITLE": "Ayarlar",
     "PERSONAL": {
       "TITLE": "Kişisel Bilgiler",
+      "FIRST_NAME": "İsim",
+      "LAST_NAME": "Soyisim",
       "GENDER": { "TITLE": "Cinsiyet", "MALE": "Erkek", "FEMALE": "Kadın" },
       "LANGUAGE": { "TITLE": "Dil", "TURKISH": "Türkçe", "ENGLISH": "İngilizce" },
       "WEIGHT": "Kilo"

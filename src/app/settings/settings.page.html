@@ -22,6 +22,14 @@
 
   <ion-list [inset]="true">
     <ion-item>
+      <ion-input [label]="`${'SETTINGS.PERSONAL.FIRST_NAME' | translate}`" labelPlacement="floating" type="text" [(ngModel)]="firstName"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [label]="`${'SETTINGS.PERSONAL.LAST_NAME' | translate}`" labelPlacement="floating" type="text" [(ngModel)]="lastName"></ion-input>
+    </ion-item>
+
+    <ion-item>
       <ion-select [label]="'SETTINGS.PERSONAL.GENDER.TITLE' | translate" [(ngModel)]="gender">
         <ion-select-option [value]="Gender.MALE">{{ "SETTINGS.PERSONAL.GENDER.MALE" | translate }}</ion-select-option>
         <ion-select-option [value]="Gender.FEMALE">{{ "SETTINGS.PERSONAL.GENDER.FEMALE" | translate }}</ion-select-option>

@@ -26,6 +26,8 @@ export class SettingsPage implements OnInit {
   gender: Gender;
   weight: number;
   language: Language;
+  firstName: string;
+  lastName: string;
   purineLimit?: number;
   sugarLimit?: number;
   kcalLimit?: number;
@@ -42,6 +44,9 @@ export class SettingsPage implements OnInit {
 
       if (user) {
         this.currentUser = user;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+
         this.gender = user.gender;
         this.weight = user.weight;
         this.language = user.language;
@@ -86,7 +91,9 @@ export class SettingsPage implements OnInit {
         this.kcalLimit ?? null,
         this.gender ?? null,
         this.weight ?? null,
-        this.language ?? null
+        this.language ?? null,
+        this.firstName ?? null,
+        this.lastName ?? null
       );
 
       const toast = await this.toastController.create({

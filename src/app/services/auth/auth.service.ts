@@ -53,12 +53,15 @@ export class AuthService {
     };
   }
 
-  async editUser(purineLimit?: number, sugarLimit?: number, kcalLimit?: number, gender?: Gender, weight?: number, language?: Language) {
+  async editUser(
+    purineLimit?: number, sugarLimit?: number, kcalLimit?: number,
+    gender?: Gender, weight?: number, language?: Language, firstName?: string, lastName?: string
+  ) {
     const user = await this.user$;
     const {value: username} = await Preferences.get({"key": "username"});
     const {value: password} = await Preferences.get({"key": "password"});
 
-    const updates = { purineLimit, sugarLimit, kcalLimit, gender, weight, username, password, language };
+    const updates = { purineLimit, sugarLimit, kcalLimit, gender, weight, username, password, language, firstName, lastName };
     const response = await firstValueFrom(this.http.patch<APIResponse<void>>(`${API_URL}/users/${user.id}`, updates));
 
     if (!response.success) {

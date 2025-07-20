@@ -37,6 +37,8 @@
     "TITLE": "Settings",
     "PERSONAL": {
       "TITLE": "Personal Information",
+      "FIRST_NAME": "First Name",
+      "LAST_NAME": "Last Name",
       "GENDER": { "TITLE": "Gender", "MALE": "Male", "FEMALE": "Female" },
       "LANGUAGE": { "TITLE": "Language", "TURKISH": "Turkish", "ENGLISH": "English" },
       "WEIGHT": "Weight"

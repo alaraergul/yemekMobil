@@ -27,14 +27,19 @@ export enum Language {
 
 export interface User {
   id: string;
-  username?: string;
+  language: Language;
+
+  username: string;
+  firstName: string;
+  lastName: string;
+
   weight: number;
+  gender: Gender;
+
   sugarLimit?: number;
   purineLimit?: number;
   kcalLimit?: number;
   waterLimit?: number;
-  gender: Gender;
-  language: Language;
 };
 
 export interface APIResponse<T> {
