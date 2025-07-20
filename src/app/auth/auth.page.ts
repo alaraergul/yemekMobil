@@ -4,9 +4,10 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Gender, Language } from '../utils';
+import { Gender, Language, presentToast, ToastColors } from '../utils';
 import { MealService } from '../services/meal/meal.service';
 import { TranslateModule, TranslateService} from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 
 enum Tabs {
   LOGIN,
@@ -62,56 +63,43 @@ export class AuthPage {
     this.currentLang = lang;
   }
 
-  async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2500,
-      position: 'top',
-      color
-    });
-    await toast.present();
-  }
-
   async login() {
     const success = await this.authService.login(this.username, this.password);
 
     if (success) {
-      this.translate.get('AUTH.LOGIN_SUCCESS').subscribe(message => {
-        this.showToast(message, 'success');
-      });
+      const message = await firstValueFrom(this.translate.get("AUTH.LOGIN_SUCCESS"));
+      presentToast(this.toastController, message, ToastColors.SUCCESS);
     } else {
-      this.translate.get('AUTH.LOGIN_FAIL').subscribe(message => {
-        this.showToast(message, 'danger');
-      });
+      const message = await firstValueFrom(this.translate.get("AUTH.LOGIN_FAIL"));
+      presentToast(this.toastController, message, ToastColors.DANGER);
     }
   }
 
   async register() {
     if (!this.regUsername || !this.regPassword || this.regWeight === null || this.regGender == null || this.regLang == null) {
-      this.translate.get('AUTH.FILL_ALL_FIELDS').subscribe(message => {
-        this.showToast(message, 'warning');
-      });
+      const message = await firstValueFrom(this.translate.get("AUTH.FILL_ALL_FIELDS"))
+      presentToast(this.toastController, message, ToastColors.WARNING);
+
       return;
     }
 
     if (this.regWeight <= 0) {
-      this.translate.get('AUTH.VALID_WEIGHT').subscribe(message => {
-        this.showToast(message, 'warning');
-      });
+      const message = await firstValueFrom(this.translate.get("AUTH.VALID_WEIGHT"));
+      presentToast(this.toastController, message, ToastColors.WARNING);
+
       return;
     }
 
     const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight, this.regGender, this.regLang);
 
     if (success) {
-      this.translate.get('AUTH.REGISTER_SUCCESS').subscribe(message => {
-        this.showToast(message, 'success');
-      });
+      const message = await firstValueFrom(this.translate.get("AUTH.REGISTER_SUCCESS"));
+      presentToast(this.toastController, message, ToastColors.SUCCESS);
+
       this.activeTab = Tabs.LOGIN;
     } else {
-      this.translate.get('AUTH.REGISTER_FAIL').subscribe(message => {
-        this.showToast(message, 'danger');
-      });
+      const message = await firstValueFrom(this.translate.get("AUTH.REGISTER_FAIL"));
+      presentToast(this.toastController, message, ToastColors.DANGER);
     }
   }
 

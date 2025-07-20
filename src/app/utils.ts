@@ -55,6 +55,7 @@ export function getLanguageString(language: Language) {
 
 export enum ToastColors {
   DANGER = "danger",
+  WARNING = "warning",
   SUCCESS = "success"
 };
 
