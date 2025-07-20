@@ -19,7 +19,10 @@
     "REGISTER_SUCCESS": "Registration successful! You can now log in.",
     "REGISTER_FAIL": "This username is already taken!",
     "FILL_ALL_FIELDS": "Please fill in all fields.",
-    "VALID_WEIGHT": "Please enter a valid weight!"
+    "VALID_WEIGHT": "Please enter a valid weight!",
+    "LANGUAGE_LABEL": "Language",
+    "TURKISH": "Turkish",
+    "ENGLISH": "English"
   },
   "CARD": {
     "DAILY": "Daily",
