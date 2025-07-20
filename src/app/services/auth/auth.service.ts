@@ -103,7 +103,7 @@ export class AuthService {
 
     const response = await firstValueFrom(this.http.post<APIResponse<User>>(`${API_URL}/users/login`, { username, password }));
 
-    if (response.success) {
+    if (!response.success) {
       this.error$ = Promise.resolve(response.message);
       return false;
     }
