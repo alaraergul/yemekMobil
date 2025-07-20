@@ -26,7 +26,7 @@ export class WaterConsumptionService {
     if (!this.authService.isLogged$.getValue()) return false;
     const user = await this.authService.user$;
 
-    const response = await firstValueFrom(this.http.get<APIResponse<WaterConsumption[]>>(`${API_URL}/users/${user.id}/water-consumption`));
+    const response = await firstValueFrom(this.http.get<APIResponse<WaterConsumption[]>>(`${API_URL}/water-consumption/${user.id}`));
 
     if (!response.success) {
       this.error$ = Promise.resolve(response.message);
@@ -47,7 +47,7 @@ export class WaterConsumptionService {
       timestamp: Date.now()
     };
 
-    const response = await firstValueFrom(this.http.post<APIResponse<void>>(`${API_URL}/users/${user.id}/water-consumption`, consumption));
+    const response = await firstValueFrom(this.http.post<APIResponse<void>>(`${API_URL}/water-consumption/${user.id}`, consumption));
 
     if (!response.success) {
       this.error$ = Promise.resolve(response.message);
