@@ -1,56 +1,50 @@
-<ion-modal [isOpen]="isOpen" (didDismiss)="setOpen(false)" [initialBreakpoint]="1" [breakpoints]="[0, 1]" *ngIf="(mealService.categories$ | async) as categories">
+<ion-modal [isOpen]="isOpen" (didDismiss)="closeModal()" [initialBreakpoint]="1" [breakpoints]="[0, 1]" *ngIf="(mealService.categories$ | async) as categories">
   <ng-template>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Yeni Yemek Ekle</ion-title>
+        <ion-title>{{ 'HOME.MODAL.TITLE' | translate }}</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Kapat</ion-button>
+          <ion-button (click)="closeModal()">{{ 'HOME.MODAL.CLOSE' | translate }}</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-
     <ion-content class="ion-padding">
       <ng-container *ngIf="isCreatingNewMeal">
         <ion-list>
             <ion-item lines="none">
               <ion-label>
-                <h2>Yeni Özel Yemek Oluştur</h2>
-                <p>1 porsiyon için besin değerlerini girin.</p>
+                <h2>{{ 'HOME.MODAL.CREATE_CUSTOM_TITLE' | translate }}</h2>
+                <p>{{ 'HOME.MODAL.CREATE_CUSTOM_DESC' | translate }}</p>
               </ion-label>
-
               <ion-button slot="end" fill="clear" (click)="toggleCreateNewMealView(false)">
-                  Vazgeç
+                  {{ 'HOME.MODAL.CANCEL' | translate }}
               </ion-button>
           </ion-item>
-
           <ion-item>
-              <ion-input label="Yemek Adı" label-placement="floating" [(ngModel)]="newCustomMeal.name" required></ion-input>
+              <ion-input [label]="'HOME.MODAL.MEAL_NAME' | translate" label-placement="floating" [(ngModel)]="newCustomMeal.name" required></ion-input>
           </ion-item>
-
           <ion-item>
-              <ion-input label="Pürin (mg / porsiyon)" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.purine" required></ion-input>
+              <ion-input [label]="'HOME.MODAL.PURINE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.purine" required></ion-input>
           </ion-item>
             <ion-item>
-              <ion-input label="Şeker (g / porsiyon)" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.sugar" required></ion-input>
+              <ion-input [label]="'HOME.MODAL.SUGAR_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.sugar" required></ion-input>
           </ion-item>
           <ion-item>
-              <ion-input label="Kalori (kcal / porsiyon)" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.kcal" required></ion-input>
+              <ion-input [label]="'HOME.MODAL.CALORIE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="newCustomMeal.kcal" required></ion-input>
           </ion-item>
           <ion-button expand="block" (click)="createAndSelectCustomMeal()" class="ion-margin-top">
-              Oluştur ve Seç
+              {{ 'HOME.MODAL.CREATE_AND_SELECT' | translate }}
           </ion-button>
       </ion-list>
       </ng-container>
-
       <ng-container *ngIf="!isCreatingNewMeal">
         <ion-list>
           <ion-item>
-            <ion-input #searchInput placeholder="Yemek ara" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery"></ion-input>
-            <ion-button slot="end" fill="clear" (click)="toggleCreateNewMealView(true)" title="Yeni özel yemek oluştur">
+            <ion-input #searchInput [placeholder]="'HOME.MODAL.SEARCH_PLACEHOLDER' | translate" (ionInput)="handleSearch($event)" [(ngModel)]="searchQuery"></ion-input>
+            <ion-button slot="end" fill="clear" (click)="toggleCreateNewMealView(true)" [title]="'HOME.MODAL.CREATE_NEW_CUSTOM_TITLE' | translate">
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
             </ion-button>
           </ion-item>
-
           <ion-item *ngIf="searchResults.length != 0">
             <div forceOverscroll="false" class="search-results">
               <ion-list>
@@ -60,80 +54,62 @@
               </ion-list>
             </div>
           </ion-item>
-          
           <ion-item>
-            <ion-select label="Kategori" placeholder="Kategori Seçin" [(ngModel)]="selectedCategory">
+            <ion-select [label]="'HOME.MODAL.CATEGORY_LABEL' | translate" [placeholder]="'HOME.MODAL.CATEGORY_PLACEHOLDER' | translate" [(ngModel)]="selectedCategory">
               <ion-select-option *ngFor="let category of getCategoryNames(categories)" [value]="category">
                 {{ category }}
               </ion-select-option>
             </ion-select>
           </ion-item>
-
-          <!--<ion-item *ngIf="selectedCategory">
-            <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
-              [value]="currentMealEntry.meal?.id">
-              <ion-select-option *ngFor="let meal of filterMeals()" [value]="meal.id">
-                {{ meal.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>-->
         </ion-list>
       </ng-container>
-      
       <ion-list>
         <ion-item>
-          <ion-input label="Porsiyon" label-placement="floating" type="number" inputmode="decimal" min="1"
+          <ion-input [label]="'HOME.MODAL.PORTION_LABEL' | translate" label-placement="floating" type="number" inputmode="decimal" min="1"
             [(ngModel)]="currentMealEntry.count"></ion-input>
         </ion-item>
-
         <ion-item *ngIf="currentMealEntry.meal">
-          <p>{{ currentMealEntry.count }} porsiyon için</p>
+          <p>{{ 'HOME.MODAL.FOR_N_PORTIONS' | translate: { count: currentMealEntry.count } }}</p>
           <ul>
-            <li>Pürin: {{ currentMealEntry.count * currentMealEntry.meal.purine }} mg</li>
-            <li>Şeker: {{ currentMealEntry.count * currentMealEntry.meal.sugar }} g</li>
-            <li>Kalori: {{ currentMealEntry.count * currentMealEntry.meal.kcal }}</li>
+            <li>{{ 'HOME.CONSUMPTION.PURINE' | translate }}: {{ currentMealEntry.count * currentMealEntry.meal.purine }} mg</li>
+            <li>{{ 'HOME.CONSUMPTION.SUGAR' | translate }}: {{ currentMealEntry.count * currentMealEntry.meal.sugar }} g</li>
+            <li>{{ 'HOME.CONSUMPTION.CALORIE' | translate }}: {{ currentMealEntry.count * currentMealEntry.meal.kcal }}</li>
           </ul>
         </ion-item>
-
         @let date = createDateFrom(currentMealEntry.timestamp);
-
         <ion-item>
-          <ion-input label="Tarih" label-placement="floating" type="date" [value]="
+          <ion-input [label]="'HOME.MODAL.DATE_LABEL' | translate" label-placement="floating" type="date" [value]="
             `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
           " (ionChange)="onDateChange($event)"></ion-input>
         </ion-item>
-
         <ion-item>
-          <ion-input label="Saat" label-placement="floating" type="time" [value]="
+          <ion-input [label]="'HOME.MODAL.TIME_LABEL' | translate" label-placement="floating" type="time" [value]="
             `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
           " (ionChange)="onTimeChange($event)"></ion-input>
         </ion-item>
       </ion-list>
-
       <ion-button expand="block" (click)="pushMealEntry()" class="ion-margin-top">
         <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-        Eklenecek Yemeklere Ekle
+        {{ 'HOME.MODAL.ADD_TO_LIST_BUTTON' | translate }}
       </ion-button>
-
       <ion-card *ngIf="mealEntries.length > 0" class="ion-margin-top added-meals-card">
         <ion-card-header>
-          <ion-card-title>Eklenecek Yemekler</ion-card-title>
+          <ion-card-title>{{ 'HOME.MODAL.MEALS_TO_BE_ADDED_TITLE' | translate }}</ion-card-title>
         </ion-card-header>
-
         <ion-card-content>
           <ion-list lines="full">
             <ion-item *ngFor="let entry of mealEntries; let i = index">
               <ion-label>
                 <h2>{{ entry.meal?.name }}</h2>
                 <p>
-                  {{ entry.count }} porsiyon 
-                  {{ createDateFrom(entry.timestamp).toLocaleDateString('tr-TR') }}
-                  {{ createDateFrom(entry.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) }}
-
+                  {{ entry.count }} {{ 'HOME.CONSUMPTION.PORTION' | translate | lowercase }}
+                  {{ createDateFrom(entry.timestamp).toLocaleDateString(translate.currentLang) }}
+                  {{ createDateFrom(entry.timestamp).toLocaleTimeString(translate.currentLang, { hour: '2-digit', minute: '2-digit' }) }}
+                </p>
                 <p class="meal-details">
-                  Pürin: {{(entry.meal.purine * entry.count).toFixed(0)}}mg, <br>
-                  Şeker: {{(entry.meal.sugar * entry.count).toFixed(1)}}g, <br>
-                  Kalori: {{(entry.meal.kcal * entry.count).toFixed(0)}}kcal
+                  {{ 'HOME.CONSUMPTION.PURINE' | translate }}: {{(entry.meal.purine * entry.count).toFixed(0)}}mg, <br>
+                  {{ 'HOME.CONSUMPTION.SUGAR' | translate }}: {{(entry.meal.sugar * entry.count).toFixed(1)}}g, <br>
+                  {{ 'HOME.CONSUMPTION.CALORIE' | translate }}: {{(entry.meal.kcal * entry.count).toFixed(0)}}kcal
                 </p>
               </ion-label>
               <ion-button fill="clear" color="danger" size="small" (click)="removeMealEntryFromList(i)">
@@ -143,10 +119,9 @@
           </ion-list>
         </ion-card-content>
       </ion-card>
-
       <ion-button expand="block" (click)="addMeal()" class="ion-margin-top bottom-button" [disabled]="mealEntries.length === 0">
         <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-        Seçilenleri Ekle
+        {{ 'HOME.MODAL.ADD_SELECTED_BUTTON' | translate }}
       </ion-button>
     </ion-content>
   </ng-template>

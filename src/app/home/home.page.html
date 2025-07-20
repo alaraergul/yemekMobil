@@ -235,5 +235,4 @@
     </ion-fab-button>
   </ion-fab>
 
-  <app-add-modal [isOpen]="isModalOpen" [setOpen]="setOpen"></app-add-modal>
-</ion-content>
+<app-add-modal [isOpen]="isModalOpen" (setOpen)="isModalOpen = $event"></app-add-modal></ion-content>

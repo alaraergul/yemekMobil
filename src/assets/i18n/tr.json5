@@ -19,32 +19,21 @@
     "REGISTER_SUCCESS": "Kayıt başarılı! Giriş yapabilirsiniz.",
     "REGISTER_FAIL": "Bu kullanıcı adı zaten alınmış!",
     "FILL_ALL_FIELDS": "Lütfen tüm alanları doldurunuz.",
-    "VALID_WEIGHT": "Geçerli bir kilo giriniz!",
-    "LANGUAGE_LABEL": "Dil",
-    "TURKISH": "Türkçe",
-    "ENGLISH": "İngilizce"
+    "VALID_WEIGHT": "Geçerli bir kilo giriniz!"
   },
   "CARD": {
     "DAILY": "Günlük",
     "WEEKLY": "Haftalık",
     "HIGH_RISK": "Limiti aştın!",
-    "MEDIUM_RIKS": "Limitinin %85'ini doldurdun.",
+    "MEDIUM_RISK": "Limitinin %85'ini doldurdun.",
     "LOW_RISK": "Tüketimin oldukça düşük."
   },
   "SETTINGS": {
     "TITLE": "Ayarlar",
     "PERSONAL": {
       "TITLE": "Kişisel Bilgiler",
-      "GENDER": {
-        "TITLE": "Cinsiyet",
-        "MALE": "Erkek",
-        "FEMALE": "Kadın"
-      },
-      "LANGUAGE": {
-        "TITLE": "Dil",
-        "TURKISH": "Türkçe",
-        "ENGLISH": "İngilizce"
-      },
+      "GENDER": { "TITLE": "Cinsiyet", "MALE": "Erkek", "FEMALE": "Kadın" },
+      "LANGUAGE": { "TITLE": "Dil", "TURKISH": "Türkçe", "ENGLISH": "İngilizce" },
       "WEIGHT": "Kilo"
     },
     "LIMITS": {
@@ -83,36 +72,59 @@
       "NO_FOOD": "Bu tarihte kayıtlı yemek bulunmuyor."
     },
     "INFORMATION": {
-      "NUTRILOG": {
-        "TITLE": "NutriLog Nedir?",
-        "DESCRIPTION": "Nutrilog, günlük Pürin, Şeker ve Kalori alımınızı tükettiğiniz gıdalar üzerinden takip eder.\n\
-          Böylece ihtiyacınız kadar beslenmenizi sağlar, sınırları aşmadan sağlıklı bir denge kurmanıza yardımcı olur.\n\
-          Nutrilog sayesinde vucudunuzda sağlıksız atıklar birikmez, organlarınız daha rahata çalışır. Uzun vadeli daha sağlıklı hissedersiniz."
-      },
-      "PURINE": {
-        "TITLE": "Pürin Nedir?",
-        "DESCRIPTION": "Pürin, vücudumuzda ürik aside dönüşen bir maddedir. Et, sakatat ve bazı deniz ürünlerinde bolca bulunur.",
-        "RISKS": ["Ürik asit artışı", "Gut hastalığı riski", "Eklem ağrıları ve böbrek taşı"],
-        "SUGGESTIONS": ["Pürin içeriği yüksek gıdaları azaltın.", "Bol su içerek vücudunuzu temizleyin.", "Dengeli beslenin."],
-        "EXCESSIVE": "Aşırı pürin alımı"
-      },
-      "SUGAR": {
-        "TITLE": "Şeker Nedir?",
-        "DESCRIPTION": "Şeker, enerji verir ama fazlası sağlık düşmanıdır. Özellikle hazır gıdalardaki katkılı (serbest) şeker, gizli tehlikedir.",
-        "RISKS": ["Kilo alımı ve obezite", "İnsülin direnci ve diyabet", "Kalp-damar hastalıkları", "Diş çürükleri ve enerji düşüklüğü"],
-        "SUGGESTIONS": ["Paketli gıdaları azaltın.", "Tatlı tüketimini haftada 1-2 ile sınırlayın.", "Meyve yiyerek doğal tatlılık ihtiyacınızı karşılayın."],
-        "EXCESSIVE": "Aşırı şeker alımı"
-      },
-      "CALORIE": {
-        "TITLE": "Kalori Nedir?",
-        "DESCRIPTION": "Kalori, vücudun ihtiyaç duyduğu bir enerji birimidir. Yediğiniz her şey kalori içerir, ancak her kalori eşit değildir.",
-        "RISKS": ["Kilo alımı ve obezite", "Diyabet ve kalp hastalığı riski", "Halsizlik, nefes darlığı, eklem sorunları", "Kas kaybı, yorgunluk, bağışıklık zayıflığı"],
-        "SUGGESTIONS": ["Günlük ihtiyacınıza göre dengeli kalori alın.", "Fast food ve şekerli içecekleri sınırlı tutun.", "Lifli, proteinli ve doğal gıdaları tercih edin."],
-        "EXCESSIVE": "Aşırı kalori tüketimi",
-        "INSUFFICIENT": "Yetersiz kalori alımı"
-      },
+      "NUTRILOG": { "TITLE": "NutriLog Nedir?", "DESCRIPTION": "Nutrilog, günlük Pürin, Şeker ve Kalori alımınızı tükettiğiniz gıdalar üzerinden takip eder.\nBöylece ihtiyacınız kadar beslenmenizi sağlar, sınırları aşmadan sağlıklı bir denge kurmanıza yardımcı olur.\nNutrilog sayesinde vucudunuzda sağlıksız atıklar birikmez, organlarınız daha rahata çalışır. Uzun vadeli daha sağlıklı hissedersiniz." },
+      "PURINE": { "TITLE": "Pürin Nedir?", "DESCRIPTION": "Pürin, vücudumuzda ürik aside dönüşen bir maddedir. Et, sakatat ve bazı deniz ürünlerinde bolca bulunur.", "RISKS": ["Ürik asit artışı", "Gut hastalığı riski", "Eklem ağrıları ve böbrek taşı"], "SUGGESTIONS": ["Pürin içeriği yüksek gıdaları azaltın.", "Bol su içerek vücudunuzu temizleyin.", "Dengeli beslenin."], "EXCESSIVE": "Aşırı pürin alımı" },
+      "SUGAR": { "TITLE": "Şeker Nedir?", "DESCRIPTION": "Şeker, enerji verir ama fazlası sağlık düşmanıdır. Özellikle hazır gıdalardaki katkılı (serbest) şeker, gizli tehlikedir.", "RISKS": ["Kilo alımı ve obezite", "İnsülin direnci ve diyabet", "Kalp-damar hastalıkları", "Diş çürükleri ve enerji düşüklüğü"], "SUGGESTIONS": ["Paketli gıdaları azaltın.", "Tatlı tüketimini haftada 1-2 ile sınırlayın.", "Meyve yiyerek doğal tatlılık ihtiyacınızı karşılayın."], "EXCESSIVE": "Aşırı şeker alımı" },
+      "CALORIE": { "TITLE": "Kalori Nedir?", "DESCRIPTION": "Kalori, vücudun ihtiyaç duyduğu bir enerji birimidir. Yediğiniz her şey kalori içerir, ancak her kalori eşit değildir.", "RISKS": ["Kilo alımı ve obezite", "Diyabet ve kalp hastalığı riski", "Halsizlik, nefes darlığı, eklem sorunları", "Kas kaybı, yorgunluk, bağışıklık zayıflığı"], "SUGGESTIONS": ["Günlük ihtiyacınıza göre dengeli kalori alın.", "Fast food ve şekerli içecekleri sınırlı tutun.", "Lifli, proteinli ve doğal gıdaları tercih edin."], "EXCESSIVE": "Aşırı kalori tüketimi", "INSUFFICIENT": "Yetersiz kalori alımı" },
       "ATTENTION": "Neden Dikkat Etmeliyim?",
       "SUGGESTIONS": "Ne Yapabilirim?"
+    },
+    "MODAL": {
+      "TITLE": "Yeni Yemek Ekle",
+      "CLOSE": "Kapat",
+      "CREATE_CUSTOM_TITLE": "Yeni Özel Yemek Oluştur",
+      "CREATE_CUSTOM_DESC": "1 porsiyon için besin değerlerini girin.",
+      "CANCEL": "Vazgeç",
+      "MEAL_NAME": "Yemek Adı",
+      "PURINE_PER_PORTION": "Pürin (mg / porsiyon)",
+      "SUGAR_PER_PORTION": "Şeker (g / porsiyon)",
+      "CALORIE_PER_PORTION": "Kalori (kcal / porsiyon)",
+      "CREATE_AND_SELECT": "Oluştur ve Seç",
+      "SEARCH_PLACEHOLDER": "Yemek ara",
+      "CREATE_NEW_CUSTOM_TITLE": "Yeni özel yemek oluştur",
+      "CATEGORY_LABEL": "Kategori",
+      "CATEGORY_PLACEHOLDER": "Kategori Seçin",
+      "PORTION_LABEL": "Porsiyon",
+      "FOR_N_PORTIONS": "{{count}} porsiyon için",
+      "DATE_LABEL": "Tarih",
+      "TIME_LABEL": "Saat",
+      "ADD_TO_LIST_BUTTON": "Eklenecek Yemeklere Ekle",
+      "MEALS_TO_BE_ADDED_TITLE": "Eklenecek Yemekler",
+      "ADD_SELECTED_BUTTON": "Seçilenleri Ekle"
+    },
+    "TOASTS": {
+      "DELETE_SUCCESS": "Yemek silindi.",
+      "NO_MEAL_TO_SAVE": "Kaydedilecek yemek bulunmuyor. Lütfen önce listeye ekleyin.",
+      "ADD_SUCCESS": "Yemekler başarıyla eklendi!",
+      "ADD_FAIL": "Yemekler eklenirken bir hata oluştu.",
+      "INVALID_MEAL_PORTION": "Lütfen geçerli bir yemek seçin ve porsiyonu girin.",
+      "CUSTOM_MEAL_INVALID": "Lütfen tüm alanları geçerli değerlerle doldurun."
+    },
+    "CHART": {
+      "TITLE": "Haftalık Grafik",
+      "NO_DATA": "Bu hafta için gösterilecek veri bulunmuyor.",
+      "LABEL_PURINE": "Pürin",
+      "LABEL_SUGAR": "Şeker",
+      "LABEL_KCAL": "Kcal",
+      "DAYS_SHORT": ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"]
+    },
+    "WATER_CARD": {
+      "TITLE": "Su",
+      "DAILY": "Günlük",
+      "WEEKLY": "Haftalık",
+      "COMMENT_GOOD": "Gayet iyi.",
+      "COMMENT_MEDIUM": "Az su içtin.",
+      "COMMENT_LOW": "Tüketimin oldukça düşük."
     }
   }
 }
