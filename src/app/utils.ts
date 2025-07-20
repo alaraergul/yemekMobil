@@ -29,7 +29,6 @@ export interface User {
   id: string;
   language: Language;
 
-  username: string;
   firstName: string;
   lastName: string;
 

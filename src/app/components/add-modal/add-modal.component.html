@@ -24,14 +24,19 @@
           </ion-item>
 
           <ion-item>
-              <ion-input [label]="'HOME.MODAL.MEAL_NAME' | translate" label-placement="floating" [(ngModel)]="customMeal.name" required></ion-input>
+            <ion-input [label]="'HOME.MODAL.MEAL_NAME' | translate" label-placement="floating" [(ngModel)]="customMeal.names[0]" required></ion-input>
           </ion-item>
 
           <ion-item>
-              <ion-input [label]="'HOME.MODAL.PURINE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.purine" required></ion-input>
+            <ion-input [label]="'HOME.MODAL.MEAL_NAME' | translate" label-placement="floating" [(ngModel)]="customMeal.names[1]" required></ion-input>
           </ion-item>
-            <ion-item>
-              <ion-input [label]="'HOME.MODAL.SUGAR_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.sugar" required></ion-input>
+
+          <ion-item>
+            <ion-input [label]="'HOME.MODAL.PURINE_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.purine" required></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-input [label]="'HOME.MODAL.SUGAR_PER_PORTION' | translate" label-placement="floating" type="number" [(ngModel)]="customMeal.sugar" required></ion-input>
           </ion-item>
 
           <ion-item>
@@ -77,7 +82,7 @@
 
           <ion-item *ngIf="selectedCategory">
             <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
-              [value]="currentMealEntry.meal?.id">
+              [value]="'id' in currentMealEntry.meal ? currentMealEntry.meal?.id : null">
               <ion-select-option *ngFor="let meal of categories[selectedCategory].meals" [value]="meal.id">
                 {{ meal.name }}
               </ion-select-option>

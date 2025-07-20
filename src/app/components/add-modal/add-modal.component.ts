@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, IonInput, ToastController } from '@ionic/angular';
-import { Meal, MealCategory, MealEntry, MealService } from 'src/app/services/meal.service';
+import { CustomMeal, Meal, MealCategory, MealEntry, MealService } from 'src/app/services/meal.service';
 import { FormsModule } from '@angular/forms';
 import { presentToast, ToastColors } from 'src/app/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -29,15 +29,16 @@ export class AddModalComponent {
   searchResults: Meal[] = [];
   selectedCategory?: number;
 
-  currentMealEntry: MealEntry = {
+  // TODO: remove CustomMeal
+  currentMealEntry: MealEntry<Meal | CustomMeal> = {
     meal: null,
     count: 1,
     timestamp: Date.now()
   };
 
-  mealEntries: MealEntry[] = [];
-  customMeal: Partial<Meal> = {
-    name: null,
+  mealEntries: MealEntry<Meal | CustomMeal>[] = [];
+  customMeal: CustomMeal = {
+    names: [null, null],
     purine: null,
     kcal: null,
     sugar: null,
@@ -88,7 +89,13 @@ export class AddModalComponent {
     this.searchQuery = null;
     this.searchResults = [];
     this.customMealMode = false;
-    this.customMeal = { name: null, purine: null, kcal: null, sugar: null };
+    this.customMeal = {
+      names: [null, null],
+      purine: null,
+      kcal: null,
+      sugar: null,
+      quantity: null
+    };
   }
   
   resetCurrentMealEntries() {
@@ -162,26 +169,34 @@ export class AddModalComponent {
   } 
 
   async createAndSelectCustomMeal() {
-    const { name, purine, sugar, kcal, quantity } = this.customMeal;
+    const { names, purine, sugar, kcal, quantity } = this.customMeal;
 
-    if (!name || name.trim() === "" || purine === undefined || sugar == undefined || kcal == undefined || quantity == null || purine < 0 || sugar < 0 || kcal < 0 || quantity < 0) {
+    if (
+      !names[0] || !names[1] || names[0].trim() == "" || names[1].trim() == "" ||
+      purine == null || sugar == null || kcal == null || quantity == null ||
+      purine < 0 || sugar < 0 || kcal < 0 || quantity < 0
+    ) {
       const message = await firstValueFrom(this.translateService.get("HOME.TOASTS.CUSTOM_MEAL_INVALID"));
       presentToast(this.toastController, message, ToastColors.DANGER);
       return;
     } 
 
-    const customMeal: Meal = {
-      id: -Date.now(),
-      name: name.trim(),
+    const meal: CustomMeal = {
+      names: names.map((name) => name.trim()),
       purine: +purine,
       sugar: +sugar,
       kcal: +kcal,
-      quantity: +quantity,
-      category: "Özel Yemek"
+      quantity: +quantity
     };
 
-    this.currentMealEntry.meal = customMeal;
+    this.currentMealEntry.meal = meal;
     this.setCustomMealMode(false); 
-    this.customMeal = { name: '', purine: undefined, kcal: undefined, sugar: undefined }; 
+    this.customMeal = {
+      names: [null, null],
+      purine: null,
+      kcal: null,
+      sugar: null,
+      quantity: null
+    };
   }
 }

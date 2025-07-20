@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DataType, Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
-import { MealEntry } from 'src/app/services/meal.service';
+import { Meal, MealEntry } from 'src/app/services/meal.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
   styleUrls: ["./card.component.scss"]
 })
 export class CardComponent implements OnInit {
-  @Input() data: MealEntry[];
+  @Input() data: MealEntry<Meal>[];
   @Input() date: {day: number, month: number, year: number};
 
   @Input() type: DataType;

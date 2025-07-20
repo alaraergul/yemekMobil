@@ -96,7 +96,7 @@ export class HomePage {
     return new Date(timestamp);
   }
 
-  getEntriesOfDate(meals: Meal[], entries: MealEntry[]): MealEntry[] {
+  getEntriesOfDate(meals: Meal[], entries: MealEntry<Meal>[]): MealEntry<Meal>[] {
     return entries
       .filter((entry) => {
         const d = new Date(entry.timestamp);
@@ -114,7 +114,7 @@ export class HomePage {
       .sort((a, b) => b.timestamp - a.timestamp);
   }
 
-  getTotal(type: DataType, entries: MealEntry[]): number {
+  getTotal(type: DataType, entries: MealEntry<Meal>[]): number {
     switch (type) {
       case DataType.PURINE: return entries.reduce((sum, e) => sum + ((e.meal?.purine || 0) * e.count), 0);
       case DataType.KCAL: return entries.reduce((sum, e) => sum + ((e.meal?.kcal || 0) * e.count), 0);
@@ -122,7 +122,7 @@ export class HomePage {
     }
   }
 
-  getWeeklyNumberData(user: User, entries: MealEntry[]) {
+  getWeeklyNumberData(user: User, entries: MealEntry<Meal>[]) {
     switch (user.language) {
       case Language.TURKISH: {
         const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
@@ -174,7 +174,7 @@ export class HomePage {
     }
   }
 
-  getWeeklyTotal(type: DataType, entries: MealEntry[]): number {
+  getWeeklyTotal(type: DataType, entries: MealEntry<Meal>[]): number {
     const monday = new Date(this.date.year, this.date.month, this.date.day, 0, 0, 0, 0);
     const dayDiff = monday.getDay() != 0 ? (monday.getDay() - 1) : 6;
     monday.setDate(monday.getDate() - dayDiff);

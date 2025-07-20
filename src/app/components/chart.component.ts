@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataType } from '../utils';
-import { MealEntry } from '../services/meal.service';
+import { Meal, MealEntry } from '../services/meal.service';
 import { ChartConfiguration, ChartType, registerables, Chart } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { IonicModule } from '@ionic/angular';
@@ -62,7 +62,7 @@ Chart.register(...registerables);
   `,
 })
 export class ChartComponent implements OnChanges, OnInit {
-  @Input() data: MealEntry[] = [];
+  @Input() data: MealEntry<Meal>[] = [];
   @Input() date?: { day: number; month: number; year: number };
   @Input() type: DataType;
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
