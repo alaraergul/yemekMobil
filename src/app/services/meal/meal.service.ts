@@ -79,7 +79,7 @@ export class MealService {
     if (!data.some((entry) => entry.meal.id === id && entry.timestamp === timestamp)) return false;
 
     /*
-    const response = await firstValueFrom(this.http.delete<APIResponse>(`${API_URL}/users/${user.id}/meals`, { id, timestamp }));
+    const response = await firstValueFrom(this.http.delete<APIResponse>(`${API_URL}/meals/${user.id}/data`, { id, timestamp }));
     if (!response.status) return false;
 
     this.data$ = Promise.resolve(data.filter((entry) => entry.meal.id !== id || entry.timestamp !== timestamp));
@@ -117,7 +117,7 @@ export class MealService {
     if (willBeAdded.length == 0) return false;
 
     try {
-      const response = await firstValueFrom(this.http.post<APIResponse<void>>(`${API_URL}/users/${user.id}/meals`, willBeAdded));
+      const response = await firstValueFrom(this.http.post<APIResponse<void>>(`${API_URL}/meals/${user.id}/data`, willBeAdded));
       if (!response.success) return false;
 
       this.data$ = Promise.resolve(data);
@@ -134,7 +134,7 @@ export class MealService {
     const categoriesResponse = await firstValueFrom(this.http.get<APIResponse<MealCategory[]>>(`${API_URL}/meals/${user.id}`));
     if (!categoriesResponse.success) return false;
 
-    const dataResponse = await firstValueFrom(this.http.get<APIResponse<MealDOT[]>>(`${API_URL}/users/${user.id}/meals`));
+    const dataResponse = await firstValueFrom(this.http.get<APIResponse<MealDOT[]>>(`${API_URL}/meals/${user.id}/data`));
     if (!dataResponse.success) return false;
 
     const categories = categoriesResponse.data;
