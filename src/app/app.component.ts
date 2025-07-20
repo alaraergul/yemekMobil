@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { SplashScreen } from '@capacitor/splash-screen'
-import { AuthService } from './services/auth/auth.service';
-import { MealService } from './services/meal/meal.service';
-import { WaterConsumptionService } from './services/water_consumption/water_consumption';
+import { AuthService } from './services/auth.service';
+import { MealService } from './services/meal.service';
+import { WaterConsumptionService } from './services/water_consumption';
 import { TranslateService } from '@ngx-translate/core';
 
 import { parse } from "json5";

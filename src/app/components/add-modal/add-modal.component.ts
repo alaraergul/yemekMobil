@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, IonInput, ToastController } from '@ionic/angular';
-import { Meal, MealCategory, MealEntry, MealService } from 'src/app/services/meal/meal.service';
+import { Meal, MealCategory, MealEntry, MealService } from 'src/app/services/meal.service';
 import { FormsModule } from '@angular/forms';
 import { presentToast, ToastColors } from 'src/app/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';

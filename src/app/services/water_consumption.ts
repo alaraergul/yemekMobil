@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_URL, APIResponse } from 'src/app/utils';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from './auth.service';
 import { firstValueFrom } from 'rxjs';
 
 export enum WaterValue {

@@ -2,8 +2,8 @@ import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output } fro
 import { CommonModule } from '@angular/common';
 import { DataType, Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
-import { AuthService } from '../../services/auth/auth.service';
-import { MealEntry } from 'src/app/services/meal/meal.service';
+import { AuthService } from '../../services/auth.service';
+import { MealEntry } from 'src/app/services/meal.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 

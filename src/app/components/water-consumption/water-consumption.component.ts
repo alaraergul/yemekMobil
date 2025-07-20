@@ -2,8 +2,8 @@ import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Risk, User } from '../../utils';
 import { IonicModule } from '@ionic/angular';
-import { AuthService } from '../../services/auth/auth.service';
-import { WaterConsumptionService, WaterValue } from 'src/app/services/water_consumption/water_consumption';
+import { AuthService } from '../../services/auth.service';
+import { WaterConsumptionService, WaterValue } from 'src/app/services/water_consumption';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({

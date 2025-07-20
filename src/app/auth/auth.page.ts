@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { Gender, Language, presentToast, ToastColors } from '../utils';
-import { MealService } from '../services/meal/meal.service';
+import { MealService } from '../services/meal.service';
 import { TranslateModule, TranslateService} from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 

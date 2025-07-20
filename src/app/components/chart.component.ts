@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataType } from '../utils';
-import { MealEntry } from '../services/meal/meal.service';
+import { MealEntry } from '../services/meal.service';
 import { ChartConfiguration, ChartType, registerables, Chart } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { IonicModule } from '@ionic/angular';

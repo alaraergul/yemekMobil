@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController, ToastController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { User, Gender, Language, getLanguageString } from 'src/app/utils';
+import { AuthService } from 'src/app/services/auth.service';
+import { User, Gender, Language } from 'src/app/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 
