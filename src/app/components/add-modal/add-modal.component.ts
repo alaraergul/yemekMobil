@@ -27,7 +27,7 @@ export class AddModalComponent {
   @ViewChild("searchInput", { static: false }) searchInput: IonInput;
   searchQuery?: string;
   searchResults: Meal[] = [];
-  selectedCategory?: string;
+  selectedCategory?: number;
 
   currentMealEntry: MealEntry = {
     meal: null,
@@ -133,8 +133,16 @@ export class AddModalComponent {
     this.searchResults = meals.filter((meal) => meal.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()));
   }
 
-  selectSearchResult(meal: Meal) {
-    this.selectedCategory = meal.category;
+  async onSelectMeal(event: CustomEvent) {
+    const mealId: number = event.detail.value;
+    const meals = this.mealService.getAllMeals(await this.mealService.categories$);
+
+    const meal = meals.find((m) => m.id === mealId);
+    if (meal) this.currentMealEntry.meal = meal;
+  }
+
+  selectSearchResult(categories: MealCategory[], meal: Meal) {
+    this.selectedCategory = categories.findIndex((category) => category.name == meal.category);
     this.currentMealEntry.meal = meal;
     this.searchQuery = null;
     this.searchResults = [];
@@ -142,7 +150,7 @@ export class AddModalComponent {
     this.cdr.detectChanges();
   }
 
-  toggleCreateNewMealView(state: boolean) {
+  setCustomMealMode(state: boolean) {
     this.customMealMode = state;
 
     if (state) {
@@ -173,7 +181,7 @@ export class AddModalComponent {
     };
 
     this.currentMealEntry.meal = customMeal;
-    this.toggleCreateNewMealView(false); 
+    this.setCustomMealMode(false); 
     this.customMeal = { name: '', purine: undefined, kcal: undefined, sugar: undefined }; 
   }
 }
