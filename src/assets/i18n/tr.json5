@@ -7,6 +7,8 @@
     "USERNAME_PLACEHOLDER": "Kullanıcı Adı",
     "PASSWORD_PLACEHOLDER": "Şifre",
     "NEW_USERNAME_PLACEHOLDER": "Yeni Kullanıcı Adı",
+    "NEW_FIRSTNAME_PLACEHOLDER": "İsminiz",
+    "NEW_LASTNAME_PLACEHOLDER": "Soyisminiz",
     "NEW_PASSWORD_PLACEHOLDER": "Yeni Şifre",
     "WEIGHT_PLACEHOLDER": "Kilonuz (kg)",
     "GENDER_LABEL": "Cinsiyet",

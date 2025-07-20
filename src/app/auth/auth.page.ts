@@ -37,6 +37,8 @@ export class AuthPage {
   username = '';
   password = '';
   regUsername = '';
+  regFirstName = '';
+  regLastName = '';
   regPassword = '';
   regWeight: number | null = null;
   regGender: Gender | null = null;
@@ -90,7 +92,7 @@ export class AuthPage {
       return;
     }
 
-    const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight, this.regGender, this.regLang);
+    const success = await this.authService.register(this.regUsername, this.regPassword, this.regWeight, this.regGender, this.regLang, this.regFirstName, this.regLastName);
 
     if (success) {
       const message = await firstValueFrom(this.translate.get("AUTH.REGISTER_SUCCESS"));

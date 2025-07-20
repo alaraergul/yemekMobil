@@ -7,6 +7,8 @@
     "USERNAME_PLACEHOLDER": "Username",
     "PASSWORD_PLACEHOLDER": "Password",
     "NEW_USERNAME_PLACEHOLDER": "New Username",
+    "NEW_FIRSTNAME_PLACEHOLDER": "First Name",
+    "NEW_LASTNAME_PLACEHOLDER": "Last Name",
     "NEW_PASSWORD_PLACEHOLDER": "New Password",
     "WEIGHT_PLACEHOLDER": "Your Weight (kg)",
     "GENDER_LABEL": "Gender",

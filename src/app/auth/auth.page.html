@@ -40,6 +40,16 @@
         </ion-item>
 
         <ion-item class="input-item">
+          <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+          <ion-input [placeholder]="'AUTH.NEW_FIRSTNAME_PLACEHOLDER' | translate" [(ngModel)]="regFirstName" name="regFirstName" required></ion-input>
+        </ion-item>
+
+        <ion-item class="input-item">
+          <ion-icon name="people-circle-outline" slot="start"></ion-icon>
+          <ion-input [placeholder]="'AUTH.NEW_LASTNAME_PLACEHOLDER' | translate" [(ngModel)]="regLastName" name="regLastName" required></ion-input>
+        </ion-item>
+
+        <ion-item class="input-item">
           <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
           <ion-input type="password" [placeholder]="'AUTH.NEW_PASSWORD_PLACEHOLDER' | translate" [(ngModel)]="regPassword" name="regPassword" required></ion-input>
         </ion-item>

@@ -77,11 +77,11 @@ export class AuthService {
     return true;
   }
 
-  async register(username: string, password: string, weight: number, gender: Gender, language: Language): Promise<boolean> {
+  async register(username: string, password: string, weight: number, gender: Gender, language: Language, firstName: string, lastName: string): Promise<boolean> {
     this.error$ = undefined;
-    if (!username || !password || !weight) return false;
+    if (!username || !password || !weight || typeof gender != "number" || typeof language != "number" || !firstName || !lastName) return false;
 
-    const data = { username, password, weight, gender, language };
+    const data = { username, password, weight, gender, language, firstName, lastName };
     const response = await firstValueFrom(this.http.post<APIResponse<User>>(`${API_URL}/users/register`, data));
 
     if (!response.success) {
