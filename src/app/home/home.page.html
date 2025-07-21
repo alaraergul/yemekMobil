@@ -21,7 +21,7 @@
         @let dataByDate = getEntriesOfDate(meals, data);
 
         <div class="top-bar">
-          <h1 class="page-title">NutriLog</h1>
+          <h1 class="page-title">NutriLog</h1>         
           <div class="top-bar-actions">
             <ion-button fill="clear" (click)="goSettings()" class="icon-button">
               <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
@@ -32,7 +32,9 @@
             </ion-button>
           </div>
         </div>
-
+        <h2 *ngIf="user" class="welcome-message">
+          {{ 'HOME.WELCOME_MESSAGE' | translate: { name: user.firstName + ' ' + user.lastName} }}
+        </h2> 
         <ion-card class="control-panel">
           <ion-item lines="none">
             <ion-input type="date"

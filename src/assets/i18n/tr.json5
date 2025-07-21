@@ -57,6 +57,7 @@
     "RESETTED": "Limitler önerilen değerlere sıfırlandı."
   },
   "HOME": {
+    "WELCOME_MESSAGE": "Hoş Geldin, {{name}}!",
     "CARDS": {
       "PURINE": "Pürin",
       "SUGAR": "Şeker",

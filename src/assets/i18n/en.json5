@@ -57,6 +57,7 @@
     "RESETTED": "Limits are resetted to recommended values."
   },
   "HOME": {
+    "WELCOME_MESSAGE": "Welcome, {{name}}!",
     "CARDS": {
       "PURINE": "Purine",
       "SUGAR": "Sugar",
