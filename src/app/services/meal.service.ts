@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_URL, APIResponse } from 'src/app/utils';
+import { API_URL, APIResponse, Language } from 'src/app/utils';
 import { AuthService } from './auth.service';
 import { firstValueFrom } from 'rxjs';
 import { Preferences } from '@capacitor/preferences';
@@ -79,9 +79,35 @@ export class MealService {
 
     eventSource.onmessage = (async (event) => {
       const categories = await this.categories$;
-      const meal: Meal = JSON.parse(event.data);
-      categories.find((category) => ["Özel Yemekler", "Custom Meals"].includes(category.name))?.meals.push(meal);
-      this.categories$ = Promise.resolve(categories)
+      const user = await this.authService.user$;
+
+      if (event.data) {
+        const data = JSON.parse(event.data);
+        let categoryName;
+
+        switch (user.language) {
+          case Language.ENGLISH:
+            categoryName = "Custom Meals";
+            break;
+
+          case Language.TURKISH:
+            categoryName = "Özel Yemekler";
+            break;
+        }
+
+        const meal: Meal = {
+          id: data.id,
+          name: data.names[user.language],
+          purine: data.purine,
+          sugar: data.sugar,
+          kcal: data.kcal,
+          quantity: data.quantity,
+          category: categoryName
+        };
+
+        categories.find((category) => categoryName == category.name)?.meals.push(meal);
+        this.categories$ = Promise.resolve(categories)
+      }
     });
   }
 
