@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subject } from 'rxjs'; // Subject import edildi
 import { API_URL, APIResponse, Gender, getLanguageString, Language, User } from 'src/app/utils';
 import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,6 +11,7 @@ export class AuthService {
   public isLogged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public user$: Promise<User | null> = Promise.resolve(null);
   public error$?: Promise<string>;
+  public languageChanged$ = new Subject<void>(); 
   private translateService = inject(TranslateService);
 
   constructor(private http: HttpClient) {}
@@ -73,9 +74,14 @@ export class AuthService {
     const currentUser = await this.user$;
 
     if (currentUser) {
+      const languageDidChange = language !== undefined && language !== currentUser.language;
       const updatedUser = { ...currentUser, ...{ purineLimit, sugarLimit, kcalLimit, gender, weight, language } };
       this.user$ = Promise.resolve(updatedUser);
       this.translateService.use(getLanguageString(updatedUser.language));
+
+      if (languageDidChange) {
+        this.languageChanged$.next();
+      }
     }
 
     return true;

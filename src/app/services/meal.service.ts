@@ -47,7 +47,11 @@ export class MealService {
   public data$?: Promise<MealEntry<Meal>[]>;
   public categories$?: Promise<MealCategory[]>;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.authService.languageChanged$.subscribe(() => {
+      this.initialize();
+    });
+  }
 
   getAllMeals(categories: MealCategory[]) {
     const meals: Meal[] = [];
@@ -136,7 +140,7 @@ export class MealService {
     for (const entry of mealEntries) {
       let meal: Meal;
 
-      if (!("id" in entry.meal)) { // if it is CustomMeal
+      if (!("id" in entry.meal)) { 
         meal = await this.addCustomMeal(entry.meal);
       } else {
         meal = entry.meal;
