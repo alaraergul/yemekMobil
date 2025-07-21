@@ -48,6 +48,8 @@ export class MealService {
   public categories$?: Promise<MealCategory[]>;
 
   constructor(private http: HttpClient) {
+    this.getStreamOfCustomMeals();
+
     this.authService.languageChanged$.subscribe(() => {
       this.initialize();
     });
@@ -70,6 +72,19 @@ export class MealService {
 
   getSortedMeals(meals: Meal[]): Meal[] {
     return meals.sort((a, b) => a.name.localeCompare(b.name, 'tr', { sensitivity: 'base' }));
+  }
+
+  async getStreamOfCustomMeals(): Promise<void> {
+    const eventSource = new EventSource(`${API_URL}/custom-meals/events`);
+    const categories = await this.categories$;
+
+    eventSource.onmessage = function(event) {
+      const meal: Meal = JSON.parse(event.data);
+      console.log(meal);
+      categories.find((category) => ["Özel Yemekler", "Custom Meals"].includes(category.name)).meals.push(meal);
+    }
+
+    this.categories$ = Promise.resolve(categories)
   }
 
   async deleteMealEntry(id: number, timestamp: number): Promise<boolean> {
