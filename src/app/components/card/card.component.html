@@ -9,7 +9,7 @@
 
       <ion-card-title [style.color]="getColor(dailyRisk)">
         <ion-icon [name]="getIcon(dailyRisk)"></ion-icon>
-        {{ dailyConsumption.toFixed(0) }} / {{ dailyLimit }} </ion-card-title>
+        {{ dailyConsumption.toFixed(0) }} / {{ dailyLimit.toFixed(0) }} </ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
@@ -29,7 +29,7 @@
 
       <ion-card-title [style.color]="getColor(weeklyRisk)">
         <ion-icon [name]="getIcon(weeklyRisk)"></ion-icon>
-        {{ weeklyConsumption.toFixed(0) }} / {{dailyLimit * 7 }} 
+        {{ weeklyConsumption.toFixed(0) }} / {{(dailyLimit * 7).toFixed(0) }} 
       </ion-card-title>
     </ion-card-header>
 

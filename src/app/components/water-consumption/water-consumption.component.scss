@@ -1,54 +1,112 @@
-div.item {
-  div.water-buttons {
-    grid-column: 1 / span 2;
-    display: grid;
-    width: 100%;
-    grid-template-columns: auto auto;
-    gap: 9px;
+ion-list {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
 
-    div {
-      height: 5rem;
-      text-align: center;
+.unified-card {
+  margin: 0 16px 16px 16px;
+  border-radius: 12px;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  --padding-start: 0;
+  --padding-end: 0;
 
-      @media (prefers-color-scheme: light) {
-        background: rgb(240, 240, 240);
-        border: solid 1px rgb(235, 235, 235);
-      }
 
-      @media (prefers-color-scheme: dark) {
-        background: rgb(8, 8, 8);
-        border: solid 1px rgb(20, 20, 20);
-      }
+@media (prefers-color-scheme: light) {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    --background: white;
+  }
 
-      img {
-        width: 40px;
-        height: 40px;
-      }
+  @media (prefers-color-scheme: dark) {
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+    --background: #1A1B1E;
+  }
+}
 
-      p {
-        line-height: 0;
-      }
+.card-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 16px;
+  gap: 20px;
+}
 
-      &:first-child::after {
-        content: "";
-        position: absolute;
-        height: 5rem;
-        width: 1px;
+.title-container h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
 
-        // half of element width - line width - center of gap - border size
-        right: calc(50% - 1px - 5px - 1px);
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  text-align: center;
 
-        // line height + border size
-        margin-top: calc(-5rem + 1px);
+  .stat-column {
+    flex: 1;
 
-        @media (prefers-color-scheme: light) {
-          background: rgba(153, 153, 153, 0.3);
-        }
+    .period {
+      font-size: 0.8rem;
+      color: var(--ion-color-medium);
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      text-transform: uppercase;
+    }
 
-        @media (prefers-color-scheme: dark) {
-          background: rgba(102, 102, 102, 0.3);
-        }
-      }
+    ion-card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .comment {
+      font-size: 0.9rem;
+      margin: 8px 0 0 0;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+.water-buttons {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+
+  .water-button {
+    --border-radius: 12px;
+    --box-shadow: none;
+    height: 6rem;
+    font-weight: 600;
+    text-transform: none;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @media (prefers-color-scheme: light) {
+      --background: #f0f0f0;
+      --background-activated: #e0e0e0;
+      --color: var(--ion-text-color);
+    }
+    @media (prefers-color-scheme: dark) {
+      --background: #2c2c2e;
+      --background-activated: #3a3a3c;
+      --color: var(--ion-text-color);
+    }
+
+    img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
     }
   }
 }
