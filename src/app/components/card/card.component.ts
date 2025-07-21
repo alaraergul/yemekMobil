@@ -36,8 +36,7 @@ export class CardComponent implements OnInit {
   }
 
   getDailyLimit() {
-    if (!this.user) return;
-
+    if (!this.user) return -1;
     const limits = this.authService.getLimits(this.user);
 
     switch (this.type) {
