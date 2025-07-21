@@ -1,44 +1,45 @@
-<div class="item">
-  <ion-card class="summary-card">
-    @let dailyRisk = getRisk(dailyConsumption, 1);
-    @let dailyLimit = getDailyLimit();
-    <ion-card-header>
-      <ion-card-subtitle>
-        <p>{{ 'HOME.WATER_CARD.TITLE' | translate }}</p>
-        <p>{{ 'HOME.WATER_CARD.DAILY' | translate }}</p>
-      </ion-card-subtitle>
-      <ion-card-title [style.color]="getColor(dailyRisk)">
-        <ion-icon [name]="getIcon(dailyRisk)"></ion-icon>
-        {{ dailyConsumption.toFixed(0) }} / {{ dailyLimit }} </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>{{ getComment(dailyRisk) }}</p>
-    </ion-card-content>
-  </ion-card>
-  <ion-card class="summary-card">
-    @let weeklyRisk = getRisk(weeklyConsumption, 7);
-    <ion-card-header>
-      <ion-card-subtitle>
-        <p></p>
-        <p>{{ 'HOME.WATER_CARD.WEEKLY' | translate }}</p>
-      </ion-card-subtitle>
-      <ion-card-title [style.color]="getColor(weeklyRisk)">
-        <ion-icon [name]="getIcon(weeklyRisk)"></ion-icon>
-        {{ weeklyConsumption.toFixed(0) }} / {{dailyLimit * 7 }}
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>{{ getComment(weeklyRisk) }}</p>
-    </ion-card-content>
-  </ion-card>
-  <div class="water-buttons">
-    <div class="glass" (click)="consumeWater(WaterValue.GLASS)">
-      <img src="assets/images/glass.png" />
-      <p>330 mL</p>
+<ion-list>
+  <ion-item lines="none" class="unified-card">
+    <div class="card-content-wrapper">
+      
+      <div class="title-container">
+        <h2>{{ 'HOME.WATER_CARD.TITLE' | translate }}</h2>
+      </div>
+
+      <div class="stats-container">
+        @let dailyRisk = getRisk(dailyConsumption, 1);
+        @let dailyLimit = getDailyLimit();
+        <div class="stat-column">
+          <p class="period">{{ 'HOME.WATER_CARD.DAILY' | translate }}</p>
+          <ion-card-title [style.color]="getColor(dailyRisk)">
+            <ion-icon [name]="getIcon(dailyRisk)"></ion-icon>
+            {{ dailyConsumption.toFixed(0) }} / {{ dailyLimit }}
+          </ion-card-title>
+          <p class="comment">{{ getComment(dailyRisk) }}</p>
+        </div>
+
+        @let weeklyRisk = getRisk(weeklyConsumption, 7);
+        <div class="stat-column">
+          <p class="period">{{ 'HOME.WATER_CARD.WEEKLY' | translate }}</p>
+          <ion-card-title [style.color]="getColor(weeklyRisk)">
+            <ion-icon [name]="getIcon(weeklyRisk)"></ion-icon>
+            {{ weeklyConsumption.toFixed(0) }} / {{dailyLimit * 7 }}
+          </ion-card-title>
+          <p class="comment">{{ getComment(weeklyRisk) }}</p>
+        </div>
+      </div>
+
+      <div class="water-buttons">
+        <ion-button class="water-button" (click)="consumeWater(WaterValue.GLASS)">
+          <img src="assets/images/glass.png" />
+          <p>330 mL</p>
+        </ion-button>
+        <ion-button class="water-button" (click)="consumeWater(WaterValue.BOTTLE)">
+          <img src="assets/images/bottle.png" />
+          <p>0.5 L</p>
+        </ion-button>
+      </div>
+
     </div>
-    <div class="bottle" (click)="consumeWater(WaterValue.BOTTLE)">
-      <img src="assets/images/bottle.png" />
-      <p>0.5 L</p>
-    </div>
-  </div>
-</div>
+  </ion-item>
+</ion-list>

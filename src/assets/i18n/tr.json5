@@ -103,6 +103,8 @@
       "CREATE_NEW_CUSTOM_TITLE": "Yeni özel yemek oluştur",
       "CATEGORY_LABEL": "Kategori",
       "CATEGORY_PLACEHOLDER": "Kategori Seçin",
+      "CATEGORY_FOOD": "Yemek",
+      "CATEGORY_FOOD_SELECT": "Yemek Seçin",
       "PORTION_LABEL": "Porsiyon",
       "FOR_N_PORTIONS": "{{count}} porsiyon için",
       "DATE_LABEL": "Tarih",

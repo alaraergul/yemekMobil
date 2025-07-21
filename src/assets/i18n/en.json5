@@ -103,6 +103,8 @@
       "CREATE_NEW_CUSTOM_TITLE": "Create new custom meal",
       "CATEGORY_LABEL": "Category",
       "CATEGORY_PLACEHOLDER": "Select Category",
+      "CATEGORY_FOOD": "Meal",
+      "CATEGORY_FOOD_SELECT": "Select Meal",
       "PORTION_LABEL": "Portion",
       "FOR_N_PORTIONS": "For {{count}} portions",
       "DATE_LABEL": "Date",

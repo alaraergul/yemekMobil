@@ -61,7 +61,7 @@
     </ion-item>
 
     <ion-item lines="none">
-      <ion-input [label]="`${'SETTINGS.LIMITS.CALORIE' | translate} (mg)`" labelPlacement="floating" type="number" [(ngModel)]="kcalLimit"></ion-input>
+      <ion-input [label]="`${'SETTINGS.LIMITS.CALORIE' | translate} (kcal)`" labelPlacement="floating" type="number" [(ngModel)]="kcalLimit"></ion-input>
       <ion-label slot="end" color="medium" style="font-size: 12px;">
         {{ "SETTINGS.LIMITS.RECOMMENDED" | translate}}: {{ recommendedKcal | number:'1.0-0' }} kcal
       </ion-label>
