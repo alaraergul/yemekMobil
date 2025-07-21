@@ -49,6 +49,7 @@ export class AddModalComponent {
   constructor(private cdr: ChangeDetectorRef) {}
 
   closeModal() {
+    this.resetCurrentMealEntries();
     this.setOpen.emit(false);
   }
 

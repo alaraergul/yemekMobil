@@ -86,8 +86,8 @@
             </ion-select>
           </ion-item>
 
-          <ion-item *ngIf="typeof selectedCategory == 'number'">
-            <ion-select *ngIf="!customMeal.names[0]" [label]="'HOME.MODAL.CATEGORY_FOOD' | translate" [placeholder]="'HOME.MODAL.CATEGORY_FOOD_SELECT' | translate" (ionChange)="onSelectMeal($event)" [value]="currentMealEntry.meal?.id">
+          <ion-item *ngIf="typeof selectedCategory == 'number' && !customMeal.names[0]">
+            <ion-select [label]="'HOME.MODAL.CATEGORY_FOOD' | translate" [placeholder]="'HOME.MODAL.CATEGORY_FOOD_SELECT' | translate" (ionChange)="onSelectMeal($event)" [value]="currentMealEntry.meal?.id">
               <ion-select-option *ngFor="let meal of categories[selectedCategory].meals" [value]="meal.id">
                 {{ meal.name }}
               </ion-select-option>

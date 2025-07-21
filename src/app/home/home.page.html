@@ -32,9 +32,11 @@
             </ion-button>
           </div>
         </div>
+
         <h2 *ngIf="user" class="welcome-message">
-          {{ 'HOME.WELCOME_MESSAGE' | translate: { name: user.firstName + ' ' + user.lastName} }}
-        </h2> 
+          {{ "HOME.WELCOME_MESSAGE" | translate: { name: user.firstName + ' ' + user.lastName} }}
+        </h2>
+
         <ion-card class="control-panel">
           <ion-item lines="none">
             <ion-input type="date"
@@ -209,6 +211,7 @@
                 {{ "HOME.CONSUMPTION.CALORIE" | translate }}: {{ (entry.meal.kcal * entry.count).toFixed(0) }} kcal
               </p>
             </ion-label>
+
             <div class="item-actions">
               <span class="meal-time">{{ consumedAt.getHours().toString().padStart(2, "0") }}:{{
                 consumedAt.getMinutes().toString().padStart(2, "0") }}</span>

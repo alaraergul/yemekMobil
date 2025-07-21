@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_URL, APIResponse, Language } from 'src/app/utils';
+import { API_URL, APIResponse } from 'src/app/utils';
 import { AuthService } from './auth.service';
 import { firstValueFrom } from 'rxjs';
 import { Preferences } from '@capacitor/preferences';
@@ -76,15 +76,13 @@ export class MealService {
 
   async getStreamOfCustomMeals(): Promise<void> {
     const eventSource = new EventSource(`${API_URL}/custom-meals/events`);
-    const categories = await this.categories$;
 
-    eventSource.onmessage = function(event) {
+    eventSource.onmessage = (async (event) => {
+      const categories = await this.categories$;
       const meal: Meal = JSON.parse(event.data);
-      console.log(meal);
-      categories.find((category) => ["Özel Yemekler", "Custom Meals"].includes(category.name)).meals.push(meal);
-    }
-
-    this.categories$ = Promise.resolve(categories)
+      categories.find((category) => ["Özel Yemekler", "Custom Meals"].includes(category.name))?.meals.push(meal);
+      this.categories$ = Promise.resolve(categories)
+    });
   }
 
   async deleteMealEntry(id: number, timestamp: number): Promise<boolean> {
@@ -92,56 +90,26 @@ export class MealService {
     const user = await this.authService.user$;
 
     const data = await this.data$ as MealEntry<Meal>[];
-    if (!data.some((entry) => entry.meal.id === id && entry.timestamp === timestamp)) return false;
+    if (!data.some((entry) => entry.meal.id == id && entry.timestamp == timestamp)) return false;
 
-    /*
-    const response = await firstValueFrom(this.http.delete<APIResponse>(`${API_URL}/meals/${user.id}/data`, { id, timestamp }));
-    if (!response.status) return false;
+    const response = await firstValueFrom(this.http.delete<APIResponse<void>>(`${API_URL}/meals/${user.id}/data`, { body: {id, timestamp} }));
+    if (!response.success) return false;
 
     this.data$ = Promise.resolve(data.filter((entry) => entry.meal.id !== id || entry.timestamp !== timestamp));
-    */
     return true;
   }
 
   async addCustomMeal(meal: CustomMeal): Promise<Meal> {
-    const user = await this.authService.user$;
     const {value: username} = await Preferences.get({key: "username"});
     const {value: password} = await Preferences.get({key: "password"});
 
-    const categories = await this.categories$ || [];
     const response = await firstValueFrom(this.http.post<APIResponse<Meal>>(`${API_URL}/custom-meals/`, {
       username,
       password,
       ...meal
     }));
 
-    if (!response.success) {
-      return null;
-    }
-
-    let categoryName;
-
-    switch (user.language) {
-      case Language.TURKISH:
-        categoryName = "Özel Yemekler";
-        break;
-
-      case Language.ENGLISH:
-        categoryName = "Custom Meals";
-        break;
-    }
-
-    if (categories.some((category) => category.name == categoryName)) {
-      const category = categories.find((category) => category.name == categoryName);
-      category.meals.push(response.data);
-    } else {
-      categories.push({
-        name: categoryName,
-        meals: [response.data]
-      })
-    }
-
-    this.categories$ = Promise.resolve(categories);
+    if (!response.success) return null;
     return response.data;
   }
 
