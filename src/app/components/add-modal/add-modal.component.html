@@ -1,5 +1,5 @@
 <ion-modal [isOpen]="isOpen" (didDismiss)="closeModal()" [initialBreakpoint]="1" [breakpoints]="[0, 1]" *ngIf="(mealService.categories$ | async) as categories">
-  <ng-template>
+  <ng-container *ngIf="(authService.user$ | async) as user">
     <ion-header>
       <ion-toolbar>
         <ion-title>{{ "HOME.MODAL.TITLE" | translate }}</ion-title>
@@ -72,7 +72,13 @@
             </div>
           </ion-item>
 
-          <ion-item>
+          <ion-item *ngIf="customMeal.names[0]">
+            <div *ngIf="customMeal.names[0]">
+              {{ customMeal.names[0] }}
+            </div>
+          </ion-item>
+
+          <ion-item *ngIf="!customMeal.names[0]">
             <ion-select [label]="'HOME.MODAL.CATEGORY_LABEL' | translate" [placeholder]="'HOME.MODAL.CATEGORY_PLACEHOLDER' | translate" [(ngModel)]="selectedCategory">
               <ion-select-option *ngFor="let category of getCategoryNames(categories)" [value]="category.index">
                 {{ category.name }}
@@ -80,9 +86,8 @@
             </ion-select>
           </ion-item>
 
-          <ion-item *ngIf="selectedCategory">
-            <ion-select label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)"
-              [value]="'id' in currentMealEntry.meal ? currentMealEntry.meal?.id : null">
+          <ion-item *ngIf="typeof selectedCategory == 'number'">
+            <ion-select *ngIf="!customMeal.names[0]" label="Yemek" placeholder="Yemek Seçin" (ionChange)="onSelectMeal($event)" [value]="currentMealEntry.meal?.id">
               <ion-select-option *ngFor="let meal of categories[selectedCategory].meals" [value]="meal.id">
                 {{ meal.name }}
               </ion-select-option>
@@ -135,7 +140,7 @@
           <ion-list lines="full">
             <ion-item *ngFor="let entry of mealEntries; let i = index">
               <ion-label>
-                <h2>{{ entry.meal?.name }}</h2>
+                <h2>{{ entry.meal?.id ? entry.meal?.name : entry.meal?.names[0] }}</h2>
                 <p>
                   {{ entry.count }} {{ "HOME.CONSUMPTION.PORTION" | translate | lowercase }}
                   {{ createDateFrom(entry.timestamp).toLocaleDateString(translateService.currentLang) }}
@@ -162,5 +167,5 @@
         {{ "HOME.MODAL.ADD_SELECTED_BUTTON" | translate }}
       </ion-button>
     </ion-content>
-  </ng-template>
+  </ng-container>
 </ion-modal>

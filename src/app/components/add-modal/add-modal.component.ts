@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { presentToast, ToastColors } from 'src/app/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-add-modal',
@@ -18,6 +19,7 @@ export class AddModalComponent {
   @Input() isOpen: boolean;
   @Output() setOpen = new EventEmitter<boolean>(); 
 
+  authService = inject(AuthService);
   mealService = inject(MealService);
   toastController = inject(ToastController);
   translateService = inject(TranslateService);
@@ -29,8 +31,7 @@ export class AddModalComponent {
   searchResults: Meal[] = [];
   selectedCategory?: number;
 
-  // TODO: remove CustomMeal
-  currentMealEntry: MealEntry<Meal | CustomMeal> = {
+  currentMealEntry: MealEntry<Meal> = {
     meal: null,
     count: 1,
     timestamp: Date.now()
@@ -103,13 +104,28 @@ export class AddModalComponent {
     this.resetCurrentMealEntry();
   }
 
+  checkCustomMealIsEmpty() {
+    return (
+      this.customMeal.kcal == null || this.customMeal.purine == null || this.customMeal.quantity == null ||
+      this.customMeal.sugar == null || this.customMeal.names.some((name) => name == null)
+    );
+  }
+
   async pushMealEntry() {
-    if (!this.currentMealEntry.meal || !this.currentMealEntry.count || this.currentMealEntry.count <= 0) {
+    const isCustomMealEmpty = this.checkCustomMealIsEmpty();
+
+    if ((!this.currentMealEntry.meal && isCustomMealEmpty) || !this.currentMealEntry.count || this.currentMealEntry.count <= 0) {
       const message = await firstValueFrom(this.translateService.get("HOME.TOASTS.INVALID_MEAL_PORTION"));
       presentToast(this.toastController, message, ToastColors.DANGER);
       return;
     }
-    this.mealEntries.push(JSON.parse(JSON.stringify(this.currentMealEntry)));
+
+    if (!isCustomMealEmpty) {
+      this.mealEntries.push({...this.currentMealEntry, meal: this.customMeal});
+    } else {
+      this.mealEntries.push(this.currentMealEntry);
+    }
+
     const timestamp = this.currentMealEntry.timestamp;
     this.resetCurrentMealEntry();
     this.currentMealEntry.timestamp = timestamp;
@@ -181,7 +197,7 @@ export class AddModalComponent {
       return;
     } 
 
-    const meal: CustomMeal = {
+    this.customMeal = {
       names: names.map((name) => name.trim()),
       purine: +purine,
       sugar: +sugar,
@@ -189,14 +205,6 @@ export class AddModalComponent {
       quantity: +quantity
     };
 
-    this.currentMealEntry.meal = meal;
-    this.setCustomMealMode(false); 
-    this.customMeal = {
-      names: [null, null],
-      purine: null,
-      kcal: null,
-      sugar: null,
-      quantity: null
-    };
+    this.setCustomMealMode(false);
   }
 }
