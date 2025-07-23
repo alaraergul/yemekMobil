@@ -105,9 +105,9 @@
         <ion-item *ngIf="currentMealEntry.meal">
           <p>{{ "HOME.MODAL.FOR_N_PORTIONS" | translate: { count: currentMealEntry.count } }}</p>
           <ul>
-            <li>{{ "HOME.CONSUMPTION.PURINE" | translate }}: {{ currentMealEntry.count * currentMealEntry.meal.purine }} mg</li>
-            <li>{{ "HOME.CONSUMPTION.SUGAR" | translate }}: {{ currentMealEntry.count * currentMealEntry.meal.sugar }} g</li>
-            <li>{{ "HOME.CONSUMPTION.CALORIE" | translate }}: {{ currentMealEntry.count * currentMealEntry.meal.kcal }} kcal</li>
+            <li>{{ "HOME.CONSUMPTION.PURINE" | translate }}: {{ (currentMealEntry.count * currentMealEntry.meal.purine).toFixed(2) }} mg</li>
+            <li>{{ "HOME.CONSUMPTION.SUGAR" | translate }}: {{ (currentMealEntry.count * currentMealEntry.meal.sugar).toFixed(2) }} g</li>
+            <li>{{ "HOME.CONSUMPTION.CALORIE" | translate }}: {{ (currentMealEntry.count * currentMealEntry.meal.kcal).toFixed(2) }} kcal</li>
           </ul>
         </ion-item>
 
