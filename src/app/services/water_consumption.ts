@@ -58,4 +58,4 @@ export class WaterConsumptionService {
     this.data$ = Promise.resolve(waterConsumption);
     return true;
   }
-}
+} 

@@ -149,7 +149,7 @@ export class MealService {
     for (const entry of mealEntries) {
       let meal: Meal;
 
-      if (!("id" in entry.meal)) { 
+      if (!("id" in entry.meal)) {
         meal = await this.addCustomMeal(entry.meal);
       } else {
         meal = entry.meal;

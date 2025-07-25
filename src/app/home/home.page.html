@@ -12,6 +12,10 @@
 </div>
 
 <ion-content [scrollEvents]="true" (ionScroll)="onScroll($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <div *ngIf="authService.isLogged$ | async">
     @let user = (authService.user$ | async);
 
@@ -227,7 +231,7 @@
         <ng-template #noData>
           <div class="empty-state">
             <ion-icon name="restaurant-outline"></ion-icon>
-            <p>{{ "HOME.CONSUMPTION.NO_FOOD" | translate }}.</p>
+            <p>{{ "HOME.CONSUMPTION.NO_FOOD" | translate }}</p>
           </div>
         </ng-template>
       </div>

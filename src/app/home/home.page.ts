@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController, ScrollDetail } from '@ionic/angular';
+import { IonicModule, ToastController, ScrollDetail, RefresherCustomEvent } from '@ionic/angular';
 import { DataType, Language, presentToast, ToastColors, User } from 'src/app/utils';
 import { AuthService } from 'src/app/services/auth.service';
 import { Meal, MealEntry, MealService } from 'src/app/services/meal.service';
@@ -226,5 +226,24 @@ export class HomePage {
 
   goSettings() {
     this.router.navigate(["/settings"]);
+  }
+
+  async handleRefresh(event: RefresherCustomEvent) {
+    try {
+      await Promise.all([
+        this.mealService.initialize(),
+        this.waterConsumptionService.initialize()
+      ]);
+    } catch (error) {
+      console.error('Error', error);
+    } finally {
+      const today = new Date();
+      this.date = {
+        day: today.getDate(),
+        month: today.getMonth(),
+        year: today.getFullYear()
+      };
+      event.target.complete();
+    }
   }
 }
