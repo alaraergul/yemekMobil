@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_URL, APIResponse } from 'src/app/utils';
 import { AuthService } from './auth.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, BehaviorSubject } from 'rxjs'; 
 
 export enum WaterValue {
   GLASS,
@@ -17,45 +17,60 @@ export interface WaterConsumption {
 @Injectable({ providedIn: "root" })
 export class WaterConsumptionService {
   private authService = inject(AuthService);
-  public data$?: Promise<WaterConsumption[]>;
-  public error$: Promise<string>
+  private http = inject(HttpClient);
+  public data$ = new BehaviorSubject<WaterConsumption[] | null>(null);
+  public error$ = new BehaviorSubject<string | null>(null);
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   async initialize(): Promise<boolean> {
     if (!this.authService.isLogged$.getValue()) return false;
     const user = await this.authService.user$;
+    
+    if (this.data$.getValue() && this.data$.getValue()!.length > 0) {
+      return true;
+    }
+    try {
+      const response = await firstValueFrom(this.http.get<APIResponse<WaterConsumption[]>>(`${API_URL}/water-consumption/${user.id}`));
 
-    const response = await firstValueFrom(this.http.get<APIResponse<WaterConsumption[]>>(`${API_URL}/water-consumption/${user.id}`));
+      if (!response.success) {
+        this.error$.next(response.message);
+        return false;
+      }
 
-    if (!response.success) {
-      this.error$ = Promise.resolve(response.message);
+      this.data$.next(response.data); 
+      return true;
+
+    } catch (err) {
+      this.error$.next("Error");
       return false;
     }
-
-    this.data$ = Promise.resolve(response.data);
-    return true;
   }
 
   async addWaterConsumption(value: WaterValue): Promise<boolean> {
     if (!this.authService.isLogged$.getValue()) return false;
     const user = await this.authService.user$;
 
-    const waterConsumption = await this.data$ || [];
     const consumption: WaterConsumption = {
       value,
       timestamp: Date.now()
     };
 
-    const response = await firstValueFrom(this.http.post<APIResponse<void>>(`${API_URL}/water-consumption/${user.id}`, consumption));
+    try {
+      const response = await firstValueFrom(this.http.post<APIResponse<void>>(`${API_URL}/water-consumption/${user.id}`, consumption));
 
-    if (!response.success) {
-      this.error$ = Promise.resolve(response.message);
+      if (!response.success) {
+        this.error$.next(response.message);
+        return false;
+      }
+      const currentConsumptions = this.data$.getValue() || [];
+      const updatedConsumptions = [...currentConsumptions, consumption];
+      this.data$.next(updatedConsumptions);
+      return true;
+
+    } catch (err) {
+      this.error$.next("Error");
       return false;
     }
-
-    waterConsumption.push(consumption);
-    this.data$ = Promise.resolve(waterConsumption);
-    return true;
   }
-} 
+}

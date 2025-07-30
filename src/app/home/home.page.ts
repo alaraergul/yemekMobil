@@ -43,6 +43,21 @@ export class HomePage {
   showStickyHeader = false;
   isModalOpen = false;
 
+  ionViewWillEnter() {
+    this.loadInitialData();
+  }
+
+  private async loadInitialData() {
+    try {
+      await Promise.all([
+        this.mealService.initialize(),
+        this.waterConsumptionService.initialize()
+      ]);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   changeChartType(type: DataType) {
     this.chartType = type;
   }
