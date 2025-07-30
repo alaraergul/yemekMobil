@@ -21,16 +21,23 @@ export class WaterConsumptionService {
   public data$ = new BehaviorSubject<WaterConsumption[] | null>(null);
   public error$ = new BehaviorSubject<string | null>(null);
 
-  constructor() {}
+  constructor() {
+    this.authService.isLogged$.subscribe(isLoggedIn => {
+      if (!isLoggedIn) {
+        this.data$.next(null);
+      }
+    });
+  }
 
   async initialize(): Promise<boolean> {
     if (!this.authService.isLogged$.getValue()) return false;
     const user = await this.authService.user$;
     
-    if (this.data$.getValue() && this.data$.getValue()!.length > 0) {
-      return true;
-    }
     try {
+      if (!user) {
+        this.error$.next("User not found.");
+        return false;
+      }
       const response = await firstValueFrom(this.http.get<APIResponse<WaterConsumption[]>>(`${API_URL}/water-consumption/${user.id}`));
 
       if (!response.success) {
@@ -51,6 +58,11 @@ export class WaterConsumptionService {
     if (!this.authService.isLogged$.getValue()) return false;
     const user = await this.authService.user$;
 
+    if (!user) {
+      this.error$.next("User not found.");
+      return false;
+    }
+
     const consumption: WaterConsumption = {
       value,
       timestamp: Date.now()
@@ -63,10 +75,7 @@ export class WaterConsumptionService {
         this.error$.next(response.message);
         return false;
       }
-      const currentConsumptions = this.data$.getValue() || [];
-      const updatedConsumptions = [...currentConsumptions, consumption];
-      this.data$.next(updatedConsumptions);
-      return true;
+      return this.initialize();
 
     } catch (err) {
       this.error$.next("Error");
