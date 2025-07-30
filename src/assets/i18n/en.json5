@@ -129,7 +129,7 @@
       "NO_DATA": "No data to display for this week.",
       "LABEL_PURINE": "Purine",
       "LABEL_SUGAR": "Sugar",
-      "LABEL_KCAL": "Kcal",
+      "LABEL_KCAL": "Calories",
       "DAYS_SHORT": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     },
     "WATER_CARD": {

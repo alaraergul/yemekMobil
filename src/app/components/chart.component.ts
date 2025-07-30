@@ -94,6 +94,8 @@ export class ChartComponent implements OnChanges, OnInit {
                 label.text = this.translate.instant('HOME.CHART.LABEL_PURINE');
               } else if (label.text === 'Şeker') {
                 label.text = this.translate.instant('HOME.CHART.LABEL_SUGAR');
+              } else if (label.text === 'Kalori') {
+                label.text = this.translate.instant('HOME.CHART.LABEL_KCAL');
               }
             });
             return originalLabels;
@@ -204,7 +206,7 @@ export class ChartComponent implements OnChanges, OnInit {
           case DataType.KCAL:
             this.chartData.datasets.push({
               data: values.map((value) => value[2]),
-              label: "kcal",
+              label: "Kalori",
               borderColor: "#FFC409",
               backgroundColor: "rgba(255, 196, 9, 0.2)",
               fill: true,
