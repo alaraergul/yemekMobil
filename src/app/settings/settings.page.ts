@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
-import { User, Gender, Language } from 'src/app/utils';
+import { User, Gender, Language, presentToast, ToastColors } from 'src/app/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-settings',
@@ -19,6 +20,7 @@ export class SettingsPage implements OnInit {
   toastController = inject(ToastController);
   translateService = inject(TranslateService);
   navCtrl = inject(NavController);
+  private alertController = inject(AlertController);
 
   Gender = Gender;
   Language = Language;
@@ -132,5 +134,40 @@ export class SettingsPage implements OnInit {
       color: "warning"
     });
     toast.then(t => t.present());
+  }
+
+  async deleteAccount() {
+    const header = await firstValueFrom(this.translateService.get("SETTINGS.DELETE_ACCOUNT_ALERT.TITLE"));
+    const message = await firstValueFrom(this.translateService.get("SETTINGS.DELETE_ACCOUNT_ALERT.MESSAGE"));
+    const confirmButton = await firstValueFrom(this.translateService.get("SETTINGS.DELETE_ACCOUNT_ALERT.CONFIRM"));
+    const cancelButton = await firstValueFrom(this.translateService.get("SETTINGS.DELETE_ACCOUNT_ALERT.CANCEL"));
+
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: [
+        {
+          text: cancelButton,
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: confirmButton,
+          handler: async () => {
+            const success = await this.authService.deleteUser();
+            if (success) {
+              const toastMessage = await firstValueFrom(this.translateService.get("SETTINGS.DELETE_ACCOUNT_SUCCESS"));
+              presentToast(this.toastController, toastMessage, ToastColors.SUCCESS);
+              this.navCtrl.navigateRoot("/auth");
+            } else {
+              const toastMessage = await firstValueFrom(this.translateService.get("SETTINGS.ERROR"));
+              presentToast(this.toastController, toastMessage, ToastColors.DANGER);
+            }
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }

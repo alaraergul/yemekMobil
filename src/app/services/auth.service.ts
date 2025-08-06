@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, firstValueFrom, Subject } from 'rxjs'; // Subject import edildi
+import { BehaviorSubject, firstValueFrom, Subject } from 'rxjs';
 import { API_URL, APIResponse, Gender, getLanguageString, Language, User } from 'src/app/utils';
 import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
@@ -132,5 +132,28 @@ export class AuthService {
     this.isLogged$.next(false);
     await Preferences.remove({"key": "username"});
     await Preferences.remove({"key": "password"});
+  }
+  
+  async deleteUser(): Promise<boolean> {
+    this.error$ = undefined;
+    const user = await this.user$;
+
+    if (!user) {
+      this.error$ = Promise.resolve("User not found.");
+      return false;
+    }
+
+    try {
+      const response = await firstValueFrom(this.http.delete<APIResponse<void>>(`${API_URL}/users/${user.id}`));
+      if (!response.success) {
+        this.error$ = Promise.resolve(response.message);
+        return false;
+      }
+      await this.logout();
+      return true;
+    } catch (err) {
+      this.error$ = Promise.resolve("Error deleting user.");
+      return false;
+    }
   }
 }

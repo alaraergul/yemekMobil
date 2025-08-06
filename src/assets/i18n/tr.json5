@@ -54,7 +54,15 @@
     "RESET": "Limitleri Önerilen Değerlere Sıfırla",
     "SAVED": "Ayarların başarıyla kaydedildi!",
     "ERROR": "Ayarlar kaydedilirken bir hata oluştu. Lütfen tekrar dene.",
-    "RESETTED": "Limitler önerilen değerlere sıfırlandı."
+    "RESETTED": "Limitler önerilen değerlere sıfırlandı.",
+    "DELETE_ACCOUNT": "Hesabı Sil",
+    "DELETE_ACCOUNT_ALERT": {
+      "TITLE": "Hesabınızı Silmek İstediğinizden Emin misiniz?",
+      "MESSAGE": "Bu işlem geri alınamaz. Devam etmek istediğinizden emin misiniz?",
+      "CONFIRM": "Evet, Sil",
+      "CANCEL": "İptal"
+    },
+    "DELETE_ACCOUNT_SUCCESS": "Hesabınız başarıyla silinmiştir."
   },
   "HOME": {
     "WELCOME_MESSAGE": "Hoş Geldin, {{name}}!",

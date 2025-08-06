@@ -73,7 +73,6 @@
         {{ "SETTINGS.LIMITS.RECOMMENDED" | translate}}: {{ recommendedSugar | number:'1.0-0' }} g
       </ion-label>
     </ion-item>
-
   </ion-list>
 
   <ion-button expand="block" (click)="saveSettings()" class="ion-margin-top">
@@ -82,5 +81,9 @@
 
   <ion-button expand="block" fill="outline" color="medium" (click)="resetLimits()" class="ion-margin-top">
     {{ "SETTINGS.RESET" | translate}}
+  </ion-button>
+
+  <ion-button expand="block" fill="outline" color="danger" (click)="deleteAccount()" class="ion-margin-top">
+    {{ "SETTINGS.DELETE_ACCOUNT" | translate }}
   </ion-button>
 </ion-content>

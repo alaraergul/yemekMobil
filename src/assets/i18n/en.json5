@@ -54,7 +54,15 @@
     "RESET": "Reset the Limits",
     "SAVED": "Settings saved successfully!",
     "ERROR": "An error occured when saving the settings. Please try again.",
-    "RESETTED": "Limits are resetted to recommended values."
+    "RESETTED": "Limits are resetted to recommended values.",
+    "DELETE_ACCOUNT": "Delete Account",
+    "DELETE_ACCOUNT_ALERT": {
+      "TITLE": "Are you sure you want to delete your account?",
+      "MESSAGE": "This action cannot be undone. Are you sure you want to proceed?",
+      "CONFIRM": "Yes, Delete",
+      "CANCEL": "Cancel"
+    },
+    "DELETE_ACCOUNT_SUCCESS": "Your account has been successfully deleted."
   },
   "HOME": {
     "WELCOME_MESSAGE": "Welcome, {{name}}!",
